@@ -11,8 +11,9 @@ import java.util.HashMap;
 public class UI {
 	
 	private class GameBoardCanvas extends Canvas {
+		private static final long serialVersionUID = -9035087671066013403L;
+
 		private Map<Position, TileGraphic> gameBoardReference;
-		
 		private int centerX, centerY;
 		
 		
@@ -44,11 +45,11 @@ public class UI {
 	}
 	
 	
-	JFrame frame;
-	GameBoardCanvas canvas;
+	private JFrame frame;
+	private GameBoardCanvas canvas;
 	private Map<Position, TileGraphic> gameBoard;
 	
-	Position center;
+	private Position center;
 	
 	public UI() {
 		gameBoard = new HashMap<Position, TileGraphic>();
@@ -64,7 +65,6 @@ public class UI {
 			public void mouseDragged(MouseEvent e) {
 				int dx = e.getX()-lastX;
 				int dy = e.getY()-lastY;
-				//System.out.println(""+dx+"  "+dy);
 				
 				canvas.moveCenter(-dx, -dy);
 				
@@ -86,11 +86,20 @@ public class UI {
 		frame.setVisible(true);
 	}
 	
-	
+	/***
+	 * Draws a tile at the given position. If there is already a tile present, it will be overridden.
+	 * @param pos logical position to draw the tile
+	 * @param tile model information of the tile
+	 */
 	public void draw(Position pos, model.Tile tile) {
 		gameBoard.put(pos, new TileGraphic(tile));
 	}
 	
+	/**
+	 * does absolutely nothing
+	 * @param pos
+	 * @param isEmpty
+	 */
 	public void highlight(Position pos, boolean isEmpty) {
 		
 	}
