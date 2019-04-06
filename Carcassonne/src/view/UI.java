@@ -3,6 +3,7 @@ import logic.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -19,9 +20,11 @@ public class UI {
 			this.gameBoardReference = gameBoard;
 		}
 		
-		public void setCenter(int x, int y) {
-			centerX = x;
-			centerY = y;
+		public void moveCenter(int x, int y) {
+			centerX += x;
+			centerY += y;
+			
+			this.repaint();
 		}
 		
 		@Override
@@ -51,10 +54,33 @@ public class UI {
 		gameBoard = new HashMap<Position, TileGraphic>();
 		
 		frame = new JFrame();
-		frame.setSize(500, 500);
+		frame.setSize(1000, 700);
+		
+		
+		MouseMotionListener mouseMotion = new MouseMotionAdapter() {
+			private int lastX;
+			private int lastY;
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				int dx = e.getX()-lastX;
+				int dy = e.getY()-lastY;
+				//System.out.println(""+dx+"  "+dy);
+				
+				canvas.moveCenter(-dx, -dy);
+				
+				mouseMoved(e);
+	        }
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				lastX = e.getX();
+				lastY = e.getY();
+	        }
+		};
+		
 		
 		frame.setLayout(new GridLayout(1,1));
 		canvas = new GameBoardCanvas(gameBoard);
+		canvas.addMouseMotionListener(mouseMotion);
 		frame.add(canvas);
 		
 		frame.setVisible(true);
@@ -72,6 +98,9 @@ public class UI {
 	public static void main(String[] args) {
 		UI ui = new UI();
 		ui.draw(new Position(0,0), null);
-		ui.draw(new Position(0,2), null);
+		ui.draw(new Position(0,1), null);
+		ui.draw(new Position(0,-1), null);
+		ui.draw(new Position(1,0), null);
+		ui.draw(new Position(-1,0), null);
 	}
 }

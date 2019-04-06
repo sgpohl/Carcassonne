@@ -6,7 +6,7 @@ import logic.*;
 
 public class TileGraphic {
 	private final int size = 100;
-	
+	private final int border = 1;
 	
 	public TileGraphic(model.Tile tile) {
 	}
@@ -15,6 +15,6 @@ public class TileGraphic {
 		int xCoord = pos.getX()*size -size/2;
 		int yCoord = pos.getY()*size -size/2;
 		
-		g.fillRect(xCoord +offsetX, yCoord +offsetY, size, size);
+		g.fillRect(xCoord +offsetX+border, yCoord +offsetY +border, size -2*border, size -2*border);
 	}
 }
