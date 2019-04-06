@@ -1,14 +1,20 @@
 package view;
 import java.awt.*;
+import model.Tile;
 
-public class TileGraphic extends Canvas {
+import logic.*;
+
+public class TileGraphic {
+	private final int size = 100;
 	
-	public TileGraphic() {
-		super();
+	
+	public TileGraphic(model.Tile tile) {
 	}
-	
-	@Override
-	public void paint(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
+
+	public void paint(Graphics2D g, Position pos) {
+		int xOff = pos.getX()*size;
+		int yOff = pos.getY()*size;
+		
+		g.fillRect(xOff, yOff, size, size);
 	}
 }
