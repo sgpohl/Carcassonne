@@ -12,17 +12,30 @@ public class UI {
 	private class GameBoardCanvas extends Canvas {
 		private Map<Position, TileGraphic> gameBoardReference;
 		
+		private int centerX, centerY;
+		
+		
 		public GameBoardCanvas(Map<Position, TileGraphic> gameBoard) {
-			gameBoardReference = gameBoard;
+			this.gameBoardReference = gameBoard;
 		}
-
+		
+		public void setCenter(int x, int y) {
+			centerX = x;
+			centerY = y;
+		}
+		
 		@Override
 		public void paint(Graphics g) {
 			Graphics2D g2 = (Graphics2D) g;
 			
+			Dimension dim = this.getSize();
+			
+			int offsetX = dim.width/2	-centerX;
+			int offsetY = dim.height/2	-centerY;
+			
 			for(Position pos : gameBoardReference.keySet()) {
 				TileGraphic tile = gameBoardReference.get(pos);
-				tile.paint(g2, pos);
+				tile.paint(g2, pos, offsetX, offsetY);
 			}
 		}
 	}
@@ -59,5 +72,6 @@ public class UI {
 	public static void main(String[] args) {
 		UI ui = new UI();
 		ui.draw(new Position(0,0), null);
+		ui.draw(new Position(0,2), null);
 	}
 }
