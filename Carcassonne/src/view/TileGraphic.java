@@ -1,5 +1,7 @@
 package view;
 import java.awt.*;
+import java.awt.geom.Path2D;
+
 import model.Tile;
 
 import logic.*;
@@ -9,6 +11,8 @@ public class TileGraphic {
 	private final int border = 1;
 	
 	public TileGraphic(model.Tile tile) {
+		
+		Path2D street = new Path2D.Float();
 	}
 
 	public void paint(Graphics2D g, Position pos, int offsetX, int offsetY) {

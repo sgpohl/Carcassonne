@@ -11,6 +11,8 @@ import java.util.HashMap;
 public class UI {
 	
 	private class GameBoardCanvas extends Canvas {
+		private static final long serialVersionUID = -9035087671066013403L;
+
 		private Map<Position, TileGraphic> gameBoardReference;
 		
 		private int centerX, centerY;
