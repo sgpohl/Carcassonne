@@ -86,11 +86,20 @@ public class UI {
 		frame.setVisible(true);
 	}
 	
-	
+	/***
+	 * Draws a tile at the given position. If there is already a tile present, it will be overridden.
+	 * @param pos logical position to draw the tile
+	 * @param tile model information of the tile
+	 */
 	public void draw(Position pos, model.Tile tile) {
 		gameBoard.put(pos, new TileGraphic(tile));
 	}
 	
+	/**
+	 * does absolutely nothing
+	 * @param pos
+	 * @param isEmpty
+	 */
 	public void highlight(Position pos, boolean isEmpty) {
 		
 	}
