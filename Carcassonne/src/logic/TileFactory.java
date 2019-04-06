@@ -43,6 +43,11 @@ class StartTile implements Tile {
     }
 
     @Override
+    public void setDirection(Direction key, Type types) {
+        throw new UnsupportedOperationException("This is an immutable StartTile dummy!");
+    }
+
+    @Override
     public int hashCode() {
         return 1;
     }
