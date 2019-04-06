@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>510</x>
+      <y>250</y>
+      <w>430</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+Tile
+--
+--
++ isExtendable(Seite, Typ): boolean
++ getExtendableOptions(): Map[Seite, List[Type]]
+
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>250</y>
+      <w>430</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>UI
+--
++ draw(p: Position, t:Tile)
++ highlight(p: Position, isEmpty: bool)
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>510</x>
+      <y>480</y>
+      <w>430</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+GameField
+--
+--
+
++ set(p: Position, t: Tile)
+
++ getTile(p: Position): Tile
++ getAllTiles(): Map[Position, Tile]
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>740</x>
+      <y>50</y>
+      <w>200</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Enum&gt;&gt;
+DIRECTION
+--
+NORTH
+EAST
+SOUTH
+WEST
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>510</x>
+      <y>50</y>
+      <w>200</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>Position
+--
+
+--
+Position(x: int, y:int)
+
+int getX()
+int getY()
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>710</x>
+      <y>420</y>
+      <w>50</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1..*</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>10</x>
+      <y>50</y>
+      <w>440</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>TileLogic
+--
+
+--
+__+ getStartTile(): Tile__
+__+ getPossibleExtension(gf: GameField): List[Tile, Direction]__</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
