@@ -10,5 +10,6 @@ public interface Tile {
 	
 	public void setDirection(Direction key, Type types);
 	
+	
 
 }
