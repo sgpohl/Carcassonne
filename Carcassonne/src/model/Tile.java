@@ -8,7 +8,7 @@ public interface Tile {
 	
 	public boolean isExtendable(Direction direction, Type type);
 	
-	
+	public void setDirection(Direction key, Type types);
 	
 
 }
