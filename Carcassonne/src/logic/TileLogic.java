@@ -26,6 +26,7 @@ public class TileLogic {
     public static List<Tuple<Tile, Direction>> getPossibleExtension(Tile tile){
         return null;
     }
+
     public static Map<Direction, List<Type>> getPossibleExtension(GameField gf){
         return null;
     }
