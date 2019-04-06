@@ -14,7 +14,6 @@ Tile
 --
 --
 + isExtendable(Direction, Type): boolean
-+ getExtendableOptions(): Map[Direction, List[Type]]
 
 
 
@@ -123,7 +122,9 @@ m1=1..*</panel_attributes>
 
 --
 __+ getStartTile(): Tile__
-__+ getPossibleExtension(gf: GameField): List[Tuple[Tile, Direction]]__</panel_attributes>
+
+__+ getPossibleExtension(gf: GameField): List[Tuple[Tile, Direction]]__
+__+ getExtendableOptions(t: Tile): Map[Direction, List[Type]]__</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
