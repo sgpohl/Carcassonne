@@ -6,7 +6,11 @@ public class TileLogic {
 
 
     public static Tile getStartTile() {
-        return null; // So ne null wie du!
+        return new Tile(){
+            public String toString(){
+                return "Dummy Start Tile (Not yet implemented!)";
+            }
+        };
     }
 
 
