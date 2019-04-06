@@ -11,10 +11,27 @@ public class TileFactory {
         return new StartTile();
     }
 
+    /**
+     * Returns an empty Tile
+     * @return an empty Tile
+     */
     public static Tile getEmptyTile() {
         return new TileImpl();
     }
 
+    /**
+     * Returns a random Tile using the current timestamp as seed
+     * @return a random Tile using the current timestamp as seed
+     */
+    public static Tile getRandomTile(){
+        return getRandomTile(new Random());
+    }
+
+    /**
+     * Returns a random tile with the given RNG
+     * @param ran the random number generator
+     * @return a random tile with the given RNG
+     */
     public static Tile getRandomTile(Random ran) {
         Tile tile = getEmptyTile();
 
