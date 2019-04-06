@@ -28,17 +28,10 @@ public class TileImpl implements Tile {
 	
 	@Override
 	public boolean isExtendable(Direction direction, Type type) {
-		
-		return false;
+		Set alignableTypes = this.DirectionType.get(direction);
+		return alignableTypes.contains(type);
 	}
 	
-	public static void main(String[] args) {
-		TileImpl test1 = new TileImpl();
-		test1.setDirection(Direction.NORTH, Type.GRASS);
-		test1.setDirection(Direction.EAST, Type.RIVER);
-		test1.setDirection(Direction.NORTH, Type.FOREST);
-		test1.setDirection(Direction.NORTH, Type.FOREST);
-		System.out.println(test1.DirectionType.toString());
-	}
+
 
 }
