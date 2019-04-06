@@ -25,9 +25,17 @@ public class TileLogic {
         };
     }
 
-    public static Collection<Tile> getExtendableTiles(GameField gf) {
-        //.filter(tile::isExpandable);
-        return null;
+    private static Set<Position> getValidExtensionPositions(GameField field){
+        var res = new HashSet<Position>();
+        for(var pos: field.getAllTiles().keySet())
+            for(var dir: Direction.values())
+                if(field.getTile(pos.inDirection(dir)) == null)
+                    res.add(pos.inDirection(dir));
+        return res;
+    }
+
+    public static List<Position> getValidExtensionPositions(GameField field, Tile newTile){
+        return new ArrayList<>();
     }
 
     public static Map<Direction, List<Type>> getExtendableOptions(Tile tile) {
