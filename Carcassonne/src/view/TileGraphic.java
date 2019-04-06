@@ -28,15 +28,39 @@ public class TileGraphic {
 		switch(dir) {
 		case NORTH:
 			return new Tuple<Integer, Integer>(size/2, border);
-		case WEST:
-			return new Tuple<Integer, Integer>(border, size/2);
-		case SOUTH:
-			return new Tuple<Integer, Integer>(size/2, size-border);
 		case EAST:
 			return new Tuple<Integer, Integer>(size-border, size/2);
+		case SOUTH:
+			return new Tuple<Integer, Integer>(size/2, size-border);
+		case WEST:
+			return new Tuple<Integer, Integer>(border, size/2);
 		default:
 			return new Tuple<Integer, Integer>(size/2, size/2);
 		}
+	}
+	
+	private static Tuple<Tuple<Integer, Integer>, Tuple<Integer, Integer>> directionToBorder(Direction dir) {
+		Tuple<Integer, Integer> first;
+		Tuple<Integer, Integer> second;
+		switch(dir) {
+		case NORTH:
+			first = new Tuple<Integer, Integer>(0,0);
+			second = new Tuple<Integer, Integer>(size,0);
+			return new Tuple<Tuple<Integer, Integer>, Tuple<Integer, Integer>>(first, second);
+		case EAST:
+			first = new Tuple<Integer, Integer>(size,0);
+			second = new Tuple<Integer, Integer>(size,size);
+			return new Tuple<Tuple<Integer, Integer>, Tuple<Integer, Integer>>(first, second);
+		case SOUTH:
+			first = new Tuple<Integer, Integer>(size,size);
+			second = new Tuple<Integer, Integer>(0,size);
+			return new Tuple<Tuple<Integer, Integer>, Tuple<Integer, Integer>>(first, second);
+		case WEST:
+			first = new Tuple<Integer, Integer>(0,size);
+			second = new Tuple<Integer, Integer>(0,0);
+			return new Tuple<Tuple<Integer, Integer>, Tuple<Integer, Integer>>(first, second);
+		}
+		return null;
 	}
 	
 	private void insertVillage() {
@@ -77,61 +101,113 @@ public class TileGraphic {
 		}
 	}
 	
+	private Direction clockwiseNext(Direction dir) {
+		switch(dir) {
+		case NORTH:
+			return Direction.EAST;
+		case EAST:
+			return Direction.SOUTH;
+		case SOUTH:
+			return Direction.WEST;
+		case WEST:
+			return Direction.NORTH;
+		}
+		return Direction.EAST;
+	}
+
+	private void drawSingleForest(Graphics2D g, Direction dir) {
+		
+		Tuple<Tuple<Integer, Integer>, Tuple<Integer, Integer>> borders;
+		borders = directionToBorder(dir);
+		int x1 = borders.getFirst().getFirst();
+		int y1 = borders.getFirst().getSecond();
+		
+		int x2 = borders.getSecond().getFirst();
+		int y2 = borders.getSecond().getSecond();
+		
+		Path2D forest = new Path2D.Float();
+		forest.moveTo(x1, y1);
+		int middle = size/2;
+		forest.curveTo((x1+middle)/2, (y1+middle)/2, (x2+middle)/2, (y2+middle)/2, x2, y2);
+		forest.closePath();
+		g.fill(forest);
+	}
+	
+	private void drawMultiForest(Graphics2D g, Direction clockwiseStart, Direction clockwiseEnd) {
+
+		Tuple<Tuple<Integer, Integer>, Tuple<Integer, Integer>> startBorders;
+		startBorders = directionToBorder(clockwiseStart);
+		Tuple<Tuple<Integer, Integer>, Tuple<Integer, Integer>> endBorders;
+		endBorders = directionToBorder(clockwiseEnd);
+
+		int x1 = startBorders.getFirst().getFirst();
+		int y1 = startBorders.getFirst().getSecond();
+		
+		int p11 = startBorders.getSecond().getFirst();
+		int p12 = startBorders.getSecond().getSecond();		
+		
+		int p21 = endBorders.getFirst().getFirst();
+		int p22 = endBorders.getFirst().getSecond();
+		
+		int x2 = endBorders.getSecond().getFirst();
+		int y2 = endBorders.getSecond().getSecond();
+		
+		Path2D forest = new Path2D.Float();
+		forest.moveTo(x1, y1);
+		int middle = size/2;
+		
+		forest.curveTo((p11+middle)/2, (p12+middle)/2, (p21+middle)/2, (p22+middle)/2, x2, y2);
+		forest.lineTo(p21, p22);
+		forest.lineTo(p11, p12);
+		forest.closePath();
+		g.fill(forest);
+		
+	}
+	
 	private void drawForests(List<Direction> directions) {
 		Graphics2D g = (Graphics2D)displayImage.getGraphics();
 		g.setColor(new Color(120,80,20));
 
 	
-		for(Direction dir : directions) {
-			Tuple<Integer, Integer> from = directionToCoordinate(dir);
-			//g.fillRect(from.getFirst()-20, from.getSecond()-20, 40, 40);
-			
-			int x1 = 0;
-			int y1 = 0;
-			
-			int x2 = 0;
-			int y2 = 0;
-			
-			switch(dir) {
-			case SOUTH:
-				y1 = size;
-				y2 = size;
-			case NORTH:
-				x1 = 0;
-				x2 = size;
-				break;
-			case EAST:
-				x1 = size;
-				x2 = size;
-			case WEST:
-				y1 = 0;
-				y2 = size;
-				break;
-			}
-			
-			Path2D forest = new Path2D.Float();
-			forest.moveTo(x1, y1);
-			int middle = size/2;
-			forest.curveTo((x1+middle)/2, (y1+middle)/2, (x2+middle)/2, (y2+middle)/2, x2, y2);
-			forest.closePath();
-			
-			g.fill(forest);
-		}
-		
-		
-/*		
+/*		for(Direction dir : directions) {
+			drawSingleForest(g, dir);
+		}*/
+	
 		if(directions.size() == 1) {
-			
+			drawSingleForest(g, directions.get(0));
 			return;
 		}
-		if(directions.size() == 2 && directions.get(0).equals(directions.get(1).getOpposite())) {
-			//TODO shite
+		if(directions.size() == 2) {
+			if(directions.get(0).equals(directions.get(1).getOpposite())) {
+				drawSingleForest(g, directions.get(0));
+				drawSingleForest(g, directions.get(1));
+				return;
+			}
+			else {
+				Direction firstDir = directions.get(0);
+				Direction secondDir = directions.get(1);
+				if(clockwiseNext(firstDir) != directions.get(1)) {
+					firstDir = directions.get(1);
+					secondDir = directions.get(0);
+				}
+				drawMultiForest(g, firstDir, secondDir);
+			}
 			return;
 		}
 		if(directions.size() == 3) {
-			//TODO
+			Direction firstDir = Direction.NORTH;
+			while(directions.contains(firstDir))
+				firstDir = clockwiseNext(firstDir);
+			firstDir = clockwiseNext(firstDir);
+			Direction thirdDir = clockwiseNext(clockwiseNext(firstDir));
+			drawMultiForest(g, firstDir, thirdDir);
+			
 			return;
-		}*/
+		}
+		if(directions.size() == 4) {
+			g.fillRect(border, border, size -2*border, size -2*border);
+			return;
+		}
 	}
 	
 	public TileGraphic(model.Tile tile) {
@@ -157,12 +233,14 @@ public class TileGraphic {
 		drawForests(forestDirections);
 		drawAllStreets(streetDirections);
 		
-/*		
+		/*
 		List<Direction> testDirection = new ArrayList<Direction>();
 		testDirection.add(Direction.NORTH);
+		testDirection.add(Direction.WEST);
 		testDirection.add(Direction.EAST);
-		drawForests(testDirection);*/
-		
+		testDirection.add(Direction.SOUTH);
+		drawForests(testDirection);
+		*/
 	}
 
 	public void paint(Graphics2D g, Position pos, int offsetX, int offsetY) {
