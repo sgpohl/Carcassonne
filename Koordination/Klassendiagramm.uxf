@@ -4,8 +4,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>510</x>
-      <y>250</y>
+      <x>680</x>
+      <y>240</y>
       <w>430</w>
       <h>180</h>
     </coordinates>
@@ -13,8 +13,7 @@
 Tile
 --
 --
-+ isExtendable(Seite, Typ): boolean
-+ getExtendableOptions(): Map[Seite, List[Type]]
++ isExtendable(Direction, Type): boolean
 
 
 
@@ -24,8 +23,8 @@ Tile
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>20</x>
-      <y>250</y>
+      <x>190</x>
+      <y>240</y>
       <w>430</w>
       <h>180</h>
     </coordinates>
@@ -40,8 +39,8 @@ Tile
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>510</x>
-      <y>480</y>
+      <x>680</x>
+      <y>470</y>
       <w>430</w>
       <h>140</h>
     </coordinates>
@@ -62,13 +61,13 @@ GameField
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>740</x>
-      <y>50</y>
+      <x>910</x>
+      <y>40</y>
       <w>200</w>
       <h>150</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Enum&gt;&gt;
-DIRECTION
+Direction
 --
 NORTH
 EAST
@@ -81,8 +80,8 @@ WEST
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>510</x>
-      <y>50</y>
+      <x>680</x>
+      <y>40</y>
       <w>200</w>
       <h>150</h>
     </coordinates>
@@ -101,8 +100,8 @@ int getY()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>710</x>
-      <y>420</y>
+      <x>880</x>
+      <y>410</y>
       <w>50</w>
       <h>80</h>
     </coordinates>
@@ -113,9 +112,9 @@ m1=1..*</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>10</x>
-      <y>50</y>
-      <w>440</w>
+      <x>190</x>
+      <y>40</y>
+      <w>430</w>
       <h>150</h>
     </coordinates>
     <panel_attributes>TileLogic
@@ -123,7 +122,45 @@ m1=1..*</panel_attributes>
 
 --
 __+ getStartTile(): Tile__
-__+ getPossibleExtension(gf: GameField): List[Tile, Direction]__</panel_attributes>
+
+__+ getPossibleExtension(gf: GameField): List[Tuple[Tile, Direction]]__
+__+ getExtendableOptions(t: Tile): Map[Direction, List[Type]]__</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1130</x>
+      <y>40</y>
+      <w>200</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Enum&gt;&gt;
+Type
+--
+FOREST
+RIVER
+GRASS
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>190</x>
+      <y>470</y>
+      <w>430</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>Tuple&lt;A, B&gt;
+--
+
+--
++ Tuple(a: A, b: B)
+
++ getFirst(): A
++ getSecond(): B</panel_attributes>
     <additional_attributes/>
   </element>
 </diagram>
