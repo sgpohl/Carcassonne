@@ -6,7 +6,7 @@ import java.util.*;
 
 public interface Tile {
 	
-	public boolean isExpendable(Direction direction, Type type);
+	public boolean isExtendable(Direction direction, Type type);
 	
 	
 	
