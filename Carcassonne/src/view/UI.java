@@ -65,7 +65,6 @@ public class UI {
 			public void mouseDragged(MouseEvent e) {
 				int dx = e.getX()-lastX;
 				int dy = e.getY()-lastY;
-				//System.out.println(""+dx+"  "+dy);
 				
 				canvas.moveCenter(-dx, -dy);
 				
