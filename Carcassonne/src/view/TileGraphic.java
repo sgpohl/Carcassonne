@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
+import java.nio.charset.CoderMalfunctionError;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -77,8 +78,59 @@ public class TileGraphic {
 	}
 	
 	private void drawForests(List<Direction> directions) {
-/*		if(directions.size() == 2 && directions.get(0).equals(directions.get(1).getOpposite())) {
+		Graphics2D g = (Graphics2D)displayImage.getGraphics();
+		g.setColor(new Color(120,80,20));
+
+	
+		for(Direction dir : directions) {
+			Tuple<Integer, Integer> from = directionToCoordinate(dir);
+			//g.fillRect(from.getFirst()-20, from.getSecond()-20, 40, 40);
 			
+			int x1 = 0;
+			int y1 = 0;
+			
+			int x2 = 0;
+			int y2 = 0;
+			
+			switch(dir) {
+			case SOUTH:
+				y1 = size;
+				y2 = size;
+			case NORTH:
+				x1 = 0;
+				x2 = size;
+				break;
+			case EAST:
+				x1 = size;
+				x2 = size;
+			case WEST:
+				y1 = 0;
+				y2 = size;
+				break;
+			}
+			
+			Path2D forest = new Path2D.Float();
+			forest.moveTo(x1, y1);
+			int middle = size/2;
+			forest.curveTo((x1+middle)/2, (y1+middle)/2, (x2+middle)/2, (y2+middle)/2, x2, y2);
+			forest.closePath();
+			
+			g.fill(forest);
+		}
+		
+		
+/*		
+		if(directions.size() == 1) {
+			
+			return;
+		}
+		if(directions.size() == 2 && directions.get(0).equals(directions.get(1).getOpposite())) {
+			//TODO shite
+			return;
+		}
+		if(directions.size() == 3) {
+			//TODO
+			return;
 		}*/
 	}
 	
@@ -94,11 +146,23 @@ public class TileGraphic {
 		Map<Direction, List<Type>> information = TileLogic.getExtendableOptions(tile);
 		
 		List<Direction> streetDirections = new ArrayList<Direction>();
+		List<Direction> forestDirections = new ArrayList<Direction>();
 		for(Direction d : information.keySet()) {
 			if(information.get(d).contains(Type.RIVER))
 				streetDirections.add(d);
+			if(information.get(d).contains(Type.FOREST))
+				forestDirections.add(d);
+				
 		}
+		drawForests(forestDirections);
 		drawAllStreets(streetDirections);
+		
+/*		
+		List<Direction> testDirection = new ArrayList<Direction>();
+		testDirection.add(Direction.NORTH);
+		testDirection.add(Direction.EAST);
+		drawForests(testDirection);*/
+		
 	}
 
 	public void paint(Graphics2D g, Position pos, int offsetX, int offsetY) {
