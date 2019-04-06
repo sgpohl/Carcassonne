@@ -79,7 +79,7 @@ class StartTile implements Tile {
 
     @Override
     public boolean equals(Object other) {
-        if ( !(other instanceof Tile)) {
+        if (!(other instanceof Tile)) {
             return false;
         }
         Tile otherTile = (Tile) other;
