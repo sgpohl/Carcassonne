@@ -14,7 +14,6 @@ public class UI {
 		private static final long serialVersionUID = -9035087671066013403L;
 
 		private Map<Position, TileGraphic> gameBoardReference;
-		
 		private int centerX, centerY;
 		
 		
@@ -46,11 +45,11 @@ public class UI {
 	}
 	
 	
-	JFrame frame;
-	GameBoardCanvas canvas;
+	private JFrame frame;
+	private GameBoardCanvas canvas;
 	private Map<Position, TileGraphic> gameBoard;
 	
-	Position center;
+	private Position center;
 	
 	public UI() {
 		gameBoard = new HashMap<Position, TileGraphic>();
