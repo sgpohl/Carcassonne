@@ -4,8 +4,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>480</x>
-      <y>430</y>
+      <x>680</x>
+      <y>240</y>
       <w>430</w>
       <h>180</h>
     </coordinates>
@@ -24,9 +24,9 @@ Tile
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>30</x>
-      <y>430</y>
-      <w>390</w>
+      <x>190</x>
+      <y>240</y>
+      <w>430</w>
       <h>180</h>
     </coordinates>
     <panel_attributes>UI
@@ -40,8 +40,8 @@ Tile
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>480</x>
-      <y>660</y>
+      <x>680</x>
+      <y>470</y>
       <w>430</w>
       <h>140</h>
     </coordinates>
@@ -62,8 +62,8 @@ GameField
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>710</x>
-      <y>230</y>
+      <x>910</x>
+      <y>40</y>
       <w>200</w>
       <h>150</h>
     </coordinates>
@@ -81,8 +81,8 @@ WEST
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>480</x>
-      <y>230</y>
+      <x>680</x>
+      <y>40</y>
       <w>200</w>
       <h>150</h>
     </coordinates>
@@ -101,8 +101,8 @@ int getY()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>680</x>
-      <y>600</y>
+      <x>880</x>
+      <y>410</y>
       <w>50</w>
       <h>80</h>
     </coordinates>
@@ -113,9 +113,9 @@ m1=1..*</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>30</x>
-      <y>230</y>
-      <w>390</w>
+      <x>190</x>
+      <y>40</y>
+      <w>430</w>
       <h>150</h>
     </coordinates>
     <panel_attributes>TileLogic
@@ -123,14 +123,14 @@ m1=1..*</panel_attributes>
 
 --
 __+ getStartTile(): Tile__
-__+ getPossibleExtension(gf: GameField): List[Tile, Direction]__</panel_attributes>
+__+ getPossibleExtension(gf: GameField): List[Tuple[Tile, Direction]]__</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>930</x>
-      <y>230</y>
+      <x>1130</x>
+      <y>40</y>
       <w>200</w>
       <h>150</h>
     </coordinates>
@@ -147,10 +147,10 @@ GRASS
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>480</x>
-      <y>20</y>
-      <w>200</w>
-      <h>130</h>
+      <x>190</x>
+      <y>470</y>
+      <w>430</w>
+      <h>140</h>
     </coordinates>
     <panel_attributes>Tuple&lt;A, B&gt;
 --
@@ -161,16 +161,5 @@ GRASS
 + getFirst(): A
 + getSecond(): B</panel_attributes>
     <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>570</x>
-      <y>140</y>
-      <w>30</w>
-      <h>110</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
   </element>
 </diagram>
