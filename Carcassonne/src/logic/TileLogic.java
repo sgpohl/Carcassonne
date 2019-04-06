@@ -2,6 +2,7 @@ package logic;
 
 import model.GameField;
 import model.Tile;
+import util.IterationUtility;
 
 import java.util.*;
 import java.util.stream.Collectors;
