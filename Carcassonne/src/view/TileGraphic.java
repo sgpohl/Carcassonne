@@ -84,7 +84,38 @@ public class TileGraphic {
 	
 		for(Direction dir : directions) {
 			Tuple<Integer, Integer> from = directionToCoordinate(dir);
-			g.fillRect(from.getFirst()-20, from.getSecond()-20, 40, 40);
+			//g.fillRect(from.getFirst()-20, from.getSecond()-20, 40, 40);
+			
+			int x1 = 0;
+			int y1 = 0;
+			
+			int x2 = 0;
+			int y2 = 0;
+			
+			switch(dir) {
+			case SOUTH:
+				y1 = size;
+				y2 = size;
+			case NORTH:
+				x1 = 0;
+				x2 = size;
+				break;
+			case EAST:
+				x1 = size;
+				x2 = size;
+			case WEST:
+				y1 = 0;
+				y2 = size;
+				break;
+			}
+			
+			Path2D forest = new Path2D.Float();
+			forest.moveTo(x1, y1);
+			int middle = size/2;
+			forest.curveTo((x1+middle)/2, (y1+middle)/2, (x2+middle)/2, (y2+middle)/2, x2, y2);
+			forest.closePath();
+			
+			g.fill(forest);
 		}
 		
 		
