@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
+import java.nio.charset.CoderMalfunctionError;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +78,21 @@ public class TileGraphic {
 	}
 	
 	private void drawForests(List<Direction> directions) {
+		Graphics2D g = (Graphics2D)displayImage.getGraphics();
+		g.setColor(new Color(120,80,20));
+
+		
+		for(Direction dir : directions) {
+			Tuple<Integer, Integer> from = directionToCoordinate(dir);
+			g.fillRect(from.getFirst()-20, from.getSecond()-20, 40, 40);
+		}
+		
+		
+		
 /*		if(directions.size() == 2 && directions.get(0).equals(directions.get(1).getOpposite())) {
+			//TODO shite
+		}
+		else {
 			
 		}*/
 	}
@@ -94,11 +109,23 @@ public class TileGraphic {
 		Map<Direction, List<Type>> information = TileLogic.getExtendableOptions(tile);
 		
 		List<Direction> streetDirections = new ArrayList<Direction>();
+		List<Direction> forestDirections = new ArrayList<Direction>();
 		for(Direction d : information.keySet()) {
 			if(information.get(d).contains(Type.RIVER))
 				streetDirections.add(d);
+			if(information.get(d).contains(Type.FOREST))
+				forestDirections.add(d);
+				
 		}
 		drawAllStreets(streetDirections);
+		drawForests(forestDirections);
+		
+/*		
+		List<Direction> testDirection = new ArrayList<Direction>();
+		testDirection.add(Direction.NORTH);
+		testDirection.add(Direction.EAST);
+		drawForests(testDirection);*/
+		
 	}
 
 	public void paint(Graphics2D g, Position pos, int offsetX, int offsetY) {

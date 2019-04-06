@@ -106,10 +106,10 @@ public class UI {
 	
 	public static void main(String[] args) {
 		UI ui = new UI();
-		ui.draw(new Position(0,0), null);
-		ui.draw(new Position(0,1), null);
+		ui.draw(new Position(0, 0), TileFactory.getStartTile());
+/*		ui.draw(new Position(0,1), null);
 		ui.draw(new Position(0,-1), null);
 		ui.draw(new Position(1,0), null);
-		ui.draw(new Position(-1,0), null);
+		ui.draw(new Position(-1,0), null);*/
 	}
 }
