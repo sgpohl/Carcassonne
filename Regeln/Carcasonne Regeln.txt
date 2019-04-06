@@ -1,0 +1,54 @@
+Haben:
+
+72 Karten (71 Karten + 1 mit allen Gegenden)
+
+pro Spieler 7 Marker
+
+1 counter
+
+Areale:
+ - Straße
+ - Stadt
+ - Kloster
+ - Wiese
+
+Spielzug:
+ - Karte wird gezogen und muss angelegt werden
+		alle Straßenabschnitte/Stadtteile/Wiesenabschnitte müssen fortgesetzt werden
+		falls Karte nirgends anlegbar ist: Spieler zieht neu, Karte verschwindet
+		falls Abschluss eines Areals, auf dem Marker steht: Markercounter +1
+ - Marker auf Gebiet setzen (optional)
+		immer nur 1 Marker auf einmal
+		Markercounter -1
+		Marker nur auf die neue Karte legbar
+		Marker nicht auf Abschnitt plazierbar, das mit Teil verbunden ist, wo schon Marker
+ - abgeschlossene Straßen, Städte, Klöster werden gezählt
+
+
+Fertigstellung:
+ - Straße:
+		wenn Straßenzüge an beiden Enden begrenzt durch:
+			- Kreuzung
+			- Stadtteil
+			- Kloster
+			- Straße geschlossener Kreis
+		Count:
+			1 Punkt für jede Karte über die Straße verläuft
+
+ - Stadt:
+		wenn alle Ränder abgeschlossen sind und keine Lücken in der Mitte
+		Count:
+			2 Punkte für jede Karte
+ - Kloster: 
+		wenn von 8 Landschaftskarten umgeben
+		Count:
+			9 Punkte
+
+
+Spielende:
+
+	unfertige Straßen/Klöster/Städte werden gezählt:
+			1 Punkt für jeden Teilabschnitt (bei Kloster 1 Punkt pro angelegte Karte + 1 für Kloster)
+	Wiesen werden gezählt
+
+
