@@ -13,8 +13,9 @@ public class TileLogic {
 
     public static Tile getStartTile() {
         return new Tile() {
+
             @Override
-            public boolean isExpendable(Direction direction, Type type) {
+            public boolean isExtendable(Direction direction, Type type) {
                 return false;
             }
 
@@ -33,7 +34,7 @@ public class TileLogic {
         Map<Direction, List<Type>> result = new HashMap<>();
         for (Direction dir : Direction.values()) {
             for (Type type : Type.values()) {
-                if (tile.isExpendable(dir, type)) {
+                if (tile.isExtendable(dir, type)) {
                     if (result.containsKey(dir)) {
                         result.put(dir, new ArrayList<>());
                     }
