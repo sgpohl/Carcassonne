@@ -123,8 +123,8 @@ public class TileGraphic {
 				forestDirections.add(d);
 				
 		}
-		drawAllStreets(streetDirections);
 		drawForests(forestDirections);
+		drawAllStreets(streetDirections);
 		
 /*		
 		List<Direction> testDirection = new ArrayList<Direction>();
