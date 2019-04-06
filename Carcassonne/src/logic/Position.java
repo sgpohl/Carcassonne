@@ -1,12 +1,15 @@
-package logic;
+package Logic;
 
 public class Position {
 	
+	private int X;
+	private int Y;
+	
 	public int getX() {
-		return 0;
+		return this.X;
 	}
 	
 	public int getY() {
-		return 0;
+		return this.Y;
 	}
 }
