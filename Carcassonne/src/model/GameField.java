@@ -3,7 +3,7 @@ package model;
 import java.util.*;
 import logic.Position;
 
-public interface GameField extends Tile{
+public interface GameField{
 	
 	public void set(Position p, Tile t);
 	
