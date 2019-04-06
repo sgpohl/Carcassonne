@@ -81,19 +81,25 @@ public class TileGraphic {
 		Graphics2D g = (Graphics2D)displayImage.getGraphics();
 		g.setColor(new Color(120,80,20));
 
-		
+	
 		for(Direction dir : directions) {
 			Tuple<Integer, Integer> from = directionToCoordinate(dir);
 			g.fillRect(from.getFirst()-20, from.getSecond()-20, 40, 40);
 		}
 		
 		
-		
-/*		if(directions.size() == 2 && directions.get(0).equals(directions.get(1).getOpposite())) {
-			//TODO shite
-		}
-		else {
+/*		
+		if(directions.size() == 1) {
 			
+			return;
+		}
+		if(directions.size() == 2 && directions.get(0).equals(directions.get(1).getOpposite())) {
+			//TODO shite
+			return;
+		}
+		if(directions.size() == 3) {
+			//TODO
+			return;
 		}*/
 	}
 	
