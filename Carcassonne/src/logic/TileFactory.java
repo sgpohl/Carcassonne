@@ -2,17 +2,55 @@ package logic;
 
 import model.Tile;
 import model.TileImpl;
+import util.IterationUtility;
 
 import java.util.Random;
 
 public class TileFactory {
+    /**
+     * Returns a clockwise rotated copy of the given tile
+     *
+     * @param tile the tile to be rotated
+     * @return a clockwise rotated copy of the given tile
+     */
+    public static Tile rotateClockwise(Tile tile) {
+        Tile res = getEmptyTile();
 
+        for (var dir : Direction.values())
+            for (var type : Type.values())
+                if (res.isExtendable(dir, type))
+                    res.setDirection(dir.rotateClockwise(), type);
+
+        return res;
+    }
+
+    public static Tile rotateCounterclockwise(Tile tile) {
+        Tile res = getEmptyTile();
+
+        IterationUtility.forEachTypeDirection(
+                (type, dir) -> {
+                    if (res.isExtendable(dir, type))
+                        res.setDirection(dir, type);
+                }
+        );
+
+        return res;
+
+    }
+
+
+    /**
+     * Returns the starting tile of the game
+     *
+     * @return the starting tile of the game
+     */
     public static Tile getStartTile() {
         return new StartTile();
     }
 
     /**
      * Returns an empty Tile
+     *
      * @return an empty Tile
      */
     public static Tile getEmptyTile() {
@@ -21,14 +59,16 @@ public class TileFactory {
 
     /**
      * Returns a random Tile using the current timestamp as seed
+     *
      * @return a random Tile using the current timestamp as seed
      */
-    public static Tile getRandomTile(){
+    public static Tile getRandomTile() {
         return getRandomTile(new Random());
     }
 
     /**
      * Returns a random tile with the given RNG
+     *
      * @param ran the random number generator
      * @return a random tile with the given RNG
      */
