@@ -107,6 +107,8 @@ public class UI {
 	 */
 	public void highlight(Position pos, boolean isActive) {
 		TileGraphic tile = gameBoard.get(pos);
+		if(tile == null)
+			return;
 		if(tile.setHighlight(isActive))
 			canvas.repaint();	//TODO: only repaint the relevant area
 	}
