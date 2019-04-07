@@ -2,7 +2,8 @@ package view.shapes;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
-import view.collision.ResourceInformation;
+
+import view.ResourceInformation;
 
 public interface TileShape {
 	public boolean contains(Point p);

@@ -8,8 +8,8 @@ import java.util.Collection;
 
 import logic.Direction;
 import logic.Type;
+import view.ResourceInformation;
 import view.TileGraphic;
-import view.collision.ResourceInformation;
 
 public class Grass extends Path2D.Float implements TileShape {
 	private static final long serialVersionUID = -9019873546477228036L;

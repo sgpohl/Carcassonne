@@ -1,7 +1,6 @@
 package view;
 import logic.*;
 import model.Tile;
-import view.collision.ResourceInformation;
 
 import javax.swing.*;
 

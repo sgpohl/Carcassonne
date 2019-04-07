@@ -1,4 +1,4 @@
-package view.collision;
+package view;
 import java.util.Collection;
 import java.util.HashSet;
 

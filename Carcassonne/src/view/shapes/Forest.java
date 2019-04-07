@@ -7,8 +7,8 @@ import java.awt.geom.Path2D;
 import logic.Direction;
 import logic.Type;
 import util.Tuple;
+import view.ResourceInformation;
 import view.TileGraphic;
-import view.collision.ResourceInformation;
 
 public class Forest extends Path2D.Float implements TileShape {
 	private static final long serialVersionUID = 2806951371081096281L;

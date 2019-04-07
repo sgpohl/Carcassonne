@@ -8,8 +8,8 @@ import java.awt.geom.Path2D;
 
 import logic.Direction;
 import logic.Type;
+import view.ResourceInformation;
 import view.TileGraphic;
-import view.collision.ResourceInformation;
 
 public class RiverSegment extends Path2D.Float implements TileShape {
 	private static final long serialVersionUID = -8284368756045162616L;

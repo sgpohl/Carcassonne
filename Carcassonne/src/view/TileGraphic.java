@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import util.*;
-import view.collision.*;
 import view.shapes.*;
 import logic.*;
 

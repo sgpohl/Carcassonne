@@ -5,8 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Ellipse2D;
 
+import view.ResourceInformation;
 import view.TileGraphic;
-import view.collision.ResourceInformation;
 
 public class Lake extends Ellipse2D.Float implements TileShape {
 	private static final long serialVersionUID = 9192036957975715607L;

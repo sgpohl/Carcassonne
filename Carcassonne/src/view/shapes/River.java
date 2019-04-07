@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import logic.Type;
-import view.collision.ResourceInformation;
+import view.ResourceInformation;
 
 public class River implements TileShape {
 	private Collection<RiverSegment> segments;
