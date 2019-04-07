@@ -11,14 +11,15 @@ import java.util.Map;
 
 import util.*;
 import view.collision.*;
+import view.shapes.*;
 import logic.*;
 
 public class TileGraphic {
 	public final static int size = 100;
-	private final static int border = 0;
+	public final static int border = 0;
 	
-	private final static int streetWidth = 10;
-	private final static int villageSize = 20;
+	public final static int streetWidth = 10;
+	public final static int villageSize = 20;
 	
 	private Image displayImage;
 	
@@ -30,7 +31,7 @@ public class TileGraphic {
 		return new Point(xCoord, yCoord);
 	}
 	
-	private static Point directionToCoordinate(Direction dir) {
+	public static Point directionToCoordinate(Direction dir) {
 		switch(dir) {
 		case NORTH:
 			return new Point(size/2, border);
@@ -45,7 +46,7 @@ public class TileGraphic {
 		}
 	}
 	
-	private static Tuple<Point, Point> directionToBorder(Direction dir) {
+	public static Tuple<Point, Point> directionToBorder(Direction dir) {
 		Point first;
 		Point second;
 		switch(dir) {
@@ -73,8 +74,7 @@ public class TileGraphic {
 	public TileGraphic(model.Tile tile) {
 		displayImage = new BufferedImage(size, size,  BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D)displayImage.getGraphics();
-		g.setColor(Color.GREEN);
-		g.fillRect(border, border, size -2*border, size -2*border);
+//		g.fillRect(border, border, size -2*border, size -2*border);
 		
 		collisionShapes = new LinkedList<ResourceShape>();
 		Map<Direction, List<Type>> information = TileLogic.getExtendableOptions(tile);
@@ -92,8 +92,8 @@ public class TileGraphic {
 				
 		}
 		
-		Shape grass = new Rectangle(border, border, size -2*border, size -2*border);
-		g.draw(grass);
+		var grass = new Grass();
+		grass.bakeInto(g);
 		
 		if(!grassDirections.isEmpty()) {
 			var info = new ResourceInformation(Type.GRASS);
@@ -116,18 +116,13 @@ public class TileGraphic {
 		g.fillRect((size-villageSize)/2, (size-villageSize)/2, villageSize, villageSize);
 	}
 	
-	private Shape drawStreet(Point from, Point to) {
-		Graphics2D g = (Graphics2D)displayImage.getGraphics();
-		g.setColor(Color.BLUE);
-		g.setStroke(new BasicStroke(streetWidth));
+	private TileShape drawStreet(Point from, Point to) {
+		TileShape river = new River(from, to);
 		
-		Path2D street = new Path2D.Float();
-		street.moveTo(from.x, from.y);
-		int mid = size/2;
-		street.curveTo((mid+from.x)/2, (mid+from.y)/2, (mid+to.x)/2, (mid+to.y)/2, to.x, to.y);
-		g.draw(street);
+		Graphics2D g = (Graphics2D)displayImage.getGraphics();
+		river.bakeInto(g);
 
-		return street;
+		return river;
 	}
 	
 	private void drawAllStreets(List<Direction> directions) {
@@ -143,7 +138,7 @@ public class TileGraphic {
 			
 			Point from = directionToCoordinate(directions.get(0));
 			Point to = directionToCoordinate(directions.get(1));
-			Shape street = drawStreet(from, to); 
+			var street = drawStreet(from, to); 
 			
 			shapes.addShape(street);
 			info.addDirection(directions.get(0));
@@ -155,7 +150,7 @@ public class TileGraphic {
 			for(Direction dir : directions) {
 				
 				Point from = directionToCoordinate(dir);
-				Shape street = drawStreet(from, to);
+				var street = drawStreet(from, to);
 				
 				shapes.addShape(street);
 				info.addDirection(dir);
@@ -167,52 +162,16 @@ public class TileGraphic {
 		collisionShapes.addFirst(shapes);
 	}
 	
-	private Shape drawSingleForest(Graphics2D g, Direction dir) {
-		Tuple<Point, Point> borders;
-		borders = directionToBorder(dir);
-		int x1 = borders.getFirst().x;
-		int y1 = borders.getFirst().y;
-		
-		int x2 = borders.getSecond().x;
-		int y2 = borders.getSecond().y;
-		
-		Path2D forest = new Path2D.Float();
-		forest.moveTo(x1, y1);
-		int middle = size/2;
-		forest.curveTo((x1+middle)/2, (y1+middle)/2, (x2+middle)/2, (y2+middle)/2, x2, y2);
-		forest.closePath();
-		g.fill(forest);
+	private TileShape drawSingleForest(Graphics2D g, Direction dir) {
+		var forest = new Forest(dir);
+		forest.bakeInto(g);
 
 		return forest;
 	}
 	
-	private Shape drawMultiForest(Graphics2D g, Direction clockwiseStart, Direction clockwiseEnd) {
-		Tuple<Point, Point> startBorders;
-		startBorders = directionToBorder(clockwiseStart);
-		Tuple<Point, Point> endBorders;
-		endBorders = directionToBorder(clockwiseEnd);
-
-		int x1 = startBorders.getFirst().x;
-		int y1 = startBorders.getFirst().y;
-		
-		int p11 = startBorders.getSecond().x;
-		int p12 = startBorders.getSecond().y;		
-		
-		int p21 = endBorders.getFirst().x;
-		int p22 = endBorders.getFirst().y;
-		
-		int x2 = endBorders.getSecond().x;
-		int y2 = endBorders.getSecond().y;
-		
-		Path2D forest = new Path2D.Float();
-		forest.moveTo(x1, y1);
-		int middle = size/2;
-		
-		forest.curveTo((p11+middle)/2, (p12+middle)/2, (p21+middle)/2, (p22+middle)/2, x2, y2);
-		forest.lineTo(p21, p22);
-		forest.lineTo(p11, p12);
-		forest.closePath();
-		g.fill(forest);
+	private TileShape drawMultiForest(Graphics2D g, Direction clockwiseStart, Direction clockwiseEnd) {
+		var forest = new Forest(clockwiseStart, clockwiseEnd);
+		forest.bakeInto(g);
 		
 		return forest;
 	}
@@ -224,7 +183,7 @@ public class TileGraphic {
 		
 		if(directions.size() == 1) {
 			
-			Shape forest = drawSingleForest(g, directions.get(0));
+			var forest = drawSingleForest(g, directions.get(0));
 			
 			var info = new ResourceInformation(Type.FOREST);
 			var shapes = new ResourceShape(info);
@@ -236,7 +195,7 @@ public class TileGraphic {
 		}
 		if(directions.size() == 2) {
 			if(directions.get(0).equals(directions.get(1).getOpposite())) {
-				Shape forest = drawSingleForest(g, directions.get(0));
+				var forest = drawSingleForest(g, directions.get(0));
 
 				var info = new ResourceInformation(Type.FOREST);
 				var shapes = new ResourceShape(info);
@@ -261,7 +220,7 @@ public class TileGraphic {
 					firstDir = directions.get(1);
 					secondDir = directions.get(0);
 				}
-				Shape forest = drawMultiForest(g, firstDir, secondDir);
+				var forest = drawMultiForest(g, firstDir, secondDir);
 				
 				var info = new ResourceInformation(Type.FOREST);
 				var shapes = new ResourceShape(info);
@@ -280,7 +239,7 @@ public class TileGraphic {
 			firstDir = firstDir.rotateClockwise();
 			Direction secondDir = firstDir.rotateClockwise();
 			Direction thirdDir = firstDir.getOpposite();
-			Shape forest = drawMultiForest(g, firstDir, thirdDir);
+			var forest = drawMultiForest(g, firstDir, thirdDir);
 			
 
 			var info = new ResourceInformation(Type.FOREST);
@@ -295,8 +254,8 @@ public class TileGraphic {
 			return;
 		}
 		if(directions.size() == 4) {
-			Shape forest = new Rectangle(border, border, size -2*border, size -2*border);
-			g.draw(forest);
+			var forest = new Forest();
+			forest.bakeInto(g);
 
 			var info = new ResourceInformation(Type.FOREST);
 			var shapes = new ResourceShape(info);

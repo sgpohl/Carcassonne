@@ -6,16 +6,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import util.Tuple;
+import view.shapes.TileShape;
 
-public class ResourceShape extends Tuple<Collection<Shape>, ResourceInformation> {
+public class ResourceShape extends Tuple<Collection<TileShape>, ResourceInformation> {
 	
 	private int clickRadius = 1;
 
 	public ResourceShape(ResourceInformation b) {
-		super(new ArrayList<Shape>(), b);
+		super(new ArrayList<TileShape>(), b);
 	}
 	
-	public boolean addShape(Shape s) {
+	public boolean addShape(TileShape s) {
 		return this.getFirst().add(s);
 	}
 	
@@ -24,7 +25,7 @@ public class ResourceShape extends Tuple<Collection<Shape>, ResourceInformation>
 	}
 	
 	public boolean contains(Point p) {
-		for(var shape : getFirst()) {
+		for(TileShape shape : getFirst()) {
 			if(shape.intersects(p.x-clickRadius, p.y-clickRadius, 2*clickRadius, 2*clickRadius))
 				return true;
 		}
