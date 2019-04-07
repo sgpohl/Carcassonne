@@ -140,9 +140,9 @@ public class UI {
 	}
 	
 	/**
-	 * does absolutely not nothing
-	 * @param pos
-	 * @param isActive
+	 * Sets highlighting border at the given position
+	 * @param pos position of the highlighting border
+	 * @param isActive enables/disables highlighting
 	 */
 	public void highlight(Position pos, boolean isActive) {
 		synchronized(highlights) {
@@ -155,6 +155,10 @@ public class UI {
 					canvas.repaint();
 			}
 		}
+	}
+	
+	public void setDrawnCard(Tile tile) {
+		
 	}
 	
 	public static void main(String[] args) {
