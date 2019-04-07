@@ -136,12 +136,14 @@ public class UI {
 	 */
 	public void highlight(Position pos, boolean isActive) {
 		synchronized(highlights) {
-			if(isActive) 
+			if(isActive) {
 				if(highlights.add(pos))
 					canvas.repaint(); //TODO: only relevant area
-			else 
+			}
+			else {
 				if(highlights.remove(pos))
 					canvas.repaint();
+			}
 		}
 	}
 	
@@ -153,7 +155,9 @@ public class UI {
 				Tile randTile = TileFactory.getRandomTile();
 				ui.draw(new Position(x,y), randTile);
 			}
-		
+
 		ui.highlight(new Position(4,4), true);
+		ui.highlight(new Position(4,5), true);
+		ui.highlight(new Position(4,4), false);
 	}
 }
