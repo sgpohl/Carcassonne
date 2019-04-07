@@ -157,6 +157,10 @@ public class UI {
 		}
 	}
 	
+	/***
+	 * Displays a card at the mouse cursor
+	 * @param tile Tile to be drawn at the mouse cursor. Pass null to remove.
+	 */
 	public void setDrawnCard(Tile tile) {
 		
 	}
