@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import logic.Position;
+import util.Tuple;
 
 public class GameBoardCanvas extends DoubleBufferedCanvas {
 	private static final long serialVersionUID = -9035087671066013403L;
@@ -45,7 +46,7 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 		return mouseTile != null;
 	}
 	
-	public Position getPositionAtMouse() {
+	public Tuple<Position, Point> getPositionAtMouse() {
 		Point mousePos = getMousePosition();
 		if(mousePos == null)
 			return null;
@@ -59,7 +60,10 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 		int px = Math.floorDiv(mousePos.x, TileGraphic.size);
 		int py = -Math.floorDiv(mousePos.y, TileGraphic.size);
 		
-		return new Position(px, py);
+		int dx = Math.floorMod(mousePos.x, TileGraphic.size);
+		int dy = Math.floorMod(mousePos.y, TileGraphic.size);
+		
+		return new Tuple<Position, Point>(new Position(px, py), new Point(dx,dy));
 	}
 	
 	public void moveCenter(int dx, int dy) {

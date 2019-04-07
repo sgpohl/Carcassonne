@@ -37,9 +37,18 @@ public class UI {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(e.getButton() == MouseEvent.BUTTON1) {
-					Position pos = canvas.getPositionAtMouse();
-					if(pos != null)
-						controller.UI_clickedOnTile(pos);
+					var pos = canvas.getPositionAtMouse();
+					if(pos != null) {
+						controller.UI_clickedOnTile(pos.getFirst());
+						
+						TileGraphic currentTile = gameBoard.get(pos.getFirst());
+						if(currentTile != null) {
+							var info = currentTile.getResourceAt(pos.getSecond());
+							if(info != null)
+								System.out.println("Resource: "+info.getFirst());
+						}
+							
+					}
 				}
 				if(e.getButton() == MouseEvent.BUTTON3) {
 					controller.UI_rotateCurrentTile();
@@ -132,8 +141,8 @@ public class UI {
 		Controller controller = new Controller();
 		UI ui = new UI(controller);
 		ui.draw(new Position(0, 0), TileFactory.getStartTile());
-		for(int x = -1; x < 2; ++x) 
-			for(int y = 1; y < 4; ++y) {
+		for(int x = -4; x < 4; ++x) 
+			for(int y = 1; y < 6; ++y) {
 				Tile randTile = TileFactory.getRandomTile();
 				ui.draw(new Position(x,y), randTile);
 			}
@@ -142,6 +151,6 @@ public class UI {
 		ui.highlight(new Position(2,3), true);
 		ui.highlight(new Position(2,2), false);
 		
-		ui.setDrawnCard(TileFactory.getRandomTile());
+		//ui.setDrawnCard(TileFactory.getRandomTile());
 	}
 }
