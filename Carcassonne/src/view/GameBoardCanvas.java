@@ -57,6 +57,9 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 		mousePos.translate(-offsetX, -offsetY);
 		mousePos.translate(TileGraphic.size/2, TileGraphic.size/2);
 		
+		mousePos.x /= scale;
+		mousePos.y /= scale;
+		
 		int px = Math.floorDiv(mousePos.x, TileGraphic.size);
 		int py = -Math.floorDiv(mousePos.y, TileGraphic.size);
 		

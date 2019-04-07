@@ -136,6 +136,7 @@ public class TileGraphic {
 		
 		var info = new ResourceInformation(Type.RIVER);
 		var shapes = new ResourceShape(info);
+		shapes.setIntersectionRadius(streetWidth/2);
 		
 		//two directions -> bezier ...
 		if(directions.size() == 2) {
@@ -312,9 +313,8 @@ public class TileGraphic {
 	
 	public ResourceInformation getResourceAt(Point pos) {
 		for(var resource : collisionShapes) {
-			for(var shape : resource.getFirst()) {
-				if(shape.contains(pos.x, pos.y))
-					return resource.getSecond();
+			if(resource.contains(pos)) {
+				return resource.getSecond();
 			}
 		}
 		return null;
