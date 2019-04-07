@@ -74,7 +74,8 @@ public class TileGraphic {
 		
 		Path2D street = new Path2D.Float();
 		street.moveTo(from.x, from.y);
-		street.curveTo(size/2, size/2, size/2, size/2, to.x, to.y);
+		int mid = size/2;
+		street.curveTo((mid+from.x)/2, (mid+from.y)/2, (mid+to.x)/2, (mid+to.y)/2, to.x, to.y);
 		g.draw(street);
 	}
 	
