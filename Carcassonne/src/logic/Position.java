@@ -1,5 +1,7 @@
 package logic;
 
+import java.util.Collection;
+
 public class Position {
 
     private int x;
@@ -11,16 +13,37 @@ public class Position {
         this.y = y;
     }
 
+    public Position calcClosest(Collection<Position> posCol) {
+        double minDist = Double.POSITIVE_INFINITY;
+        Position minPos = null;
+
+        for (Position curPos : posCol) {
+            double curDist = this.distTo(curPos);
+            if (curDist < minDist) {
+                minDist = curDist;
+                minPos = curPos;
+            }
+        }
+        return minPos;
+
+    }
+
+    public double distTo(Position other) {
+        double dx = other.x - x;
+        double dy = other.y - y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
     public Position inDirection(Direction dir) {
-        switch(dir){
+        switch (dir) {
             case NORTH:
-                return new Position(x, y+1);
+                return new Position(x, y + 1);
             case SOUTH:
-                return new Position(x, y-1);
+                return new Position(x, y - 1);
             case EAST:
-                return new Position(x+1, y);
+                return new Position(x + 1, y);
             case WEST:
-                return new Position(x-1, y);
+                return new Position(x - 1, y);
         }
         return null;
     }

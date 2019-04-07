@@ -7,28 +7,47 @@ import model.GameField;
 import model.GameFieldImpl;
 import model.Tile;
 import view.UI;
+
 import java.util.*;
 
 public class TestLogikWithGui {
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         UI ui = new UI();
 
         GameField field = new GameFieldImpl();
 
         drawAll(ui, field);
 
-
-        for(int i = 0; i < 1; i++){
+        for (int i = 0; i < 50; i++) {
             Tile newtile = TileFactory.getRandomTile();
 
-            Collection<Position> pos = TileLogic.getValidExtensionPositions(field, newtile);
-            System.out.println("new tile: " + newtile + ", valid pos: " + pos);
+            Collection<Position> posCol = TileLogic.getValidExtensionPositions(field, newtile);
 
-            Position setOnPos = new ArrayList<>(pos).get(0);
-            field.set(setOnPos, newtile);
-            ui.draw(setOnPos, newtile);
-           // Thread.sleep(100);
+            for (Position curPos : posCol) {
+                ui.highlight(curPos, true);
+            }
+
+            Thread.sleep(500);
+
+
+            for (Position curPos : posCol) {
+                ui.highlight(curPos, false);
+            }
+
+
+            if (!posCol.isEmpty()) {
+                Position setOnPos = new Position(0, 0).calcClosest(posCol);
+                ui.highlight(setOnPos, true);
+                Thread.sleep(500);
+                field.set(setOnPos, newtile);
+                ui.draw(setOnPos, newtile);
+                ui.highlight(setOnPos, false);
+            }
+            Thread.sleep(500);
+
+
+            Thread.sleep(500);
         }
 
 

@@ -14,24 +14,19 @@ import util.*;
 import logic.*;
 
 public class TileGraphic {
-	private final static int size = 100;
-	private final static int border = 1;
-	
-	private final static int highlightWidth = 10;
+	public final static int size = 100;
+	private final static int border = 0;
 	
 	private final static int streetWidth = 10;
 	private final static int villageSize = 20;
 	
 	private Image displayImage;
 	
-	private boolean highlighted;
-	
-	public boolean setHighlight(boolean on) {
-		boolean change = (on!=highlighted);
-		highlighted = on;
-		return change;
+	public static Point PosToCoord(Position pos, double scale) {
+		int xCoord = (int)(pos.getX()*size*scale	-size/2);
+		int yCoord = (int)(-pos.getY()*size*scale	-size/2);
+		return new Point(xCoord, yCoord);
 	}
-	
 	
 	private static Point directionToCoordinate(Direction dir) {
 		switch(dir) {
@@ -85,7 +80,8 @@ public class TileGraphic {
 		
 		Path2D street = new Path2D.Float();
 		street.moveTo(from.x, from.y);
-		street.curveTo(size/2, size/2, size/2, size/2, to.x, to.y);
+		int mid = size/2;
+		street.curveTo((mid+from.x)/2, (mid+from.y)/2, (mid+to.x)/2, (mid+to.y)/2, to.x, to.y);
 		g.draw(street);
 	}
 	
@@ -255,22 +251,15 @@ public class TileGraphic {
 		*/
 	}
 
-	public void paint(Graphics2D g, Position pos, int offsetX, int offsetY) {
-		int xCoord = pos.getX()*size -size/2;
-		int yCoord = -pos.getY()*size -size/2;
+	public void paint(Graphics2D g, Position pos, int offsetX, int offsetY, double scale) {
+		Point coord = TileGraphic.PosToCoord(pos, scale);
 		
-		int x = xCoord+offsetX;
-		int y = yCoord+offsetY;
+		int x = coord.x+offsetX;
+		int y = coord.y+offsetY;
 		
 		AffineTransform transform = new AffineTransform();
 		transform.translate(x, y);
+		transform.scale(scale, scale);
 		g.drawImage(displayImage, transform, null);
-		
-		if(highlighted) {
-			g.setColor(Color.RED);
-			g.setStroke(new BasicStroke(highlightWidth));
-			int halfsize =  highlightWidth/2;
-			g.drawRect(x+halfsize, y+halfsize, size-highlightWidth, size-highlightWidth);
-		}
 	}
 }

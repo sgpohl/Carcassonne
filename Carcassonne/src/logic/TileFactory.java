@@ -76,8 +76,8 @@ public class TileFactory {
         Tile tile = getEmptyTile();
 
         for (var dir : Direction.values()) {
-            tile.setDirection(dir, ran.nextBoolean() ? Type.FOREST : Type.GRASS);
-            if (ran.nextBoolean())
+            tile.setDirection(dir, ran.nextDouble() < 0.2 ? Type.FOREST : Type.GRASS);
+            if (ran.nextDouble() < 0.1)
                 tile.setDirection(dir, Type.RIVER);
         }
         return tile;
