@@ -109,14 +109,10 @@ public class UI {
 		UI ui = new UI();
 		ui.draw(new Position(0, 0), TileFactory.getStartTile());
 		for(int x = -1; x < 2; ++x) 
-			for(int y = 1; y < 2; ++y) {
+			for(int y = 1; y < 4; ++y) {
 				Tile randTile = TileFactory.getRandomTile();
 				System.out.println(""+x+" "+y+" -> "+randTile.toString());
 				ui.draw(new Position(x,y), randTile);
 			}
-/*		ui.draw(new Position(0,1), null);
-		ui.draw(new Position(0,-1), null);
-		ui.draw(new Position(1,0), null);
-		ui.draw(new Position(-1,0), null);*/
 	}
 }
