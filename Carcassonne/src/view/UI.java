@@ -3,6 +3,9 @@ import logic.*;
 import model.Tile;
 
 import javax.swing.*;
+
+import controller.Controller;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Map;
@@ -15,8 +18,11 @@ public class UI {
 	private GameBoardCanvas canvas;
 	private Map<Position, TileGraphic> gameBoard;
 	private Set<Position> highlights;
+	private Controller controller;
 	
-	public UI() {
+	public UI(Controller controller) {
+		this.controller = controller;
+		
 		gameBoard = new HashMap<Position, TileGraphic>();
 		highlights = new HashSet<Position>();
 		
@@ -27,6 +33,28 @@ public class UI {
 		GridLayout layout = new GridLayout(1,1); 
 		frame.setLayout(layout);
 		canvas = new GameBoardCanvas(gameBoard, highlights);
+		canvas.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getButton() == MouseEvent.BUTTON1) {
+					Position pos = canvas.getPositionAtMouse();
+					if(pos != null)
+						controller.UI_clickedOnTile(pos);
+				}
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+		});
 		canvas.addMouseMotionListener(new MouseMotionAdapter() {
 			private int lastX;
 			private int lastY;
@@ -98,7 +126,8 @@ public class UI {
 	}
 	
 	public static void main(String[] args) {
-		UI ui = new UI();
+		Controller controller = new Controller();
+		UI ui = new UI(controller);
 		ui.draw(new Position(0, 0), TileFactory.getStartTile());
 		for(int x = -1; x < 2; ++x) 
 			for(int y = 1; y < 4; ++y) {

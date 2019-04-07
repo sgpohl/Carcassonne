@@ -19,7 +19,7 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 	private TileGraphic mouseTile;
 	private Object mouseTileLock;
 	
-	private int centerX, centerY;
+	private Point center;
 	private double scale;
 	
 	private final static int highlightWidth = 10;
@@ -30,6 +30,7 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 		this.highlightReference = highlights;
 		
 		this.scale = 1;
+		this.center = new Point(0,0);
 		
 		mouseTileLock = new Object();
 	}
@@ -44,10 +45,25 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 		return mouseTile != null;
 	}
 	
-	public void moveCenter(int dx, int dy) {
-		centerX += dx;
-		centerY += dy;
+	public Position getPositionAtMouse() {
+		Point mousePos = getMousePosition();
+		if(mousePos == null)
+			return null;
+
+		Dimension dim = this.getSize();
+		int offsetX = dim.width/2	-(int)(center.x*scale);
+		int offsetY = dim.height/2	-(int)(center.y*scale);
+		mousePos.translate(-offsetX, -offsetY);
+		mousePos.translate(TileGraphic.size/2, TileGraphic.size/2);
 		
+		int px = Math.floorDiv(mousePos.x, TileGraphic.size);
+		int py = -Math.floorDiv(mousePos.y, TileGraphic.size);
+		
+		return new Position(px, py);
+	}
+	
+	public void moveCenter(int dx, int dy) {
+		center.translate(dx, dy);
 		this.repaint();
 	}
 	public void changeScale(double dz) {
@@ -62,8 +78,8 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 		Graphics2D g2 = (Graphics2D) g;
 		
 		Dimension dim = this.getSize();
-		int offsetX = dim.width/2	-(int)(centerX*scale);
-		int offsetY = dim.height/2	-(int)(centerY*scale);
+		int offsetX = dim.width/2	-(int)(center.x*scale);
+		int offsetY = dim.height/2	-(int)(center.y*scale);
 		Point offset = new Point(offsetX, offsetY);
 		
 		synchronized(gameBoardReference) {
