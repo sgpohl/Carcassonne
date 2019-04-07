@@ -77,7 +77,7 @@ public class TileFactory {
 
         for (var dir : Direction.values()) {
             tile.setDirection(dir, ran.nextBoolean() ? Type.FOREST : Type.GRASS);
-            if (ran.nextBoolean())
+            if (ran.nextBoolean() && ran.nextBoolean())
                 tile.setDirection(dir, Type.RIVER);
         }
         return tile;
