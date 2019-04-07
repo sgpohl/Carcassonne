@@ -5,15 +5,27 @@ import java.awt.Point;
 import java.awt.geom.Path2D;
 
 import logic.Direction;
+import logic.Type;
 import util.Tuple;
 import view.TileGraphic;
+import view.collision.ResourceInformation;
 
 public class Forest extends Path2D.Float implements TileShape {
+	private static final long serialVersionUID = 2806951371081096281L;
 	
+	private ResourceInformation info;
 	/***
 	 * generates an all-border forest
 	 */
 	public Forest() {
+		super();
+		
+		info = new ResourceInformation(Type.FOREST);
+		info.addDirection(Direction.NORTH);
+		info.addDirection(Direction.EAST);
+		info.addDirection(Direction.SOUTH);
+		info.addDirection(Direction.WEST);
+		
 		var border1 = TileGraphic.directionToBorder(Direction.NORTH);
 		var border2 = TileGraphic.directionToBorder(Direction.SOUTH);
 		
@@ -30,6 +42,9 @@ public class Forest extends Path2D.Float implements TileShape {
 	 */
 	public Forest(Direction dir) {
 		super();
+		
+		info = new ResourceInformation(Type.FOREST);
+		info.addDirection(dir);
 		
 		Tuple<Point, Point> borders;
 		borders = TileGraphic.directionToBorder(dir);
@@ -52,6 +67,13 @@ public class Forest extends Path2D.Float implements TileShape {
 	 */
 	public Forest(Direction clockwiseStart, Direction clockwiseEnd) {
 		super();
+		
+
+		info = new ResourceInformation(Type.FOREST);
+		for(var d = clockwiseStart; d != clockwiseEnd; d = d.rotateClockwise())
+			info.addDirection(d);
+		info.addDirection(clockwiseEnd);
+		
 		
 		Tuple<Point, Point> startBorders;
 		startBorders = TileGraphic.directionToBorder(clockwiseStart);
@@ -88,6 +110,11 @@ public class Forest extends Path2D.Float implements TileShape {
 	@Override
 	public boolean contains(Point p) {
 		return super.contains(p);
+	}
+
+	@Override
+	public ResourceInformation getInformation() {
+		return info;
 	}
 
 }

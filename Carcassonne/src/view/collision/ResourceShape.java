@@ -1,7 +1,6 @@
 package view.collision;
 
 import java.awt.Point;
-import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Collection;
 

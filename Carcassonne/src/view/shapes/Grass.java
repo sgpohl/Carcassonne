@@ -4,13 +4,24 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Path2D;
+import java.util.Collection;
 
 import logic.Direction;
+import logic.Type;
 import view.TileGraphic;
+import view.collision.ResourceInformation;
 
 public class Grass extends Path2D.Float implements TileShape {
+	private static final long serialVersionUID = -9019873546477228036L;
 	
-	public Grass() {
+	private ResourceInformation info;
+	
+	public Grass(Collection<Direction> directions) {
+
+		info = new ResourceInformation(Type.GRASS);
+		for(var d : directions)
+			info.addDirection(d);
+		
 		var border1 = TileGraphic.directionToBorder(Direction.NORTH);
 		var border2 = TileGraphic.directionToBorder(Direction.SOUTH);
 		
@@ -30,5 +41,10 @@ public class Grass extends Path2D.Float implements TileShape {
 	@Override
 	public boolean contains(Point p) {
 		return super.contains(p);
+	}
+
+	@Override
+	public ResourceInformation getInformation() {
+		return info;
 	}
 }

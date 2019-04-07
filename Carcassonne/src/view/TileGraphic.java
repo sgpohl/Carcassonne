@@ -1,7 +1,6 @@
 package view;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -23,7 +22,7 @@ public class TileGraphic {
 	
 	private Image displayImage;
 	
-	private Deque<ResourceShape> collisionShapes;
+	private Deque<TileShape> collisionShapes;
 	
 	public static Point PosToCoord(Position pos, double scale) {
 		int xCoord = (int)(pos.getX()*size*scale	-size/2);
@@ -75,7 +74,7 @@ public class TileGraphic {
 		displayImage = new BufferedImage(size, size,  BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D)displayImage.getGraphics();
 		
-		collisionShapes = new LinkedList<ResourceShape>();
+		collisionShapes = new LinkedList<TileShape>();
 		Map<Direction, List<Type>> information = TileLogic.getExtendableOptions(tile);
 		
 		List<Direction> streetDirections = new ArrayList<Direction>();
@@ -91,16 +90,11 @@ public class TileGraphic {
 				
 		}
 		
-		var grass = new Grass();
+		var grass = new Grass(grassDirections);
 		grass.bakeInto(g);
 		
 		if(!grassDirections.isEmpty()) {
-			var info = new ResourceInformation(Type.GRASS);
-			var shapes = new ResourceShape(info);
-			shapes.addShape(grass);
-			for(var dir : grassDirections) 
-				info.addDirection(dir);
-			collisionShapes.addFirst(shapes);
+			collisionShapes.addFirst(grass);
 		}
 		
 		
@@ -128,9 +122,6 @@ public class TileGraphic {
 		if(directions.isEmpty())
 			return;
 		
-		var info = new ResourceInformation(Type.RIVER);
-		var shapes = new ResourceShape(info);
-		
 		var river = new River();
 		
 		//two directions -> bezier ...
@@ -139,12 +130,10 @@ public class TileGraphic {
 			Point from = directionToCoordinate(directions.get(0));
 			Point to = directionToCoordinate(directions.get(1));
 			var street = drawStreet(from, to);
+			street.addDirectionInfo(directions.get(0));
+			street.addDirectionInfo(directions.get(1));
 			
 			river.add(street);
-			
-			shapes.addShape(river);
-			info.addDirection(directions.get(0));
-			info.addDirection(directions.get(1));
 		}
 		//otherwise straight lines connecting in the middle
 		else {
@@ -153,17 +142,15 @@ public class TileGraphic {
 				
 				Point from = directionToCoordinate(dir);
 				var street = drawStreet(from, to);
+				street.addDirectionInfo(dir);
 				
 				river.add(street);
-				
-				info.addDirection(dir);
 			}
-			shapes.addShape(river);
 			
 			insertVillage();
 		}
 
-		collisionShapes.addFirst(shapes);
+		collisionShapes.addFirst(river);
 	}
 	
 	private TileShape drawSingleForest(Graphics2D g, Direction dir) {
@@ -182,39 +169,22 @@ public class TileGraphic {
 	
 	private void drawForests(List<Direction> directions) {
 		Graphics2D g = (Graphics2D)displayImage.getGraphics();
-		g.setColor(new Color(120,80,20));
 
 		
 		if(directions.size() == 1) {
 			
 			var forest = drawSingleForest(g, directions.get(0));
-			
-			var info = new ResourceInformation(Type.FOREST);
-			var shapes = new ResourceShape(info);
-			shapes.addShape(forest);
-			info.addDirection(directions.get(0));
-			collisionShapes.addFirst(shapes);
+			collisionShapes.addFirst(forest);
 			
 			return;
 		}
 		if(directions.size() == 2) {
 			if(directions.get(0).equals(directions.get(1).getOpposite())) {
 				var forest = drawSingleForest(g, directions.get(0));
-
-				var info = new ResourceInformation(Type.FOREST);
-				var shapes = new ResourceShape(info);
-				shapes.addShape(forest);
-				info.addDirection(directions.get(0));
-				collisionShapes.addFirst(shapes);
-				
+				collisionShapes.addFirst(forest);
 				
 				forest = drawSingleForest(g, directions.get(1));
-
-				info = new ResourceInformation(Type.FOREST);
-				shapes = new ResourceShape(info);
-				shapes.addShape(forest);
-				info.addDirection(directions.get(1));
-				collisionShapes.addFirst(shapes);
+				collisionShapes.addFirst(forest);
 				return;
 			}
 			else {
@@ -226,12 +196,7 @@ public class TileGraphic {
 				}
 				var forest = drawMultiForest(g, firstDir, secondDir);
 				
-				var info = new ResourceInformation(Type.FOREST);
-				var shapes = new ResourceShape(info);
-				shapes.addShape(forest);
-				info.addDirection(firstDir);
-				info.addDirection(secondDir);
-				collisionShapes.addFirst(shapes);
+				collisionShapes.addFirst(forest);
 				
 				return;
 			}
@@ -241,18 +206,11 @@ public class TileGraphic {
 			while(directions.contains(firstDir))
 				firstDir = firstDir.rotateClockwise();
 			firstDir = firstDir.rotateClockwise();
-			Direction secondDir = firstDir.rotateClockwise();
 			Direction thirdDir = firstDir.getOpposite();
+			
 			var forest = drawMultiForest(g, firstDir, thirdDir);
 			
-
-			var info = new ResourceInformation(Type.FOREST);
-			var shapes = new ResourceShape(info);
-			shapes.addShape(forest);
-			info.addDirection(firstDir);
-			info.addDirection(secondDir);
-			info.addDirection(thirdDir);
-			collisionShapes.addFirst(shapes);
+			collisionShapes.addFirst(forest);
 			
 			
 			return;
@@ -260,15 +218,7 @@ public class TileGraphic {
 		if(directions.size() == 4) {
 			var forest = new Forest();
 			forest.bakeInto(g);
-
-			var info = new ResourceInformation(Type.FOREST);
-			var shapes = new ResourceShape(info);
-			shapes.addShape(forest);
-			info.addDirection(Direction.NORTH);
-			info.addDirection(Direction.EAST);
-			info.addDirection(Direction.SOUTH);
-			info.addDirection(Direction.WEST);
-			collisionShapes.addFirst(shapes);
+			collisionShapes.addFirst(forest);
 			
 			return;
 		}
@@ -277,7 +227,7 @@ public class TileGraphic {
 	public ResourceInformation getResourceAt(Point pos) {
 		for(var resource : collisionShapes) {
 			if(resource.contains(pos)) {
-				return resource.getSecond();
+				return resource.getInformation();
 			}
 		}
 		return null;
