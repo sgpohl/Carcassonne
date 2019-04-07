@@ -19,6 +19,7 @@ public class UI {
 		private Set<Position> highlightReference;
 		
 		private int centerX, centerY;
+		private double scale;
 		
 		private final static int highlightWidth = 10;
 		
@@ -26,12 +27,18 @@ public class UI {
 		public GameBoardCanvas(Map<Position, TileGraphic> gameBoard, Set<Position> highlights) {
 			this.gameBoardReference = gameBoard;
 			this.highlightReference = highlights;
+			
+			this.scale = 1;
 		}
 		
-		public void moveCenter(int x, int y) {
-			centerX += x;
-			centerY += y;
+		public void moveCenter(int dx, int dy) {
+			centerX += dx;
+			centerY += dy;
 			
+			this.repaint();
+		}
+		public void changeScale(double dz) {
+			this.scale = Math.max(0.1, Math.min(2., this.scale*(1.+dz)));
 			this.repaint();
 		}
 		
@@ -44,29 +51,26 @@ public class UI {
 			Dimension dim = this.getSize();
 			//g.clearRect(0, 0, dim.width, dim.height);
 			
-			int offsetX = dim.width/2	-centerX;
-			int offsetY = dim.height/2	-centerY;
+			int offsetX = dim.width/2	-(int)(centerX*scale);
+			int offsetY = dim.height/2	-(int)(centerY*scale);
 			
 			synchronized(gameBoardReference) {
 				for(Position pos : gameBoardReference.keySet()) {
 					TileGraphic tile = gameBoardReference.get(pos);
-					tile.paint(g2, pos, offsetX, offsetY);
+					tile.paint(g2, pos, offsetX, offsetY, scale);
 				}
 			}
 			
 			synchronized(highlightReference) {
 				for(Position pos :  highlightReference) {
-					int size = TileGraphic.size;
-					int xCoord = pos.getX()*size -size/2;
-					int yCoord = -pos.getY()*size -size/2;
-					
-					int x = xCoord+offsetX;
-					int y = yCoord+offsetY;
-					
+					Point coord = TileGraphic.PosToCoord(pos, scale);
+					int x = coord.x+offsetX;
+					int y = coord.y+offsetY;
+					int size = (int)(TileGraphic.size*scale);
 					
 					g2.setColor(Color.RED);
 					g2.setStroke(new BasicStroke(highlightWidth));
-					int halfsize =  highlightWidth/2;
+					int halfsize = highlightWidth/2;
 					g2.drawRect(x+halfsize, y+halfsize, size-highlightWidth, size-highlightWidth);
 				}
 			}
@@ -87,7 +91,13 @@ public class UI {
 		frame.setSize(1000, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		MouseMotionListener mouseMotion = new MouseMotionAdapter() {
+		//MouseMotionListener mouseMotion = 
+		
+		
+		GridLayout layout = new GridLayout(1,1); 
+		frame.setLayout(layout);
+		canvas = new GameBoardCanvas(gameBoard, highlights);
+		canvas.addMouseMotionListener(new MouseMotionAdapter() {
 			private int lastX;
 			private int lastY;
 			@Override
@@ -104,13 +114,14 @@ public class UI {
 				lastX = e.getX();
 				lastY = e.getY();
 	        }
-		};
-		
-		
-		GridLayout layout = new GridLayout(1,1); 
-		frame.setLayout(layout);
-		canvas = new GameBoardCanvas(gameBoard, highlights);
-		canvas.addMouseMotionListener(mouseMotion);
+		});
+		canvas.addMouseWheelListener(new MouseWheelListener() {
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				double zoomSpeed = 0.15;
+				canvas.changeScale(zoomSpeed*e.getPreciseWheelRotation());
+			}
+		});
 		
 		frame.add(canvas);
 		frame.setVisible(true);

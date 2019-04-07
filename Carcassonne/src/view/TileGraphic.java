@@ -22,6 +22,12 @@ public class TileGraphic {
 	
 	private Image displayImage;
 	
+	public static Point PosToCoord(Position pos, double scale) {
+		int xCoord = (int)(pos.getX()*size*scale	-size/2);
+		int yCoord = (int)(-pos.getY()*size*scale	-size/2);
+		return new Point(xCoord, yCoord);
+	}
+	
 	private static Point directionToCoordinate(Direction dir) {
 		switch(dir) {
 		case NORTH:
@@ -245,15 +251,15 @@ public class TileGraphic {
 		*/
 	}
 
-	public void paint(Graphics2D g, Position pos, int offsetX, int offsetY) {
-		int xCoord = pos.getX()*size -size/2;
-		int yCoord = -pos.getY()*size -size/2;
+	public void paint(Graphics2D g, Position pos, int offsetX, int offsetY, double scale) {
+		Point coord = TileGraphic.PosToCoord(pos, scale);
 		
-		int x = xCoord+offsetX;
-		int y = yCoord+offsetY;
+		int x = coord.x+offsetX;
+		int y = coord.y+offsetY;
 		
 		AffineTransform transform = new AffineTransform();
 		transform.translate(x, y);
+		transform.scale(scale, scale);
 		g.drawImage(displayImage, transform, null);
 	}
 }
