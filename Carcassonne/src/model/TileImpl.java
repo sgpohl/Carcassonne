@@ -8,7 +8,7 @@ import java.util.*;
 
 public class TileImpl implements Tile {
 
-    HashMap<Direction, Set<Type>> DirectionType;
+    private HashMap<Direction, Set<Type>> DirectionType;
 
     public TileImpl() {
         this.DirectionType = new HashMap<>();
