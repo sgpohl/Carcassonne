@@ -28,18 +28,24 @@ public class TestLogikWithGui {
                 ui.highlight(curPos, true);
             }
 
-            Thread.sleep(1000);
-
-            if (!posCol.isEmpty()) {
-                Position setOnPos = new Position(0, 0).calcClosest(posCol);
-                field.set(setOnPos, newtile);
-                ui.draw(setOnPos, newtile);
-            }
             Thread.sleep(500);
+
 
             for (Position curPos : posCol) {
                 ui.highlight(curPos, false);
             }
+
+
+            if (!posCol.isEmpty()) {
+                Position setOnPos = new Position(0, 0).calcClosest(posCol);
+                ui.highlight(setOnPos, true);
+                Thread.sleep(500);
+                field.set(setOnPos, newtile);
+                ui.draw(setOnPos, newtile);
+                ui.highlight(setOnPos, false);
+            }
+            Thread.sleep(500);
+
 
             Thread.sleep(500);
         }
