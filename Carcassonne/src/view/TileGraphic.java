@@ -182,6 +182,7 @@ public class TileGraphic {
 	
 	private void bakeImage() {
 		Graphics2D g = (Graphics2D)backgroundImage.getGraphics();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setBackground(new Color(0,0,0,0));
 		g.clearRect(0, 0, backgroundImage.getWidth(null), backgroundImage.getHeight(null));
 			
@@ -191,6 +192,7 @@ public class TileGraphic {
 		
 
 		g = (Graphics2D)foregroundImage.getGraphics();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setBackground(new Color(0,0,0,0));
 		g.clearRect(0, 0, foregroundImage.getWidth(null), foregroundImage.getHeight(null));
 			
