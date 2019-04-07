@@ -1,25 +1,37 @@
 package view.shapes;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.geom.Path2D;
+import java.util.Collection;
+import java.util.HashSet;
 
-import view.TileGraphic;
-
-public class River extends Path2D.Float implements TileShape {
-	public River(Point from, Point to) {
-		super();
-		this.moveTo(from.x, from.y);
-		int mid = TileGraphic.size/2;
-		this.curveTo((mid+from.x)/2, (mid+from.y)/2, (mid+to.x)/2, (mid+to.y)/2, to.x, to.y);
+public class River implements TileShape {
+	private Collection<RiverSegment> segments;
+	
+	public River() {
+		segments = new HashSet<RiverSegment>();
+	}
+	
+	public River(Collection<RiverSegment> segments) {
+		this.segments = segments;
+	}
+	
+	public void add(RiverSegment s) {
+		segments.add(s);
+	}
+	
+	@Override
+	public boolean contains(Point p) {
+		for(var s : segments)
+			if(s.contains(p))
+				return true;
+		return false;
 	}
 
 	@Override
 	public void bakeInto(Graphics2D g) {
-		g.setColor(Color.BLUE);
-		g.setStroke(new BasicStroke(TileGraphic.streetWidth));
-		g.draw(this);
+		for(var s : segments)
+			s.bakeInto(g);
 	}
+
 }

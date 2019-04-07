@@ -2,6 +2,7 @@ package view.shapes;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.geom.Path2D;
 
 import logic.Direction;
@@ -26,4 +27,8 @@ public class Grass extends Path2D.Float implements TileShape {
 		g.fill(this);
 	}
 
+	@Override
+	public boolean contains(Point p) {
+		return super.contains(p);
+	}
 }

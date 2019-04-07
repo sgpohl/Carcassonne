@@ -85,4 +85,9 @@ public class Forest extends Path2D.Float implements TileShape {
 		g.fill(this);
 	}
 
+	@Override
+	public boolean contains(Point p) {
+		return super.contains(p);
+	}
+
 }

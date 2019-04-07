@@ -74,7 +74,6 @@ public class TileGraphic {
 	public TileGraphic(model.Tile tile) {
 		displayImage = new BufferedImage(size, size,  BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D)displayImage.getGraphics();
-//		g.fillRect(border, border, size -2*border, size -2*border);
 		
 		collisionShapes = new LinkedList<ResourceShape>();
 		Map<Direction, List<Type>> information = TileLogic.getExtendableOptions(tile);
@@ -116,8 +115,8 @@ public class TileGraphic {
 		g.fillRect((size-villageSize)/2, (size-villageSize)/2, villageSize, villageSize);
 	}
 	
-	private TileShape drawStreet(Point from, Point to) {
-		TileShape river = new River(from, to);
+	private RiverSegment drawStreet(Point from, Point to) {
+		var river = new RiverSegment(from, to);
 		
 		Graphics2D g = (Graphics2D)displayImage.getGraphics();
 		river.bakeInto(g);
@@ -131,16 +130,19 @@ public class TileGraphic {
 		
 		var info = new ResourceInformation(Type.RIVER);
 		var shapes = new ResourceShape(info);
-		shapes.setIntersectionRadius(streetWidth/2);
+		
+		var river = new River();
 		
 		//two directions -> bezier ...
 		if(directions.size() == 2) {
 			
 			Point from = directionToCoordinate(directions.get(0));
 			Point to = directionToCoordinate(directions.get(1));
-			var street = drawStreet(from, to); 
+			var street = drawStreet(from, to);
 			
-			shapes.addShape(street);
+			river.add(street);
+			
+			shapes.addShape(river);
 			info.addDirection(directions.get(0));
 			info.addDirection(directions.get(1));
 		}
@@ -152,9 +154,11 @@ public class TileGraphic {
 				Point from = directionToCoordinate(dir);
 				var street = drawStreet(from, to);
 				
-				shapes.addShape(street);
+				river.add(street);
+				
 				info.addDirection(dir);
 			}
+			shapes.addShape(river);
 			
 			insertVillage();
 		}
