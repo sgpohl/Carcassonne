@@ -32,7 +32,8 @@ public class TileLogic {
                 continue;
 
             for (var type : Type.values())
-                if (newTile.isExtendable(dir, type) && !tileInDir.isExtendable(dir.getOpposite(), type))
+                if (newTile.isExtendable(dir, type) && !tileInDir.isExtendable(dir.getOpposite(), type)
+                    ||tileInDir.isExtendable(dir.getOpposite(), type) && !newTile.isExtendable(dir, type))
                     return false;
         }
         return true;

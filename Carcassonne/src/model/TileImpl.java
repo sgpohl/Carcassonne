@@ -27,5 +27,10 @@ public class TileImpl implements Tile {
         return alignableTypes.contains(type);
     }
 
+    @Override
+    public String toString() {
+        return "Tile: " + DirectionType;
+    }
+
 
 }
