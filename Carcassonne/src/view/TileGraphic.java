@@ -3,7 +3,10 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -64,25 +67,23 @@ public class TileGraphic {
 	
 
 	public TileGraphic(model.Tile tile) {
-		Map<Direction, List<Type>> information = TileLogic.getExtendableOptions(tile);
+		var information = TileLogic.getExtendableOptions(tile);
+		var reformattedInformation = new HashMap<Type, List<Direction>>();
 		
-		List<Direction> streetDirections = new ArrayList<Direction>();
-		List<Direction> forestDirections = new ArrayList<Direction>();
-		List<Direction> grassDirections = new ArrayList<Direction>();
+		for(Type t : Type.values())
+			reformattedInformation.put(t, new ArrayList<Direction>());
 		for(Direction d : information.keySet()) {
-			if(information.get(d).contains(Type.RIVER))
-				streetDirections.add(d);
-			if(information.get(d).contains(Type.FOREST))
-				forestDirections.add(d);
-			if(information.get(d).contains(Type.GRASS))
-				grassDirections.add(d);
+			var types = information.get(d);
+			if(types != null)
+				for(Type t : types)
+					reformattedInformation.get(t).add(d);
 		}
 		
 		collisionShapes = new LinkedList<TileShape>();
 		
-		drawGrass(grassDirections);
-		drawForests(forestDirections);
-		drawRivers(streetDirections);
+		drawGrass(reformattedInformation.get(Type.GRASS));
+		drawForests(reformattedInformation.get(Type.FOREST));
+		drawRivers(reformattedInformation.get(Type.RIVER));
 
 		displayImage = new BufferedImage(size, size,  BufferedImage.TYPE_INT_ARGB);
 		bakeImage();
