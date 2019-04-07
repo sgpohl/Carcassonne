@@ -11,73 +11,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class UI {
-	
-	private class GameBoardCanvas extends DoubleBufferedCanvas {
-		private static final long serialVersionUID = -9035087671066013403L;
-
-		private Map<Position, TileGraphic> gameBoardReference;
-		private Set<Position> highlightReference;
-		
-		private int centerX, centerY;
-		private double scale;
-		
-		private final static int highlightWidth = 10;
-		
-		
-		public GameBoardCanvas(Map<Position, TileGraphic> gameBoard, Set<Position> highlights) {
-			this.gameBoardReference = gameBoard;
-			this.highlightReference = highlights;
-			
-			this.scale = 1;
-		}
-		
-		public void moveCenter(int dx, int dy) {
-			centerX += dx;
-			centerY += dy;
-			
-			this.repaint();
-		}
-		public void changeScale(double dz) {
-			this.scale = Math.max(0.1, Math.min(2., this.scale*(1.+dz)));
-			this.repaint();
-		}
-		
-		@Override
-		public void paint(Graphics g) {
-			super.paint(g);
-			
-			Graphics2D g2 = (Graphics2D) g;
-			
-			Dimension dim = this.getSize();
-			//g.clearRect(0, 0, dim.width, dim.height);
-			
-			int offsetX = dim.width/2	-(int)(centerX*scale);
-			int offsetY = dim.height/2	-(int)(centerY*scale);
-			
-			synchronized(gameBoardReference) {
-				for(Position pos : gameBoardReference.keySet()) {
-					TileGraphic tile = gameBoardReference.get(pos);
-					tile.paint(g2, pos, offsetX, offsetY, scale);
-				}
-			}
-			
-			synchronized(highlightReference) {
-				for(Position pos :  highlightReference) {
-					Point coord = TileGraphic.PosToCoord(pos, scale);
-					int x = coord.x+offsetX;
-					int y = coord.y+offsetY;
-					int size = (int)(TileGraphic.size*scale);
-					
-					g2.setColor(Color.RED);
-					g2.setStroke(new BasicStroke(highlightWidth));
-					int halfsize = highlightWidth/2;
-					g2.drawRect(x+halfsize, y+halfsize, size-highlightWidth, size-highlightWidth);
-				}
-			}
-		}
-	}
-	
-	
 	private JFrame frame;
 	private GameBoardCanvas canvas;
 	private Map<Position, TileGraphic> gameBoard;
@@ -90,9 +23,6 @@ public class UI {
 		frame = new JFrame();
 		frame.setSize(1000, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		//MouseMotionListener mouseMotion = 
-		
 		
 		GridLayout layout = new GridLayout(1,1); 
 		frame.setLayout(layout);
@@ -111,6 +41,8 @@ public class UI {
 	        }
 			@Override
 			public void mouseMoved(MouseEvent e) {
+				if(canvas.hasMouseTile())
+					canvas.repaint();
 				lastX = e.getX();
 				lastY = e.getY();
 	        }
@@ -162,7 +94,7 @@ public class UI {
 	 * @param tile Tile to be drawn at the mouse cursor. Pass null to remove.
 	 */
 	public void setDrawnCard(Tile tile) {
-		
+		canvas.setMouseTile(new TileGraphic(tile));
 	}
 	
 	public static void main(String[] args) {
@@ -174,8 +106,10 @@ public class UI {
 				ui.draw(new Position(x,y), randTile);
 			}
 
-		ui.highlight(new Position(4,4), true);
-		ui.highlight(new Position(4,5), true);
-		ui.highlight(new Position(4,4), false);
+		ui.highlight(new Position(2,2), true);
+		ui.highlight(new Position(2,3), true);
+		ui.highlight(new Position(2,2), false);
+		
+		ui.setDrawnCard(TileFactory.getRandomTile());
 	}
 }

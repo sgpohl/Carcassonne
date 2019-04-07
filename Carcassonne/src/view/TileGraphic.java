@@ -240,26 +240,18 @@ public class TileGraphic {
 		}
 		drawForests(forestDirections);
 		drawAllStreets(streetDirections);
-		
-		/*
-		List<Direction> testDirection = new ArrayList<Direction>();
-		testDirection.add(Direction.NORTH);
-		testDirection.add(Direction.WEST);
-		testDirection.add(Direction.EAST);
-		testDirection.add(Direction.SOUTH);
-		drawForests(testDirection);
-		*/
 	}
 
-	public void paint(Graphics2D g, Position pos, int offsetX, int offsetY, double scale) {
-		Point coord = TileGraphic.PosToCoord(pos, scale);
-		
-		int x = coord.x+offsetX;
-		int y = coord.y+offsetY;
-		
+	public void paint(Graphics2D g, Point coord, double scale) {
 		AffineTransform transform = new AffineTransform();
-		transform.translate(x, y);
+		transform.translate(coord.x, coord.y);
 		transform.scale(scale, scale);
 		g.drawImage(displayImage, transform, null);
+	}
+	
+	public void paint(Graphics2D g, Position pos, Point offset, double scale) {
+		Point coord = TileGraphic.PosToCoord(pos, scale); 
+		coord.translate(offset.x, offset.y);
+		paint(g, coord, scale);
 	}
 }
