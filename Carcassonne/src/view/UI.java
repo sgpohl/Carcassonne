@@ -38,10 +38,13 @@ public class UI {
 			int offsetX = dim.width/2	-centerX;
 			int offsetY = dim.height/2	-centerY;
 			
-			for(Position pos : gameBoardReference.keySet()) {
-				TileGraphic tile = gameBoardReference.get(pos);
-				tile.paint(g2, pos, offsetX, offsetY);
+			synchronized(gameBoard) {
+				for(Position pos : gameBoardReference.keySet()) {
+					TileGraphic tile = gameBoardReference.get(pos);
+					tile.paint(g2, pos, offsetX, offsetY);
+				}
 			}
+			
 		}
 	}
 	
@@ -91,7 +94,9 @@ public class UI {
 	 * @param tile model information of the tile
 	 */
 	public void draw(Position pos, model.Tile tile) {
-		gameBoard.put(pos, new TileGraphic(tile));
+		synchronized(gameBoard) {
+			gameBoard.put(pos, new TileGraphic(tile));
+		}
 		canvas.repaint();
 	}
 	
