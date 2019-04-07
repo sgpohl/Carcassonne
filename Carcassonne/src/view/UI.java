@@ -5,9 +5,10 @@ import model.Tile;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-
 import java.util.Map;
+import java.util.Set;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class UI {
 	
@@ -15,11 +16,16 @@ public class UI {
 		private static final long serialVersionUID = -9035087671066013403L;
 
 		private Map<Position, TileGraphic> gameBoardReference;
+		private Set<Position> highlightReference;
+		
 		private int centerX, centerY;
 		
+		private final static int highlightWidth = 10;
 		
-		public GameBoardCanvas(Map<Position, TileGraphic> gameBoard) {
+		
+		public GameBoardCanvas(Map<Position, TileGraphic> gameBoard, Set<Position> highlights) {
 			this.gameBoardReference = gameBoard;
+			this.highlightReference = highlights;
 		}
 		
 		public void moveCenter(int x, int y) {
@@ -38,11 +44,32 @@ public class UI {
 			int offsetX = dim.width/2	-centerX;
 			int offsetY = dim.height/2	-centerY;
 			
-			synchronized(gameBoard) {
+			synchronized(gameBoardReference) {
 				for(Position pos : gameBoardReference.keySet()) {
 					TileGraphic tile = gameBoardReference.get(pos);
 					tile.paint(g2, pos, offsetX, offsetY);
 				}
+			}
+			
+			synchronized(highlightReference) {
+				
+				for(Position pos :  highlightReference) {
+					
+					int size = TileGraphic.size;
+					int xCoord = pos.getX()*size -size/2;
+					int yCoord = -pos.getY()*size -size/2;
+					
+					int x = xCoord+offsetX;
+					int y = yCoord+offsetY;
+					
+					
+					g2.setColor(Color.RED);
+					g2.setStroke(new BasicStroke(highlightWidth));
+					int halfsize =  highlightWidth/2;
+					g2.drawRect(x+halfsize, y+halfsize, size-highlightWidth, size-highlightWidth);
+				}
+				
+				
 			}
 			
 		}
@@ -52,9 +79,11 @@ public class UI {
 	private JFrame frame;
 	private GameBoardCanvas canvas;
 	private Map<Position, TileGraphic> gameBoard;
+	private Set<Position> highlights;
 	
 	public UI() {
 		gameBoard = new HashMap<Position, TileGraphic>();
+		highlights = new HashSet<Position>();
 		
 		frame = new JFrame();
 		frame.setSize(1000, 700);
@@ -81,7 +110,7 @@ public class UI {
 		
 		
 		frame.setLayout(new GridLayout(1,1));
-		canvas = new GameBoardCanvas(gameBoard);
+		canvas = new GameBoardCanvas(gameBoard, highlights);
 		canvas.addMouseMotionListener(mouseMotion);
 		frame.add(canvas);
 		
@@ -106,11 +135,14 @@ public class UI {
 	 * @param isActive
 	 */
 	public void highlight(Position pos, boolean isActive) {
-		TileGraphic tile = gameBoard.get(pos);
-		if(tile == null)
-			return;
-		if(tile.setHighlight(isActive))
-			canvas.repaint();	//TODO: only repaint the relevant area
+		synchronized(highlights) {
+			if(isActive) 
+				if(highlights.add(pos))
+					canvas.repaint(); //TODO: only relevant area
+			else 
+				if(highlights.remove(pos))
+					canvas.repaint();
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -122,6 +154,6 @@ public class UI {
 				ui.draw(new Position(x,y), randTile);
 			}
 		
-		ui.highlight(new Position(0,2), true);
+		ui.highlight(new Position(4,4), true);
 	}
 }

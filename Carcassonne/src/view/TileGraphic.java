@@ -14,24 +14,13 @@ import util.*;
 import logic.*;
 
 public class TileGraphic {
-	private final static int size = 100;
+	public final static int size = 100;
 	private final static int border = 1;
-	
-	private final static int highlightWidth = 10;
 	
 	private final static int streetWidth = 10;
 	private final static int villageSize = 20;
 	
 	private Image displayImage;
-	
-	private boolean highlighted;
-	
-	public boolean setHighlight(boolean on) {
-		boolean change = (on!=highlighted);
-		highlighted = on;
-		return change;
-	}
-	
 	
 	private static Point directionToCoordinate(Direction dir) {
 		switch(dir) {
@@ -265,12 +254,5 @@ public class TileGraphic {
 		AffineTransform transform = new AffineTransform();
 		transform.translate(x, y);
 		g.drawImage(displayImage, transform, null);
-		
-		if(highlighted) {
-			g.setColor(Color.RED);
-			g.setStroke(new BasicStroke(highlightWidth));
-			int halfsize =  highlightWidth/2;
-			g.drawRect(x+halfsize, y+halfsize, size-highlightWidth, size-highlightWidth);
-		}
 	}
 }
