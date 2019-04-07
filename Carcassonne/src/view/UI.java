@@ -50,8 +50,6 @@ public class UI {
 	private GameBoardCanvas canvas;
 	private Map<Position, TileGraphic> gameBoard;
 	
-	private Position center;
-	
 	public UI() {
 		gameBoard = new HashMap<Position, TileGraphic>();
 		
@@ -94,15 +92,18 @@ public class UI {
 	 */
 	public void draw(Position pos, model.Tile tile) {
 		gameBoard.put(pos, new TileGraphic(tile));
+		canvas.repaint();
 	}
 	
 	/**
-	 * does absolutely nothing
+	 * does absolutely not nothing
 	 * @param pos
-	 * @param isEmpty
+	 * @param isActive
 	 */
-	public void highlight(Position pos, boolean isEmpty) {
-		
+	public void highlight(Position pos, boolean isActive) {
+		TileGraphic tile = gameBoard.get(pos);
+		if(tile.setHighlight(isActive))
+			canvas.repaint();	//TODO: only repaint the relevant area
 	}
 	
 	public static void main(String[] args) {
@@ -111,8 +112,9 @@ public class UI {
 		for(int x = -1; x < 2; ++x) 
 			for(int y = 1; y < 4; ++y) {
 				Tile randTile = TileFactory.getRandomTile();
-				System.out.println(""+x+" "+y+" -> "+randTile.toString());
 				ui.draw(new Position(x,y), randTile);
 			}
+		
+		ui.highlight(new Position(0,2), true);
 	}
 }
