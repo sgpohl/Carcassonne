@@ -12,7 +12,7 @@ import java.util.HashSet;
 
 public class UI {
 	
-	private class GameBoardCanvas extends Canvas {
+	private class GameBoardCanvas extends DoubleBufferedCanvas {
 		private static final long serialVersionUID = -9035087671066013403L;
 
 		private Map<Position, TileGraphic> gameBoardReference;
@@ -37,9 +37,12 @@ public class UI {
 		
 		@Override
 		public void paint(Graphics g) {
+			super.paint(g);
+			
 			Graphics2D g2 = (Graphics2D) g;
 			
 			Dimension dim = this.getSize();
+			//g.clearRect(0, 0, dim.width, dim.height);
 			
 			int offsetX = dim.width/2	-centerX;
 			int offsetY = dim.height/2	-centerY;
@@ -52,9 +55,7 @@ public class UI {
 			}
 			
 			synchronized(highlightReference) {
-				
 				for(Position pos :  highlightReference) {
-					
 					int size = TileGraphic.size;
 					int xCoord = pos.getX()*size -size/2;
 					int yCoord = -pos.getY()*size -size/2;
@@ -68,10 +69,7 @@ public class UI {
 					int halfsize =  highlightWidth/2;
 					g2.drawRect(x+halfsize, y+halfsize, size-highlightWidth, size-highlightWidth);
 				}
-				
-				
 			}
-			
 		}
 	}
 	
@@ -88,7 +86,6 @@ public class UI {
 		frame = new JFrame();
 		frame.setSize(1000, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 		
 		MouseMotionListener mouseMotion = new MouseMotionAdapter() {
 			private int lastX;
@@ -110,11 +107,12 @@ public class UI {
 		};
 		
 		
-		frame.setLayout(new GridLayout(1,1));
+		GridLayout layout = new GridLayout(1,1); 
+		frame.setLayout(layout);
 		canvas = new GameBoardCanvas(gameBoard, highlights);
 		canvas.addMouseMotionListener(mouseMotion);
-		frame.add(canvas);
 		
+		frame.add(canvas);
 		frame.setVisible(true);
 	}
 	
