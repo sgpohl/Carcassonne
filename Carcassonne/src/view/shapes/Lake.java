@@ -14,6 +14,7 @@ public class Lake extends Ellipse2D.Float implements TileShape {
 	private final static int size = 20;
 
 	public Lake() {
+		//super((TileGraphic.size-size)/2+TileGraphic.border, (TileGraphic.size-size)/2+TileGraphic.border, size, size);
 		super((TileGraphic.size-size)/2, (TileGraphic.size-size)/2, size, size);
 	}
 	
@@ -31,6 +32,10 @@ public class Lake extends Ellipse2D.Float implements TileShape {
 	@Override
 	public ResourceInformation getInformation() {
 		return null;
+	}
+
+	@Override
+	public void bakeIntoForeground(Graphics2D g) {
 	}
 
 }

@@ -52,4 +52,8 @@ public class River implements TileShape {
 		return info;
 	}
 
+	@Override
+	public void bakeIntoForeground(Graphics2D g) {
+	}
+
 }

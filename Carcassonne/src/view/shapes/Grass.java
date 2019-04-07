@@ -47,4 +47,8 @@ public class Grass extends Path2D.Float implements TileShape {
 	public ResourceInformation getInformation() {
 		return info;
 	}
+
+	@Override
+	public void bakeIntoForeground(Graphics2D g) {
+	}
 }

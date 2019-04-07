@@ -23,7 +23,7 @@ public class RiverSegment extends Path2D.Float implements TileShape {
 		info = new ResourceInformation(Type.RIVER);
 		
 		this.moveTo(from.x, from.y);
-		int mid = TileGraphic.size/2;
+		int mid = TileGraphic.size/2;//+TileGraphic.border;
 		this.curveTo((mid+from.x)/2, (mid+from.y)/2, (mid+to.x)/2, (mid+to.y)/2, to.x, to.y);
 	}
 	
@@ -47,5 +47,9 @@ public class RiverSegment extends Path2D.Float implements TileShape {
 	@Override
 	public ResourceInformation getInformation() {
 		return info;
+	}
+
+	@Override
+	public void bakeIntoForeground(Graphics2D g) {
 	}
 }

@@ -92,7 +92,11 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 		synchronized(gameBoardReference) {
 			for(Position pos : gameBoardReference.keySet()) {
 				TileGraphic tile = gameBoardReference.get(pos);
-				tile.paint(g2, pos, offset, scale);
+				tile.paintBackground(g2, pos, offset, scale);
+			}
+			for(Position pos : gameBoardReference.keySet()) {
+				TileGraphic tile = gameBoardReference.get(pos);
+				tile.paintForeground(g2, pos, offset, scale);
 			}
 		}
 		
@@ -121,7 +125,7 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 					g2.setColor(Color.DARK_GRAY);
 					g2.fillRect(coord.x-_border, coord.y-_border, size+2*_border, size+2*_border);
 					
-					mouseTile.paint(g2, coord, scale);
+					mouseTile.paintBackground(g2, coord, scale);
 				}
 			}
 		}

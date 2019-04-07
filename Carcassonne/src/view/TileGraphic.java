@@ -17,49 +17,60 @@ import logic.*;
 
 public class TileGraphic {
 	public final static int size = 100;
-	public final static int border = 0;
+	public final static int foregroundBorder = 50;
+	public final static int foregroundSize = size+2*foregroundBorder;
 	
-	private Image displayImage;
+	private Image backgroundImage;
+	private Image foregroundImage;
+	
 	private Deque<TileShape> collisionShapes;
 	
 	public static Point PosToCoord(Position pos, double scale) {
 		int xCoord = (int)(pos.getX()*size*scale	-size/2);
 		int yCoord = (int)(-pos.getY()*size*scale	-size/2);
-		return new Point(xCoord, yCoord);
+		var p = new Point(xCoord, yCoord);
+		return p;
 	}	
 	public static Point directionToCoordinate(Direction dir) {
+		Point result = new Point(0,0);//(border, border);
 		switch(dir) {
 		case NORTH:
-			return new Point(size/2, border);
+			result.translate(size/2, 0);
+			break;
 		case EAST:
-			return new Point(size-border, size/2);
+			result.translate(size, size/2);
+			break;
 		case SOUTH:
-			return new Point(size/2, size-border);
+			result.translate(size/2, size);
+			break;
 		case WEST:
-			return new Point(border, size/2);
+			result.translate(0, size/2);
+			break;
 		default:
-			return new Point(size/2, size/2);
+			result.translate(size/2, size/2);
+			break;
 		}
+		return result;
 	}
 	public static Tuple<Point, Point> directionToBorder(Direction dir) {
-		Point first;
-		Point second;
+		Point first = new Point(0,0);//(border, border);
+		Point second = new Point(0,0);//(border, border);
 		switch(dir) {
 		case NORTH:
-			first = new Point(0,0);
-			second = new Point(size,0);
+			first.translate(0,0);
+			second.translate(size,0);
 			return new Tuple<Point, Point>(first, second);
 		case EAST:
-			first = new Point(size,0);
-			second = new Point(size,size);
+			first.translate(size,0);
+			second.translate(size,size);
 			return new Tuple<Point, Point>(first, second);
 		case SOUTH:
-			first = new Point(size,size);
-			second = new Point(0,size);
+			first.translate(size,size);
+			second.translate(0,size);
 			return new Tuple<Point, Point>(first, second);
 		case WEST:
-			first = new Point(0,size);
-			second = new Point(0,0);
+			first.translate(0,size);
+			second.translate(0,0);
 			return new Tuple<Point, Point>(first, second);
 		}
 		return null;
@@ -85,7 +96,9 @@ public class TileGraphic {
 		drawForests(reformattedInformation.get(Type.FOREST));
 		drawRivers(reformattedInformation.get(Type.RIVER));
 
-		displayImage = new BufferedImage(size, size,  BufferedImage.TYPE_INT_ARGB);
+		backgroundImage = new BufferedImage(size, size,  BufferedImage.TYPE_INT_ARGB);
+		foregroundImage = new BufferedImage(foregroundSize, foregroundSize,  BufferedImage.TYPE_INT_ARGB);
+		
 		bakeImage();
 	}
 
@@ -116,6 +129,7 @@ public class TileGraphic {
 		}
 		//otherwise straight lines connecting in the middle
 		else {
+			//Point to = new Point(size/2+border, size/2+border);
 			Point to = new Point(size/2, size/2);
 			for(Direction dir : directions) {
 				Point from = directionToCoordinate(dir);
@@ -170,16 +184,27 @@ public class TileGraphic {
 	}
 	
 	private void bakeImage() {
-		Graphics2D g = (Graphics2D)displayImage.getGraphics();
-		g.clearRect(0, 0, displayImage.getWidth(null), displayImage.getHeight(null));
+		Graphics2D g = (Graphics2D)backgroundImage.getGraphics();
+		g.setBackground(new Color(0,0,0,0));
+		g.clearRect(0, 0, backgroundImage.getWidth(null), backgroundImage.getHeight(null));
 			
 		var it = collisionShapes.descendingIterator();
 		while(it.hasNext())
 			it.next().bakeInto(g);
+		
+
+		g = (Graphics2D)foregroundImage.getGraphics();
+		g.setBackground(new Color(0,0,0,0));
+		g.clearRect(0, 0, foregroundImage.getWidth(null), foregroundImage.getHeight(null));
+			
+		it = collisionShapes.descendingIterator();
+		while(it.hasNext())
+			it.next().bakeIntoForeground(g);
 	}
 	
 	
 	public ResourceInformation getResourceAt(Point pos) {
+		//pos.translate(border, border);
 		for(var resource : collisionShapes) {
 			if(resource.contains(pos)) {
 				return resource.getInformation();
@@ -189,15 +214,33 @@ public class TileGraphic {
 	}
 	
 	
-	public void paint(Graphics2D g, Point coord, double scale) {
+	public void paintBackground(Graphics2D g, Point coord, double scale) {
+		AffineTransform transform = new AffineTransform();
+		transform.translate(coord.x, coord.y);
+		//transform.translate(-border, -border);
+		transform.scale(scale, scale);
+		g.drawImage(backgroundImage, transform, null);
+		
+		transform.translate(-foregroundBorder, -foregroundBorder);
+	}
+	public void paintBackground(Graphics2D g, Position pos, Point offset, double scale) {
+		Point coord = TileGraphic.PosToCoord(pos, scale); 
+		coord.translate(offset.x, offset.y);
+		paintBackground(g, coord, scale);
+	}
+	
+
+	public void paintForeground(Graphics2D g, Point coord, double scale) {
 		AffineTransform transform = new AffineTransform();
 		transform.translate(coord.x, coord.y);
 		transform.scale(scale, scale);
-		g.drawImage(displayImage, transform, null);
+		transform.translate(-foregroundBorder, -foregroundBorder);
+		g.drawImage(foregroundImage, transform, null);
+		
 	}
-	public void paint(Graphics2D g, Position pos, Point offset, double scale) {
+	public void paintForeground(Graphics2D g, Position pos, Point offset, double scale) {
 		Point coord = TileGraphic.PosToCoord(pos, scale); 
 		coord.translate(offset.x, offset.y);
-		paint(g, coord, scale);
+		paintForeground(g, coord, scale);
 	}
 }
