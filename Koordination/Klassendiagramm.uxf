@@ -4,8 +4,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>910</x>
-      <y>280</y>
+      <x>840</x>
+      <y>200</y>
       <w>430</w>
       <h>180</h>
     </coordinates>
@@ -23,8 +23,8 @@ Tile
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>370</x>
-      <y>280</y>
+      <x>300</x>
+      <y>200</y>
       <w>480</w>
       <h>180</h>
     </coordinates>
@@ -36,6 +36,7 @@ Tile
 + clear()
 
 + setDrawnCard(t: Tile)
++ getResourceSelection() : ResourceInformation
 
 </panel_attributes>
     <additional_attributes/>
@@ -43,8 +44,8 @@ Tile
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>910</x>
-      <y>510</y>
+      <x>840</x>
+      <y>430</y>
       <w>430</w>
       <h>140</h>
     </coordinates>
@@ -65,8 +66,8 @@ GameField
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1140</x>
-      <y>80</y>
+      <x>1070</x>
+      <y>0</y>
       <w>200</w>
       <h>150</h>
     </coordinates>
@@ -84,8 +85,8 @@ WEST
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>910</x>
-      <y>80</y>
+      <x>840</x>
+      <y>0</y>
       <w>200</w>
       <h>150</h>
     </coordinates>
@@ -106,8 +107,8 @@ getX(): int
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1110</x>
-      <y>450</y>
+      <x>1040</x>
+      <y>370</y>
       <w>50</w>
       <h>80</h>
     </coordinates>
@@ -118,8 +119,8 @@ m1=1..*</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>370</x>
-      <y>80</y>
+      <x>300</x>
+      <y>0</y>
       <w>480</w>
       <h>150</h>
     </coordinates>
@@ -136,8 +137,8 @@ __+ getExtendableOptions(t: Tile): Map[Direction, List[Type]]__</panel_attribute
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1360</x>
-      <y>80</y>
+      <x>1290</x>
+      <y>0</y>
       <w>200</w>
       <h>150</h>
     </coordinates>
@@ -154,8 +155,8 @@ GRASS
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>370</x>
-      <y>510</y>
+      <x>300</x>
+      <y>430</y>
       <w>480</w>
       <h>140</h>
     </coordinates>
@@ -172,8 +173,8 @@ GRASS
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>70</x>
-      <y>80</y>
+      <x>0</x>
+      <y>0</y>
       <w>250</w>
       <h>150</h>
     </coordinates>
@@ -184,5 +185,42 @@ GRASS
 + UI_clickedOnTile(p: Position)
 + UI_rotateCurrentTile()</panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>200</x>
+      <y>140</y>
+      <w>120</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+1</panel_attributes>
+    <additional_attributes>100.0;120.0;10.0;120.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>300</x>
+      <y>650</y>
+      <w>480</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>ResourceInformation : Tuple&lt;Type, Collection&lt;Direction&gt;
+--
+
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>530</x>
+      <y>560</y>
+      <w>30</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
   </element>
 </diagram>

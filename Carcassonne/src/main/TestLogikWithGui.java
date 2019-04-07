@@ -10,10 +10,13 @@ import view.UI;
 
 import java.util.*;
 
+import controller.Controller;
+
 public class TestLogikWithGui {
 
     public static void main(String[] args) throws Exception {
-        UI ui = new UI();
+    	Controller c = new Controller();
+        UI ui = c.getUI();
 
         GameField field = new GameFieldImpl();
 

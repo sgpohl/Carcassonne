@@ -1,6 +1,7 @@
 package view;
 import logic.*;
 import model.Tile;
+import view.collision.ResourceInformation;
 
 import javax.swing.*;
 
@@ -40,14 +41,6 @@ public class UI {
 					var pos = canvas.getPositionAtMouse();
 					if(pos != null) {
 						controller.UI_clickedOnTile(pos.getFirst());
-						
-						TileGraphic currentTile = gameBoard.get(pos.getFirst());
-						if(currentTile != null) {
-							var info = currentTile.getResourceAt(pos.getSecond());
-							if(info != null)
-								System.out.println("Resource: "+info.getFirst());
-						}
-							
 					}
 				}
 				if(e.getButton() == MouseEvent.BUTTON3) {
@@ -137,9 +130,24 @@ public class UI {
 		canvas.setMouseTile(new TileGraphic(tile));
 	}
 	
+	/***
+	 * Returns resource under the cursor
+	 * @return ResourceInformation corresponding to the resource under the cursor. Null, if none found.
+	 */
+	public ResourceInformation getResourceSelection() {
+		var pos = canvas.getPositionAtMouse();
+		if(pos != null) {
+			TileGraphic currentTile = gameBoard.get(pos.getFirst());
+			if(currentTile != null) {
+				return currentTile.getResourceAt(pos.getSecond());
+			}
+		}
+		return null;
+	}
+	
 	public static void main(String[] args) {
 		Controller controller = new Controller();
-		UI ui = new UI(controller);
+		UI ui = controller.getUI();
 		ui.draw(new Position(0, 0), TileFactory.getStartTile());
 		for(int x = -4; x < 4; ++x) 
 			for(int y = 1; y < 6; ++y) {
