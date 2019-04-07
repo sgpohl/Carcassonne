@@ -11,6 +11,8 @@ public class TreeSprite extends Sprite {
 	private Path2D crown;
 	
 	public TreeSprite(Point pos) {
+		super(pos);
+		
 		stump = new Rectangle(pos.x-2,pos.y-8, 4,8);
 		crown = new Path2D.Float();
 		crown.moveTo(pos.x, pos.y-30);

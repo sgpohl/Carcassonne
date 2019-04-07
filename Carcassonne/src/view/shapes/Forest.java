@@ -4,12 +4,15 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Path2D;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 import logic.Direction;
 import logic.Type;
 import util.Tuple;
 import view.ResourceInformation;
 import view.TileGraphic;
+import view.sprites.Sprite;
 import view.sprites.TreeSprite;
 
 public class Forest extends BackgroundSpline {
@@ -19,7 +22,7 @@ public class Forest extends BackgroundSpline {
 	public Forest() {
 		super(new Color(120,80,20));
 		super.generateAllDirection();
-		placeTrees(10);
+		placeTrees(20);
 	}
 	public Forest(Direction dir) {
 		super(new Color(120,80,20));
@@ -30,10 +33,15 @@ public class Forest extends BackgroundSpline {
 	public Forest(Direction clockwiseStart, Direction clockwiseEnd) {
 		super(new Color(120,80,20));
 		super.generateMultiDirection(clockwiseStart, clockwiseEnd);
-		placeTrees(6);
+		
+		if(clockwiseStart.rotateClockwise() == clockwiseEnd)
+			placeTrees(6);
+		else
+			placeTrees(12);
 	}
 	
 	private void placeTrees(int number) {
+		number *= 100;
 		while(number > 0) {
 
 			var pos = new Point(0,0);
@@ -47,6 +55,6 @@ public class Forest extends BackgroundSpline {
 				number--;
 			}
 		}
-		
+		Collections.sort(sprites, Comparator.comparing(sprite -> sprite.getPosition().y));
 	}
 }

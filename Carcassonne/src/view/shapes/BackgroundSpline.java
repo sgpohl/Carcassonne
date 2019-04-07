@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import logic.Direction;
 import logic.Type;
@@ -19,7 +19,7 @@ public abstract class BackgroundSpline extends Path2D.Float implements TileShape
 	
 	protected ResourceInformation info;
 	private Color backgroundColor;
-	protected Collection<Sprite> sprites;
+	protected List<Sprite> sprites;
 	
 	public BackgroundSpline(Color c) {
 		info = new ResourceInformation(Type.FOREST);
