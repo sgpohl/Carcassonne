@@ -41,6 +41,9 @@ public class UI {
 					if(pos != null)
 						controller.UI_clickedOnTile(pos);
 				}
+				if(e.getButton() == MouseEvent.BUTTON3) {
+					controller.UI_rotateCurrentTile();
+				}
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
