@@ -92,6 +92,9 @@ public class TileGraphic {
 	private void drawAllStreets(List<Direction> directions) {
 		Graphics2D g = (Graphics2D)displayImage.getGraphics();
 		
+		if(directions.isEmpty())
+			return;
+		
 		//two directions -> bezier ...
 		if(directions.size() == 2) {
 			Point from = directionToCoordinate(directions.get(0));
