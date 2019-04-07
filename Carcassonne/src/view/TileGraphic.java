@@ -257,7 +257,7 @@ public class TileGraphic {
 
 	public void paint(Graphics2D g, Position pos, int offsetX, int offsetY) {
 		int xCoord = pos.getX()*size -size/2;
-		int yCoord = pos.getY()*size -size/2;
+		int yCoord = -pos.getY()*size -size/2;
 		
 		int x = xCoord+offsetX;
 		int y = yCoord+offsetY;
