@@ -87,6 +87,7 @@ public class UI {
 		
 		frame = new JFrame();
 		frame.setSize(1000, 700);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		
 		MouseMotionListener mouseMotion = new MouseMotionAdapter() {
