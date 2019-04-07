@@ -17,19 +17,14 @@ public class TileGraphic {
 	public final static int size = 100;
 	public final static int border = 0;
 	
-	public final static int streetWidth = 10;
-	public final static int villageSize = 20;
-	
 	private Image displayImage;
-	
 	private Deque<TileShape> collisionShapes;
 	
 	public static Point PosToCoord(Position pos, double scale) {
 		int xCoord = (int)(pos.getX()*size*scale	-size/2);
 		int yCoord = (int)(-pos.getY()*size*scale	-size/2);
 		return new Point(xCoord, yCoord);
-	}
-	
+	}	
 	public static Point directionToCoordinate(Direction dir) {
 		switch(dir) {
 		case NORTH:
@@ -44,7 +39,6 @@ public class TileGraphic {
 			return new Point(size/2, size/2);
 		}
 	}
-	
 	public static Tuple<Point, Point> directionToBorder(Direction dir) {
 		Point first;
 		Point second;
@@ -71,9 +65,6 @@ public class TileGraphic {
 	
 
 	public TileGraphic(model.Tile tile) {
-		displayImage = new BufferedImage(size, size,  BufferedImage.TYPE_INT_ARGB);
-		
-		collisionShapes = new LinkedList<TileShape>();
 		Map<Direction, List<Type>> information = TileLogic.getExtendableOptions(tile);
 		
 		List<Direction> streetDirections = new ArrayList<Direction>();
@@ -88,89 +79,66 @@ public class TileGraphic {
 				grassDirections.add(d);
 		}
 		
-		var grass = new Grass(grassDirections);
-		collisionShapes.addFirst(grass);
+		collisionShapes = new LinkedList<TileShape>();
 		
-		
+		drawGrass(grassDirections);
 		drawForests(forestDirections);
-		drawAllStreets(streetDirections);
-		Graphics2D g = (Graphics2D)displayImage.getGraphics();
-		
-		var it = collisionShapes.descendingIterator();
-		while(it.hasNext())
-			it.next().bakeInto(g);
+		drawRivers(streetDirections);
+
+		displayImage = new BufferedImage(size, size,  BufferedImage.TYPE_INT_ARGB);
+		bakeImage();
 	}
 
 	
-	private void insertVillage() { //TODO
-		Graphics2D g = (Graphics2D)displayImage.getGraphics();
-		g.setColor(Color.CYAN);
-		g.fillRect((size-villageSize)/2, (size-villageSize)/2, villageSize, villageSize);
+	private void drawGrass(List<Direction> directions) {
+		var grass = new Grass(directions);
+		collisionShapes.addFirst(grass);
 	}
-	
-	private RiverSegment drawStreet(Point from, Point to) {
-		return new RiverSegment(from, to);
+	private void drawLake() { 
+		collisionShapes.addFirst(new Lake());
 	}
-	
-	private void drawAllStreets(List<Direction> directions) {
+	private void drawRivers(List<Direction> directions) {
 		if(directions.isEmpty())
 			return;
 		
 		var river = new River();
+		collisionShapes.addFirst(river);
 		
 		//two directions -> bezier ...
 		if(directions.size() == 2) {
-			
 			Point from = directionToCoordinate(directions.get(0));
 			Point to = directionToCoordinate(directions.get(1));
-			var street = drawStreet(from, to);
-			street.addDirectionInfo(directions.get(0));
-			street.addDirectionInfo(directions.get(1));
 			
-			river.add(street);
+			var riverSegment = new RiverSegment(from, to);
+			riverSegment.addDirectionInfo(directions.get(0));
+			riverSegment.addDirectionInfo(directions.get(1));
+			river.add(riverSegment);
 		}
 		//otherwise straight lines connecting in the middle
 		else {
 			Point to = new Point(size/2, size/2);
 			for(Direction dir : directions) {
-				
 				Point from = directionToCoordinate(dir);
-				var street = drawStreet(from, to);
-				street.addDirectionInfo(dir);
 				
-				river.add(street);
+				var riverSegment = new RiverSegment(from, to);
+				riverSegment.addDirectionInfo(dir);
+				river.add(riverSegment);
 			}
 			
-			insertVillage();
+			drawLake();
 		}
 
-		collisionShapes.addFirst(river);
 	}
-	
-	private TileShape drawSingleForest(Direction dir) {
-		return new Forest(dir);
-	}
-	
-	private TileShape drawMultiForest(Direction clockwiseStart, Direction clockwiseEnd) {
-		return new Forest(clockwiseStart, clockwiseEnd);
-	}
-	
 	private void drawForests(List<Direction> directions) {
 		
 		if(directions.size() == 1) {
-			
-			var forest = drawSingleForest(directions.get(0));
-			collisionShapes.addFirst(forest);
-			
+			collisionShapes.addFirst(new Forest(directions.get(0)));
 			return;
 		}
 		if(directions.size() == 2) {
 			if(directions.get(0).equals(directions.get(1).getOpposite())) {
-				var forest = drawSingleForest(directions.get(0));
-				collisionShapes.addFirst(forest);
-				
-				forest = drawSingleForest(directions.get(1));
-				collisionShapes.addFirst(forest);
+				collisionShapes.addFirst(new Forest(directions.get(0)));
+				collisionShapes.addFirst(new Forest(directions.get(1)));
 				return;
 			}
 			else {
@@ -180,10 +148,8 @@ public class TileGraphic {
 					firstDir = directions.get(1);
 					secondDir = directions.get(0);
 				}
-				var forest = drawMultiForest(firstDir, secondDir);
 				
-				collisionShapes.addFirst(forest);
-				
+				collisionShapes.addFirst(new Forest(firstDir, secondDir));
 				return;
 			}
 		}
@@ -194,20 +160,24 @@ public class TileGraphic {
 			firstDir = firstDir.rotateClockwise();
 			Direction thirdDir = firstDir.getOpposite();
 			
-			var forest = drawMultiForest(firstDir, thirdDir);
-			
-			collisionShapes.addFirst(forest);
-			
-			
+			collisionShapes.addFirst(new Forest(firstDir, thirdDir));
 			return;
 		}
 		if(directions.size() == 4) {
-			var forest = new Forest();
-			collisionShapes.addFirst(forest);
-			
+			collisionShapes.addFirst(new Forest());
 			return;
 		}
 	}
+	
+	private void bakeImage() {
+		Graphics2D g = (Graphics2D)displayImage.getGraphics();
+		g.clearRect(0, 0, displayImage.getWidth(null), displayImage.getHeight(null));
+			
+		var it = collisionShapes.descendingIterator();
+		while(it.hasNext())
+			it.next().bakeInto(g);
+	}
+	
 	
 	public ResourceInformation getResourceAt(Point pos) {
 		for(var resource : collisionShapes) {
@@ -218,13 +188,13 @@ public class TileGraphic {
 		return null;
 	}
 	
+	
 	public void paint(Graphics2D g, Point coord, double scale) {
 		AffineTransform transform = new AffineTransform();
 		transform.translate(coord.x, coord.y);
 		transform.scale(scale, scale);
 		g.drawImage(displayImage, transform, null);
 	}
-	
 	public void paint(Graphics2D g, Position pos, Point offset, double scale) {
 		Point coord = TileGraphic.PosToCoord(pos, scale); 
 		coord.translate(offset.x, offset.y);

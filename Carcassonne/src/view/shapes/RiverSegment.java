@@ -13,6 +13,8 @@ import view.collision.ResourceInformation;
 
 public class RiverSegment extends Path2D.Float implements TileShape {
 	private static final long serialVersionUID = -8284368756045162616L;
+
+	public final static int riverWidth = 10;
 	ResourceInformation info;
 	
 	public RiverSegment(Point from, Point to) {
@@ -32,13 +34,13 @@ public class RiverSegment extends Path2D.Float implements TileShape {
 	@Override
 	public void bakeInto(Graphics2D g) {
 		g.setColor(Color.BLUE);
-		g.setStroke(new BasicStroke(TileGraphic.streetWidth));
+		g.setStroke(new BasicStroke(riverWidth));
 		g.draw(this);
 	}
 	
 	@Override
 	public boolean contains(Point p) {
-		int w = TileGraphic.streetWidth/2;
+		int w = riverWidth/2;
 		return super.intersects(p.getX()-w, p.getY()-w, 2*w, 2*w);
 	}
 
