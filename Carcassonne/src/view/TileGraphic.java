@@ -24,41 +24,41 @@ public class TileGraphic {
 	
 	
 	
-	private static Tuple<Integer, Integer> directionToCoordinate(Direction dir) {
+	private static Point directionToCoordinate(Direction dir) {
 		switch(dir) {
 		case NORTH:
-			return new Tuple<Integer, Integer>(size/2, border);
+			return new Point(size/2, border);
 		case EAST:
-			return new Tuple<Integer, Integer>(size-border, size/2);
+			return new Point(size-border, size/2);
 		case SOUTH:
-			return new Tuple<Integer, Integer>(size/2, size-border);
+			return new Point(size/2, size-border);
 		case WEST:
-			return new Tuple<Integer, Integer>(border, size/2);
+			return new Point(border, size/2);
 		default:
-			return new Tuple<Integer, Integer>(size/2, size/2);
+			return new Point(size/2, size/2);
 		}
 	}
 	
-	private static Tuple<Tuple<Integer, Integer>, Tuple<Integer, Integer>> directionToBorder(Direction dir) {
-		Tuple<Integer, Integer> first;
-		Tuple<Integer, Integer> second;
+	private static Tuple<Point, Point> directionToBorder(Direction dir) {
+		Point first;
+		Point second;
 		switch(dir) {
 		case NORTH:
-			first = new Tuple<Integer, Integer>(0,0);
-			second = new Tuple<Integer, Integer>(size,0);
-			return new Tuple<Tuple<Integer, Integer>, Tuple<Integer, Integer>>(first, second);
+			first = new Point(0,0);
+			second = new Point(size,0);
+			return new Tuple<Point, Point>(first, second);
 		case EAST:
-			first = new Tuple<Integer, Integer>(size,0);
-			second = new Tuple<Integer, Integer>(size,size);
-			return new Tuple<Tuple<Integer, Integer>, Tuple<Integer, Integer>>(first, second);
+			first = new Point(size,0);
+			second = new Point(size,size);
+			return new Tuple<Point, Point>(first, second);
 		case SOUTH:
-			first = new Tuple<Integer, Integer>(size,size);
-			second = new Tuple<Integer, Integer>(0,size);
-			return new Tuple<Tuple<Integer, Integer>, Tuple<Integer, Integer>>(first, second);
+			first = new Point(size,size);
+			second = new Point(0,size);
+			return new Tuple<Point, Point>(first, second);
 		case WEST:
-			first = new Tuple<Integer, Integer>(0,size);
-			second = new Tuple<Integer, Integer>(0,0);
-			return new Tuple<Tuple<Integer, Integer>, Tuple<Integer, Integer>>(first, second);
+			first = new Point(0,size);
+			second = new Point(0,0);
+			return new Tuple<Point, Point>(first, second);
 		}
 		return null;
 	}
@@ -69,14 +69,14 @@ public class TileGraphic {
 		g.fillRect((size-villageSize)/2, (size-villageSize)/2, villageSize, villageSize);
 	}
 	
-	private void drawStreet(Tuple<Integer, Integer> from, Tuple<Integer, Integer> to) {
+	private void drawStreet(Point from, Point to) {
 		Graphics2D g = (Graphics2D)displayImage.getGraphics();
 		g.setColor(Color.BLUE);
 		g.setStroke(new BasicStroke(streetWidth));
 		
 		Path2D street = new Path2D.Float();
-		street.moveTo(from.getFirst(), from.getSecond());
-		street.curveTo(size/2, size/2, size/2, size/2, to.getFirst(), to.getSecond());
+		street.moveTo(from.x, from.y);
+		street.curveTo(size/2, size/2, size/2, size/2, to.x, to.y);
 		g.draw(street);
 	}
 	
@@ -85,15 +85,15 @@ public class TileGraphic {
 		
 		//two directions -> bezier ...
 		if(directions.size() == 2) {
-			Tuple<Integer, Integer> from = directionToCoordinate(directions.get(0));
-			Tuple<Integer, Integer> to = directionToCoordinate(directions.get(1));
+			Point from = directionToCoordinate(directions.get(0));
+			Point to = directionToCoordinate(directions.get(1));
 			drawStreet(from, to);
 		}
 		//otherwise straight lines connecting in the middle
 		else {
-			Tuple<Integer, Integer> to = new Tuple<Integer, Integer>(size/2, size/2);
+			Point to = new Point(size/2, size/2);
 			for(Direction dir : directions) {
-				Tuple<Integer, Integer> from = directionToCoordinate(dir);
+				Point from = directionToCoordinate(dir);
 				drawStreet(from, to);
 			}
 			
@@ -117,13 +117,13 @@ public class TileGraphic {
 
 	private void drawSingleForest(Graphics2D g, Direction dir) {
 		
-		Tuple<Tuple<Integer, Integer>, Tuple<Integer, Integer>> borders;
+		Tuple<Point, Point> borders;
 		borders = directionToBorder(dir);
-		int x1 = borders.getFirst().getFirst();
-		int y1 = borders.getFirst().getSecond();
+		int x1 = borders.getFirst().x;
+		int y1 = borders.getFirst().y;
 		
-		int x2 = borders.getSecond().getFirst();
-		int y2 = borders.getSecond().getSecond();
+		int x2 = borders.getSecond().x;
+		int y2 = borders.getSecond().y;
 		
 		Path2D forest = new Path2D.Float();
 		forest.moveTo(x1, y1);
@@ -135,22 +135,22 @@ public class TileGraphic {
 	
 	private void drawMultiForest(Graphics2D g, Direction clockwiseStart, Direction clockwiseEnd) {
 
-		Tuple<Tuple<Integer, Integer>, Tuple<Integer, Integer>> startBorders;
+		Tuple<Point, Point> startBorders;
 		startBorders = directionToBorder(clockwiseStart);
-		Tuple<Tuple<Integer, Integer>, Tuple<Integer, Integer>> endBorders;
+		Tuple<Point, Point> endBorders;
 		endBorders = directionToBorder(clockwiseEnd);
 
-		int x1 = startBorders.getFirst().getFirst();
-		int y1 = startBorders.getFirst().getSecond();
+		int x1 = startBorders.getFirst().x;
+		int y1 = startBorders.getFirst().y;
 		
-		int p11 = startBorders.getSecond().getFirst();
-		int p12 = startBorders.getSecond().getSecond();		
+		int p11 = startBorders.getSecond().x;
+		int p12 = startBorders.getSecond().y;		
 		
-		int p21 = endBorders.getFirst().getFirst();
-		int p22 = endBorders.getFirst().getSecond();
+		int p21 = endBorders.getFirst().x;
+		int p22 = endBorders.getFirst().y;
 		
-		int x2 = endBorders.getSecond().getFirst();
-		int y2 = endBorders.getSecond().getSecond();
+		int x2 = endBorders.getSecond().x;
+		int y2 = endBorders.getSecond().y;
 		
 		Path2D forest = new Path2D.Float();
 		forest.moveTo(x1, y1);
