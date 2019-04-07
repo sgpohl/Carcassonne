@@ -109,6 +109,11 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 				{
 					int size = TileGraphic.size;
 					coord.translate(-size/2, -size/2);
+					
+					int _border = 10;
+					g2.setColor(Color.DARK_GRAY);
+					g2.fillRect(coord.x-_border, coord.y-_border, size+2*_border, size+2*_border);
+					
 					mouseTile.paint(g2, coord, scale);
 				}
 			}
