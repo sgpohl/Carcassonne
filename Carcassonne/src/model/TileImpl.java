@@ -26,8 +26,35 @@ public class TileImpl implements Tile {
         Set<Type> alignableTypes = this.DirectionType.get(direction);
         return alignableTypes.contains(type);
     }
+    
+    
 
     @Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((DirectionType == null) ? 0 : DirectionType.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TileImpl other = (TileImpl) obj;
+		if (DirectionType == null) {
+			if (other.DirectionType != null)
+				return false;
+		} else if (!DirectionType.equals(other.DirectionType))
+			return false;
+		return true;
+	}
+
+	@Override
     public String toString() {
         return "Tile: " + DirectionType;
     }
