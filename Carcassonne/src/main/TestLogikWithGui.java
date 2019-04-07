@@ -21,8 +21,10 @@ public class TestLogikWithGui {
         GameField field = new GameFieldImpl();
 
         drawAll(ui, field);
-
-        for (int i = 0; i < 50; i++) {
+        
+        int timeDelay = 1;
+        
+        for (int i = 0; i < 5000; i++) {
             Tile newtile = TileFactory.getRandomTile();
 
             Collection<Position> posCol = TileLogic.getValidExtensionPositions(field, newtile);
@@ -31,7 +33,7 @@ public class TestLogikWithGui {
                 ui.highlight(curPos, true);
             }
 
-            Thread.sleep(500);
+            Thread.sleep(timeDelay);
 
 
             for (Position curPos : posCol) {
@@ -42,13 +44,13 @@ public class TestLogikWithGui {
             if (!posCol.isEmpty()) {
                 Position setOnPos = new Position(0, 0).calcClosest(posCol);
                 ui.highlight(setOnPos, true);
-                Thread.sleep(500);
+                Thread.sleep(timeDelay);
                 field.set(setOnPos, newtile);
                 ui.draw(setOnPos, newtile);
                 ui.highlight(setOnPos, false);
             }
             
-            Thread.sleep(500);
+            Thread.sleep(timeDelay);
         }
 
 
