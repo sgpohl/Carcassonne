@@ -15,7 +15,7 @@ import logic.*;
 
 public class TileGraphic {
 	public final static int size = 100;
-	private final static int border = 1;
+	private final static int border = 0;
 	
 	private final static int streetWidth = 10;
 	private final static int villageSize = 20;
