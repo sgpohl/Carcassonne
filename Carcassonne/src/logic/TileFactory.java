@@ -75,11 +75,11 @@ public class TileFactory {
     public static Tile getRandomTile(Random ran) {
         Tile tile = getEmptyTile();
 
-        for (var dir : Direction.values())
-            for (var type : Type.values())
-                if (ran.nextBoolean())
-                    tile.setDirection(dir, type);
-
+        for (var dir : Direction.values()) {
+            tile.setDirection(dir, ran.nextBoolean() ? Type.FOREST : Type.GRASS);
+            if (ran.nextBoolean())
+                tile.setDirection(dir, Type.RIVER);
+        }
         return tile;
     }
 
