@@ -85,6 +85,9 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 		this.scale = Math.max(0.1, Math.min(2., this.scale*(1.+dz)));
 		this.repaint();
 	}
+	public double getScale() {
+		return this.scale;
+	}
 	
 	public void recalculateZOrder() {
 		zOrderedKeys = new ArrayList<Position>(gameBoardReference.keySet());

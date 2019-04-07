@@ -67,7 +67,7 @@ public class UI {
 				int dx = e.getX()-lastX;
 				int dy = e.getY()-lastY;
 				
-				canvas.moveCenter(-dx, -dy);
+				canvas.moveCenter((int)(-dx/canvas.getScale()), (int)(-dy/canvas.getScale()));
 				
 				mouseMoved(e);
 	        }
