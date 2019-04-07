@@ -47,9 +47,7 @@ public class TestLogikWithGui {
                 ui.draw(setOnPos, newtile);
                 ui.highlight(setOnPos, false);
             }
-            Thread.sleep(500);
-
-
+            
             Thread.sleep(500);
         }
 

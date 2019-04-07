@@ -99,6 +99,7 @@ public class UI {
 	public void draw(Position pos, model.Tile tile) {
 		synchronized(gameBoard) {
 			gameBoard.put(pos, new TileGraphic(tile));
+			canvas.recalculateZOrder();
 		}
 		canvas.repaint();
 	}

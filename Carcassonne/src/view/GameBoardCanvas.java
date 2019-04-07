@@ -6,6 +6,10 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,6 +27,8 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 	private Point center;
 	private double scale;
 	
+	private List<Position> zOrderedKeys;
+	
 	private final static int highlightWidth = 10;
 	
 	
@@ -34,6 +40,8 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 		this.center = new Point(0,0);
 		
 		mouseTileLock = new Object();
+		
+		zOrderedKeys = new ArrayList<Position>();
 	}
 
 	public void setMouseTile(TileGraphic tile) {
@@ -78,6 +86,11 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 		this.repaint();
 	}
 	
+	public void recalculateZOrder() {
+		zOrderedKeys = new ArrayList<Position>(gameBoardReference.keySet());
+		Collections.sort(zOrderedKeys, Comparator.comparing(key -> -key.getY()));
+	}
+	
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
@@ -90,11 +103,12 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 		Point offset = new Point(offsetX, offsetY);
 		
 		synchronized(gameBoardReference) {
-			for(Position pos : gameBoardReference.keySet()) {
+			for(Position pos : zOrderedKeys) {
 				TileGraphic tile = gameBoardReference.get(pos);
 				tile.paintBackground(g2, pos, offset, scale);
 			}
-			for(Position pos : gameBoardReference.keySet()) {
+			
+			for(Position pos : zOrderedKeys) {
 				TileGraphic tile = gameBoardReference.get(pos);
 				tile.paintForeground(g2, pos, offset, scale);
 			}

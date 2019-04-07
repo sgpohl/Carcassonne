@@ -1,18 +1,9 @@
 package view.shapes;
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.geom.Path2D;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 
 import logic.Direction;
-import logic.Type;
-import util.Tuple;
-import view.ResourceInformation;
 import view.TileGraphic;
-import view.sprites.Sprite;
 import view.sprites.TreeSprite;
 
 public class Forest extends BackgroundSpline {
@@ -22,12 +13,12 @@ public class Forest extends BackgroundSpline {
 	public Forest() {
 		super(new Color(120,80,20));
 		super.generateAllDirection();
-		placeTrees(20);
+		placeTrees(40);
 	}
 	public Forest(Direction dir) {
 		super(new Color(120,80,20));
 		super.generateSingleDirection(dir);
-		placeTrees(3);
+		placeTrees(6);
 	}
 	
 	public Forest(Direction clockwiseStart, Direction clockwiseEnd) {
@@ -35,13 +26,13 @@ public class Forest extends BackgroundSpline {
 		super.generateMultiDirection(clockwiseStart, clockwiseEnd);
 		
 		if(clockwiseStart.rotateClockwise() == clockwiseEnd)
-			placeTrees(6);
-		else
 			placeTrees(12);
+		else
+			placeTrees(24);
 	}
 	
 	private void placeTrees(int number) {
-		number *= 100;
+		//number *= 100;
 		while(number > 0) {
 
 			var pos = new Point(0,0);
@@ -55,6 +46,7 @@ public class Forest extends BackgroundSpline {
 				number--;
 			}
 		}
-		Collections.sort(sprites, Comparator.comparing(sprite -> sprite.getPosition().y));
+		
+		orderSprites();
 	}
 }

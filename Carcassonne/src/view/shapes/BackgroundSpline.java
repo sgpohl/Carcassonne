@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import logic.Direction;
@@ -126,5 +128,9 @@ public abstract class BackgroundSpline extends Path2D.Float implements TileShape
 	@Override
 	public ResourceInformation getInformation() {
 		return info;
+	}
+	
+	public void orderSprites() {
+		Collections.sort(sprites, Comparator.comparing(sprite -> sprite.getPosition().y));
 	}
 }
