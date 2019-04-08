@@ -20,6 +20,12 @@ public class ResourceInformation extends Tuple<Type, Collection<Direction>>{
 		super(a, new HashSet<Direction>());
 	}
 	
+
+	public ResourceInformation(Type a, Collection<Direction> directions) {
+		super(a, new HashSet<Direction>());
+		this.getSecond().addAll(directions);
+	}
+	
 	public boolean addDirection(Direction dir) {
 		return this.getSecond().add(dir);
 	}

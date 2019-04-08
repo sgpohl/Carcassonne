@@ -127,7 +127,8 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 				g2.setColor(UI.highlightColor);
 				g2.setStroke(new BasicStroke(highlightWidth));
 				int halfsize = highlightWidth/2;
-				g2.drawRoundRect(coord.x+halfsize, coord.y+halfsize, size-highlightWidth, size-highlightWidth, 20,20);
+				int roundings = (int)(20*scale);
+				g2.drawRoundRect(coord.x+halfsize, coord.y+halfsize, size-highlightWidth, size-highlightWidth, roundings, roundings);
 			}
 		}
 		
@@ -137,11 +138,13 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 				if(coord != null)
 				{
 					int size = TileGraphic.size;
-					coord.translate(-size/2, -size/2);
+					int tileCenter = (int)((-size/2)*scale);
+					coord.translate(tileCenter, tileCenter);
 					
 					int _border = 10;
 					g2.setColor(Color.DARK_GRAY);
-					g2.fillRect(coord.x-_border, coord.y-_border, size+2*_border, size+2*_border);
+					int backgroundSize = (int)((size+2*_border)*scale);
+					g2.fillRect(coord.x-(int)(_border*scale), coord.y-(int)(_border*scale), backgroundSize,backgroundSize);
 					
 					mouseTile.paintBackground(g2, coord, scale);
 				}
