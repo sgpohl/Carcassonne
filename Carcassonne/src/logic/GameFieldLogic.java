@@ -1,12 +1,15 @@
 package logic;
 
 import model.GameField;
+import model.GameFieldImpl;
 
 import java.util.*;
 
 import model.Tile;
 import util.Tuple;
+import view.UI;
 import logic.TileLogic;
+import logic.TileFactory;
 
 //import java.util.Collection;
 //import java.util.HashSet;
@@ -16,15 +19,17 @@ import java.util.stream.Collectors;
 public class GameFieldLogic {
 
     // startAtPos: Position des neu angelegten Tiles
-    //Dummy
-    // Directions.SOUTH == dummy
-    public static Map<Type, Collection<Position>> getClosedAreas(GameField field, Position startAtPos) {
-        Map<Type, Collection<Position>> returnMap = new HashMap<>();
-        for (Type t : Type.values()) {
+    public static Map<ResourceInformation, Collection<Position>> getClosedAreas(GameField field, Position startAtPos) {
+        Map<ResourceInformation, Collection<Position>> returnMap = new HashMap<>();
+        Tile tile = field.getTile(startAtPos);
+        var resources = TileLogic.getResources(tile);
+        for (ResourceInformation resource : resources) {
         	GameFieldExtensionSearch toSearch = new GameFieldExtensionSearch();
-        	Tuple<Boolean, HashSet<Position>> result = toSearch.checkClosed(new HashSet<Position>(), field, startAtPos, t, Direction.NORTH);
-            if(result.getFirst()) {
-            	returnMap.get(t).addAll(result.getSecond());
+        	HashSet<Position> connectedSet = new HashSet<>();
+        	boolean result = toSearch.checkClosed(connectedSet, field, startAtPos, resource.getFirst(), null);
+            
+        	if(result) {
+        		returnMap.put(resource, connectedSet);
             }
         }
         return returnMap;
@@ -117,37 +122,41 @@ class GameFieldExtensionSearch {
     
     // GEÄNDERT: checkClosed static (Rekursion)
     // Übergib HashSet, damit in Rekursion nicht jedes mal neues, aber bei komplett neuer Suche nicht selbes HashSet
-	public Tuple<Boolean, HashSet<Position>> checkClosed(HashSet<Position> set, GameField field, Position pos, Type ty,
+	public boolean checkClosed(HashSet<Position> set, GameField field, Position pos, Type ty,
 			Direction toCheck) {
 		Tile thisTile = field.getTile(pos);
 		if (thisTile == null) {
-			return new Tuple(false, set);
+			return false;
 		}
 		if (set.contains(pos)) {
-			return new Tuple(true, set);
+			return true;
 		}
 
 		set.add(pos);
 
 		if (isSingleTileClosed(thisTile, ty, toCheck)) {
-			return new Tuple(true, set);
+			return true;
 		}  
+		
+		boolean recursiveResult = true;
 		Collection<ResourceInformation> info = TileLogic.getResources(thisTile);
 		for (ResourceInformation i : info) {
 			if (i.getFirst() != ty) {
 				continue;
 			}
-			if(!i.getSecond().contains(toCheck.getOpposite())) {
+			if(toCheck != null && !i.getSecond().contains(toCheck.getOpposite())) {
 				continue;
 			}
 			for (Direction dir : i.getSecond()) {
 				Position nextPos = pos.inDirection(dir);
-				return this.checkClosed(set, field, nextPos, ty, dir);
+				boolean neighbourResult = this.checkClosed(set, field, nextPos, ty, dir);
+				if(!neighbourResult)
+					recursiveResult = false;
 			}
 
 		}
 
-		return null;
+		return recursiveResult;
 	}
 
     
@@ -174,6 +183,35 @@ class GameFieldExtensionSearch {
 
         return true;
         }
+    
+    // TESTEN VON TOCHECK
+    public static void main(String[] args) {
+    	
+    	GameFieldImpl TEST = new GameFieldImpl();
+    	Random run = new Random(3);
+    	Tile test1 = TileFactory.getRandomTile(run);
+    	Tile test2 = TileFactory.getRandomTile(run);
+    	Tile test3 = TileFactory.getRandomTile(run);
+    	Tile test4 = TileFactory.getRandomTile(run);
+    	Tile test5 = TileFactory.getRandomTile(run);
+    	Tile test6 = TileFactory.getRandomTile(run);
+    	Tile test7 = TileFactory.getRandomTile(run);
+    	Tile test8 = TileFactory.getRandomTile(run);
+    	TEST.set(new Position(-1, 0),test1);
+    	TEST.set(new Position(-1, -1),test2);
+    	TEST.set(new Position(0, 1),test3);
+    	TEST.set(new Position(1, 1), test4);
+    	TEST.set(new Position(1, 0), test5);
+    	TEST.set(new Position(0, -1), test6);
+    	TEST.set(new Position(2, 1), test7);
+    	TEST.set(new Position(1, 2), test8);
+    	System.out.println(TEST.toString());
+    	System.out.println(GameFieldLogic.getClosedAreas(TEST, new Position(0,0)));
+    	
+    	UI ui = new UI();
+    	ui.drawAll(TEST);
+    	
+    }
 
 
 }
