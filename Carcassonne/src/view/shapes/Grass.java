@@ -19,6 +19,8 @@ import view.sprites.*;
 public class Grass extends Path2D.Float implements TileShape {
 	private static final long serialVersionUID = -9019873546477228036L;
 	private static final Color grassColor = new Color(80,180,50); 
+	private static final int minSprites = 0;
+	private static final int maxSprites = 10;
 	
 	private ResourceInformation info;
 	
@@ -90,9 +92,11 @@ public class Grass extends Path2D.Float implements TileShape {
 	
 	@Override
 	public void bakeIntoForeground(Graphics2D g) {
-		if(sprites.isEmpty())
-			for(int i = 0; i<1; ++i)
+		if(sprites.isEmpty()) {
+			int targetSprites = minSprites + (int)(Math.random()*(maxSprites+1-minSprites));
+			for(int i = 0; i<targetSprites; ++i)
 				this.sprites.placeSpriteOnRandomPosition(GrassSprite::new, this::pointCollides);
+		}
 		sprites.bakeInto(g);
 	}
 	
