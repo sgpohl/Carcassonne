@@ -4,6 +4,7 @@ import model.GameField;
 import model.Tile;
 import model.TileImpl;
 import util.IterationUtility;
+import util.Tuple;
 
 import java.util.Random;
 
@@ -25,7 +26,7 @@ public class TileFactory {
         return res;
     }
 
-    public static Tile nearestFittingTile(GameField field, Position pos) {
+    public static Tuple<Position, Tile> nearestFittingPositionAndTile(GameField field, Position pos) {
         var extensionPositions = GameFieldLogic.getValidPlacementPositions(field);
         var placeHere = pos.calcClosest(extensionPositions);
 
@@ -41,7 +42,11 @@ public class TileFactory {
                 changeDirectionRandomly(tile, new Random(), dir);
             }
         }
-        return tile;
+        return new Tuple<>(placeHere, tile);
+    }
+
+    public static Tile nearestFittingTile(GameField field, Position pos) {
+        return nearestFittingPositionAndTile(field, pos).getSecond();
     }
 
     public static Tile rotateClockwise(Tile tile, int nrClockwise) {
