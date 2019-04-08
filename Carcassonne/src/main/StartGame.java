@@ -26,7 +26,7 @@ public class StartGame {
         GameField field = new GameFieldImpl();
         ui.drawAll(field);
 
-        Collection<Player> players = Arrays.asList(ai);
+        Collection<Player> players = Arrays.asList(ai, player);
         GameController game = new GameController(field, players);
         UIController uiController = new UIController(ui);
 
