@@ -77,7 +77,7 @@ public class TileLogic {
     		
     		while(unmatchedDirections.contains(currentDir)) {
     			resource.addDirection(currentDir);
-    			unmatchedDirections.remove(0);
+    			unmatchedDirections.remove(currentDir);
     			currentDir = currentDir.rotateClockwise();
     		}
     		result.add(resource);
