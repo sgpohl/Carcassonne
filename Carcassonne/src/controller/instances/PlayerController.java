@@ -32,9 +32,7 @@ public class PlayerController implements Player, Controller {
         ui.clearHighlights();
 
         if (activeTile.isPresent()) {
-            System.out.print(activeTile);
             activeTile = activeTile.map(TileFactory::rotateClockwise);
-            System.out.println(" -> " + activeTile);
             setUIHiglights();
         }
 
