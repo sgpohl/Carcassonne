@@ -32,6 +32,8 @@ public class GameFieldLogic {
         	if(result) {
         		returnMap.put(resource, connectedSet);
             }
+        	//TODO: implement
+        	// else {highlightRessource}
         }
         return returnMap;
     }
@@ -207,11 +209,12 @@ class GameFieldExtensionSearch {
     	TEST.set(new Position(2, 1), test7);
     	TEST.set(new Position(1, 2), test8);*/
     	GameField TEST = GameFieldFactory.getSampleField(run, 20);
-    	System.out.println(TEST.toString());
+    	//System.out.println(TEST.toString());
     	System.out.println(GameFieldLogic.getClosedAreas(TEST, new Position(0,0)));
     	
     	UI ui = new UI();
     	ui.drawAll(TEST);
+    	ui.highlight(new Position(0,0), true);
     	
     }
 
