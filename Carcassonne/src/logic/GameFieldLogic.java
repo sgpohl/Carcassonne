@@ -131,7 +131,7 @@ class GameFieldExtensionSearch {
 
 		if (isSingleTileClosed(thisTile, ty, toCheck)) {
 			return new Tuple(true, set);
-		}
+		}  
 		Collection<ResourceInformation> info = TileLogic.getResources(thisTile);
 		for (ResourceInformation i : info) {
 			if (i.getFirst() != ty) {
