@@ -20,7 +20,7 @@ public class StartGame {
 
         UI ui = new UI();
 
-      //  Player player = new PlayerController();
+        Player player = new PlayerController(ui);
         Player ai = new NearestToPositionAI(new Position(0, 0));
 
         GameField field = new GameFieldImpl();
