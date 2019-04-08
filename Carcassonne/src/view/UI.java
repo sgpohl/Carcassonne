@@ -130,7 +130,12 @@ public class UI {
 		}
 	}
 	
-	public void highlight(Position pos, ResourceInformation resource) {
+	/***
+	 * Highlights the specified resource at position. Removes all other highlights on resources.
+	 * @param pos position of the target tile
+	 * @param resource resource information relative to the target tile
+	 */
+	public void highlightResource(Position pos, ResourceInformation resource) {
 		synchronized(gameBoard) {
 			var tile = gameBoard.get(pos);
 			if(tile != null) {
