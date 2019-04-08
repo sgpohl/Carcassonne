@@ -56,4 +56,9 @@ public class River implements TileShape {
 	public void bakeIntoForeground(Graphics2D g) {
 	}
 
+	@Override
+	public void highlight(boolean active) {
+		for(var s : segments)
+			s.highlight(active);
+	}
 }

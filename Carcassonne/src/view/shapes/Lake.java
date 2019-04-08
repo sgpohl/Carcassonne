@@ -38,4 +38,8 @@ public class Lake extends Ellipse2D.Float implements TileShape {
 	public void bakeIntoForeground(Graphics2D g) {
 	}
 
+	@Override
+	public void highlight(boolean active) {
+		throw new UnsupportedOperationException();
+	}
 }

@@ -1,5 +1,6 @@
 package view.shapes;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -22,6 +23,8 @@ public abstract class BackgroundSpline extends Path2D.Float implements TileShape
 	protected ResourceInformation info;
 	private Color backgroundColor;
 	protected List<Sprite> sprites;
+	
+	boolean renderHighlighted;
 	
 	public BackgroundSpline(Color c) {
 		info = new ResourceInformation(Type.FOREST);
@@ -109,6 +112,12 @@ public abstract class BackgroundSpline extends Path2D.Float implements TileShape
 
 	@Override
 	public void bakeInto(Graphics2D g) {
+		if(renderHighlighted) {
+			g.setColor(Color.RED);
+			g.setStroke(new BasicStroke(TileGraphic.resourceHighlightWidth));
+			g.draw(this);
+		}
+		
 		g.setColor(backgroundColor);
 		g.fill(this);
 	}
@@ -132,5 +141,10 @@ public abstract class BackgroundSpline extends Path2D.Float implements TileShape
 	
 	public void orderSprites() {
 		Collections.sort(sprites, Comparator.comparing(sprite -> sprite.getPosition().y));
+	}
+
+	@Override
+	public void highlight(boolean active) {
+		renderHighlighted = active;
 	}
 }

@@ -19,6 +19,8 @@ public class Controller {
 		if(resourceInfo != null)
 			System.out.print(", found Resource: "+resourceInfo.getFirst());
 		System.out.println();
+		
+		ui.highlight(pos, resourceInfo);
 	}
 	public void UI_rotateCurrentTile() {
 		System.out.println("do teh rotato thing");

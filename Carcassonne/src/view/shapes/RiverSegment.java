@@ -17,9 +17,11 @@ public class RiverSegment extends Path2D.Float implements TileShape {
 	public final static int riverWidth = 10;
 	ResourceInformation info;
 	
+	boolean renderHighlighted;
+	
 	public RiverSegment(Point from, Point to) {
 		super();
-		
+
 		info = new ResourceInformation(Type.RIVER);
 		
 		this.moveTo(from.x, from.y);
@@ -33,6 +35,12 @@ public class RiverSegment extends Path2D.Float implements TileShape {
 
 	@Override
 	public void bakeInto(Graphics2D g) {
+		if(renderHighlighted) {
+			g.setColor(Color.RED);
+			g.setStroke(new BasicStroke(riverWidth+TileGraphic.resourceHighlightWidth));
+			g.draw(this);	
+		}
+		
 		g.setColor(Color.BLUE);
 		g.setStroke(new BasicStroke(riverWidth));
 		g.draw(this);
@@ -51,5 +59,10 @@ public class RiverSegment extends Path2D.Float implements TileShape {
 
 	@Override
 	public void bakeIntoForeground(Graphics2D g) {
+	}
+
+	@Override
+	public void highlight(boolean active) {
+		renderHighlighted = active;
 	}
 }

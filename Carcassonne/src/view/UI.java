@@ -122,6 +122,16 @@ public class UI {
 		}
 	}
 	
+	public void highlight(Position pos, ResourceInformation resource) {
+		synchronized(gameBoard) {
+			var tile = gameBoard.get(pos);
+			if(tile != null) {
+				tile.clearResourceHighlights();
+				tile.setResourceHighlight(resource);
+			}
+		}
+	}
+	
 	/***
 	 * Displays a card at the mouse cursor
 	 * @param tile Tile to be drawn at the mouse cursor. Pass null to remove.

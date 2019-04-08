@@ -3,10 +3,12 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import util.*;
 import view.shapes.*;
@@ -16,11 +18,13 @@ public class TileGraphic {
 	public final static int size = 100;
 	public final static int foregroundBorder = 50;
 	public final static int foregroundSize = size+2*foregroundBorder;
+	public final static int resourceHighlightWidth = 10;
 	
 	private Image backgroundImage;
 	private Image foregroundImage;
 	
 	private Deque<TileShape> collisionShapes;
+	private Collection<TileShape> highlightedShapes;
 	
 	public static Point PosToCoord(Position pos, double scale) {
 		int xCoord = (int)(pos.getX()*size*scale	-size/2);
@@ -75,6 +79,8 @@ public class TileGraphic {
 	
 
 	public TileGraphic(model.Tile tile) {
+		highlightedShapes = new LinkedList<TileShape>();
+		
 		var information = TileLogic.getExtendableOptions(tile);
 		var reformattedInformation = new HashMap<Type, List<Direction>>();
 		
@@ -210,6 +216,29 @@ public class TileGraphic {
 			}
 		}
 		return null;
+	}
+	
+	public void setResourceHighlight(ResourceInformation info) {
+		if(info == null)
+			return;
+		List<TileShape> matches = 
+							collisionShapes.stream()
+							.filter(shape ->  ResourceInformation.matches(shape.getInformation(), info)
+									).collect(Collectors.toList());
+		for(var match : matches) {
+			match.highlight(true);
+			highlightedShapes.add(match);
+		}
+		
+		bakeImage();
+	}
+	
+	public void clearResourceHighlights() {
+		for(var shape : highlightedShapes)
+			shape.highlight(false);
+		highlightedShapes.clear();
+		
+		bakeImage();
 	}
 	
 	
