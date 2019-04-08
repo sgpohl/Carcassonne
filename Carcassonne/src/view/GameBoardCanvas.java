@@ -127,7 +127,8 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 				g2.setColor(UI.highlightColor);
 				g2.setStroke(new BasicStroke(highlightWidth));
 				int halfsize = highlightWidth/2;
-				g2.drawRoundRect(coord.x+halfsize, coord.y+halfsize, size-highlightWidth, size-highlightWidth, 20,20);
+				int roundings = (int)(20*scale);
+				g2.drawRoundRect(coord.x+halfsize, coord.y+halfsize, size-highlightWidth, size-highlightWidth, roundings, roundings);
 			}
 		}
 		
