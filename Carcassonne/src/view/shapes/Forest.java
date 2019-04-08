@@ -1,29 +1,38 @@
 package view.shapes;
 import java.awt.Color;
-import java.awt.Point;
+import java.awt.Graphics2D;
 
 import logic.Direction;
-import view.TileGraphic;
+import view.sprites.SpriteRenderer;
 import view.sprites.TreeSprite;
 
 public class Forest extends BackgroundSpline {
 	private static final long serialVersionUID = 2806951371081096281L;
+	private SpriteRenderer sprites;
 	
-
+	private void init() {
+		sprites = new SpriteRenderer();
+	}
+	
 	public Forest() {
 		super(new Color(120,80,20));
 		super.generateAllDirection();
+		init();
+
 		placeTrees(40);
 	}
 	public Forest(Direction dir) {
 		super(new Color(120,80,20));
 		super.generateSingleDirection(dir);
+		init();
+		
 		placeTrees(6);
 	}
 	
 	public Forest(Direction clockwiseStart, Direction clockwiseEnd) {
 		super(new Color(120,80,20));
 		super.generateMultiDirection(clockwiseStart, clockwiseEnd);
+		init();
 		
 		if(clockwiseStart.rotateClockwise() == clockwiseEnd)
 			placeTrees(12);
@@ -32,21 +41,13 @@ public class Forest extends BackgroundSpline {
 	}
 	
 	private void placeTrees(int number) {
-		//number *= 100;
-		while(number > 0) {
+		for(int i = 0; i<number; ++i)
+			sprites.placeSpriteOnRandomPosition(TreeSprite::new, this::contains);
+	}
+	
 
-			var pos = new Point(0,0);
-			pos.translate((int)(Math.random()*TileGraphic.size), (int)(Math.random()*TileGraphic.size));
-			
-			if(this.contains(pos))
-			{
-				pos.translate(TileGraphic.foregroundBorder, TileGraphic.foregroundBorder);
-				var tree = new TreeSprite(pos);
-				sprites.add(tree);
-				number--;
-			}
-		}
-		
-		orderSprites();
+	@Override
+	public void bakeIntoForeground(Graphics2D g) {
+		sprites.bakeInto(g);
 	}
 }

@@ -11,6 +11,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Map;
 import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -19,10 +21,10 @@ public class UI {
 	private GameBoardCanvas canvas;
 	private final Map<Position, TileGraphic> gameBoard;
 	private final Set<Position> highlights;
-	private Controller controller;
+	private Collection<Controller> controller;
 	
-	public UI(Controller controller) {
-		this.controller = controller;
+	public UI() {
+		controller = new ArrayList<Controller>();
 		
 		gameBoard = new HashMap<>();
 		highlights = new HashSet<>();
@@ -40,11 +42,13 @@ public class UI {
 				if(e.getButton() == MouseEvent.BUTTON1) {
 					var pos = canvas.getPositionAtMouse();
 					if(pos != null) {
-						controller.UI_clickedOnTile(pos.getFirst());
+						for(var c : controller)
+							c.UI_clickedOnTile(pos.getFirst());
 					}
 				}
 				if(e.getButton() == MouseEvent.BUTTON3) {
-					controller.UI_rotateCurrentTile();
+					for(var c : controller)
+						c.UI_rotateCurrentTile();
 				}
 			}
 			@Override
@@ -87,6 +91,14 @@ public class UI {
 		
 		frame.add(canvas);
 		frame.setVisible(true);
+	}
+	
+	public void addController(Controller c) {
+		controller.add(c);
+	}
+	
+	public boolean removeController(Controller c) {
+		return controller.remove(c);
 	}
 	
 	/***
@@ -187,8 +199,9 @@ public class UI {
 
 	
 	public static void main(String[] args) {
-		Controller controller = new Controller();
-		UI ui = controller.getUI();
+		UI ui = new UI();
+		//ui.addController(new Controller());
+		
 		ui.draw(new Position(0, 0), TileFactory.getStartTile());
 		for(int x = -4; x < 4; ++x) 
 			for(int y = 1; y < 6; ++y) {
