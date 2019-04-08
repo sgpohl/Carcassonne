@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import logic.Position;
+import model.Tile;
 import util.Tuple;
 
 public class GameBoardCanvas extends DoubleBufferedCanvas {
@@ -44,9 +45,9 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 		zOrderedKeys = new ArrayList<Position>();
 	}
 
-	public void setMouseTile(TileGraphic tile) {
+	public void setMouseTile(TileGraphic tileGraphic) {
 		synchronized(mouseTileLock) {
-			mouseTile = tile;
+			mouseTile = tileGraphic;
 		}
 		this.repaint();
 	}
