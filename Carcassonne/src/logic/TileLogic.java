@@ -64,6 +64,11 @@ public class TileLogic {
     		
     		Direction currentDir = unmatchedDirections.get(0);
     		while(unmatchedDirections.contains(currentDir)) {
+    			currentDir = currentDir.rotateCounterclockwise();
+    		}
+    		currentDir = currentDir.rotateClockwise();
+    		
+    		while(unmatchedDirections.contains(currentDir)) {
     			resource.addDirection(currentDir);
     			unmatchedDirections.remove(0);
     			currentDir = currentDir.rotateClockwise();
