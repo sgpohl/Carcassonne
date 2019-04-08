@@ -23,5 +23,8 @@ public class NearestToPositionAI extends AIController {
         return placementOptions.stream().min(comp).get();
     }
 
+    public String toString(){
+        return "AI (nearest to " + pos + ")";
+    }
 
 }
