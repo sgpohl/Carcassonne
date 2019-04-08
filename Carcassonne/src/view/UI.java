@@ -1,5 +1,6 @@
 package view;
 import logic.*;
+import model.GameField;
 import model.Tile;
 
 import javax.swing.*;
@@ -16,15 +17,15 @@ import java.util.HashSet;
 public class UI {
 	private JFrame frame;
 	private GameBoardCanvas canvas;
-	private Map<Position, TileGraphic> gameBoard;
-	private Set<Position> highlights;
+	private final Map<Position, TileGraphic> gameBoard;
+	private final Set<Position> highlights;
 	private Controller controller;
 	
 	public UI(Controller controller) {
 		this.controller = controller;
 		
-		gameBoard = new HashMap<Position, TileGraphic>();
-		highlights = new HashSet<Position>();
+		gameBoard = new HashMap<>();
+		highlights = new HashSet<>();
 		
 		frame = new JFrame();
 		frame.setSize(1000, 700);
@@ -79,12 +80,9 @@ public class UI {
 				lastY = e.getY();
 	        }
 		});
-		canvas.addMouseWheelListener(new MouseWheelListener() {
-			@Override
-			public void mouseWheelMoved(MouseWheelEvent e) {
-				double zoomSpeed = 0.15;
-				canvas.changeScale(zoomSpeed*e.getPreciseWheelRotation());
-			}
+		canvas.addMouseWheelListener(e -> {
+			double zoomSpeed = 0.15;
+			canvas.changeScale(zoomSpeed*e.getPreciseWheelRotation());
 		});
 		
 		frame.add(canvas);
@@ -171,4 +169,23 @@ public class UI {
 		
 		//ui.setDrawnCard(TileFactory.getRandomTile());
 	}
+
+
+	public void drawAll( GameField field) {
+		for (var pos : field.getAllTiles().keySet())
+			draw(pos, field.getAllTiles().get(pos));
+	}
+
+	public void clearField(){
+		//TODO: remove all tiles from the map
+		System.out.println("UI::clearField not yet implemented!");
+	}
+	public void clearHighlights(){
+		//TODO: clear all highlighted ares
+		System.out.println("UI::clearHighlights not yet implemented!");
+	}
+
+
+
+
 }

@@ -2,6 +2,7 @@ package model;
 
 import java.util.*;
 
+import logic.GameFieldLogic;
 import logic.Position;
 
 public interface GameField {
@@ -12,4 +13,7 @@ public interface GameField {
 
     Map<Position, Tile> getAllTiles();
 
+    default Collection<Position> getPositionsWithEmptyNeighbours(){
+        return GameFieldLogic.calcPositionsWithEmptyNeighbours(this);
+    }
 }
