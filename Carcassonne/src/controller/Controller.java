@@ -20,7 +20,7 @@ public class Controller {
             System.out.print(", found Resource: " + resourceInfo.getFirst());
         System.out.println();
 
-        ui.highlight(pos, resourceInfo);
+        ui.highlightResource(pos, resourceInfo);
     }
 
     public void UI_rotateCurrentTile() {
