@@ -28,11 +28,14 @@ public class PlayerController implements Player, Controller {
     }
 
     public synchronized void UI_rotateCurrentTile() {
-        if (activeTile.isPresent())
-            activeTile = activeTile.map(TileFactory::rotateClockwise);
 
         ui.clearHighlights();
-        setUIHiglights();
+
+        if (activeTile.isPresent()) {
+            activeTile = activeTile.map(TileFactory::rotateClockwise);
+            setUIHiglights();
+        }
+
     }
 
     public synchronized void UI_clickedOnTile(Position pos) {
@@ -46,8 +49,7 @@ public class PlayerController implements Player, Controller {
 
     public synchronized void game_startNewTurn(Player activePlayer, Collection<Tuple<Position, Tile>> placementOptions) {
         if (activePlayer != this) {
-            this.activeTile = Optional.empty();
-            ui.setDrawnCard(null);
+            deselect();
             return;
         }
 
@@ -58,11 +60,20 @@ public class PlayerController implements Player, Controller {
         setUIHiglights();
     }
 
+    private void deselect() {
+        this.activeTile = Optional.empty();
+        ui.setDrawnCard(null);
+    }
+
     private void setUIHiglights() {
+        ui.clearHighlights();
+
         if (activeTile.isPresent()) {
             ui.setDrawnCard(activeTile.get());
-            this.possibleOptions.stream().filter(option -> option.getSecond().equals(activeTile.get()))
-                    .map(Tuple::getFirst).forEach(pos -> ui.highlight(pos, true));
+            possibleOptions.stream()
+                    .filter(option -> option.getSecond().equals(activeTile.get()))
+                    .map(Tuple::getFirst)
+                    .forEach(pos -> ui.highlight(pos, true));
         }
     }
 
