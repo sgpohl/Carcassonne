@@ -82,7 +82,15 @@ public class TileGraphic {
 		highlightedShapes = new LinkedList<TileShape>();
 		
 		var reformattedInformation = TileLogic.getResourceDirections(tile);
-		//var resourceInformation = TileLogic.getResources(tile);
+		
+		/*var resourceInformation = TileLogic.getResources(tile);
+		for(var res : resourceInformation) {
+			System.out.print(""+res.getFirst()+" ");
+			for(var dir : res.getSecond())
+				System.out.print(""+dir+" ");
+			System.out.println();
+		}
+		System.out.println();*/
 		
 		collisionShapes = new LinkedList<TileShape>();
 		
