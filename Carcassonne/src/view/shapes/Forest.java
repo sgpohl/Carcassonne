@@ -1,6 +1,8 @@
 package view.shapes;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import logic.Direction;
 import view.sprites.*;
@@ -14,30 +16,34 @@ public class Forest extends BackgroundSpline {
 		sprites = new SpriteRenderer();
 	}
 	
-	public Forest() {
+	public Forest(Collection<Direction> directions) {
 		super(forestColor);
-		super.generateAllDirection();
+		
+		var directionList = new ArrayList<Direction>(directions);
+		switch(directions.size()) {
+		case 1:		
+			super.generateSingleDirection(directionList.get(0));
+			break;
+		case 2:
+		case 3:
+			Direction begin = null, end = null;
+			for(var dir : directions) {
+				if(!directions.contains(dir.rotateClockwise()))
+					end = dir;
+				if(!directions.contains(dir.rotateCounterclockwise()))
+					begin = dir;
+			}
+			super.generateMultiDirection(begin, end);
+			break;
+		case 4:		
+			super.generateAllDirection();		
+			break;
+		}
 		init();
 
-		placeTrees(40);
-	}
-	public Forest(Direction dir) {
-		super(forestColor);
-		super.generateSingleDirection(dir);
-		init();
-		
-		placeTrees(6);
-	}
-	
-	public Forest(Direction clockwiseStart, Direction clockwiseEnd) {
-		super(forestColor);
-		super.generateMultiDirection(clockwiseStart, clockwiseEnd);
-		init();
-		
-		if(clockwiseStart.rotateClockwise() == clockwiseEnd)
-			placeTrees(12);
-		else
-			placeTrees(24);
+		//2^#dirs * 3 = 6,12,24,48
+		int numTrees = (1<<directions.size())*3;
+		placeTrees( numTrees );
 	}
 	
 	private void placeTrees(int number) {
@@ -46,7 +52,6 @@ public class Forest extends BackgroundSpline {
 			//sprites.placeSpriteOnRandomPosition(GrassSprite::new, this::contains);
 	}
 	
-
 	@Override
 	public void bakeIntoForeground(Graphics2D g) {
 		sprites.bakeInto(g);

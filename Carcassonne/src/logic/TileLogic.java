@@ -61,7 +61,7 @@ public class TileLogic {
     	Collection<Direction> directions = info.get(t);
     	
     	var result = new ArrayList<ResourceInformation>();
-    	if(directions == null)
+    	if(directions == null || directions.isEmpty())
     		return result;
     	
     	var unmatchedDirections = new ArrayList<Direction>();
@@ -91,7 +91,7 @@ public class TileLogic {
     private static Collection<ResourceInformation> getConnectedForegroundResources(Type t, Map<Type, List<Direction>> info) {
     	var result = new ArrayList<ResourceInformation>();
     	Collection<Direction> directions = info.get(t);
-    	if(directions != null) {
+    	if(directions != null && !directions.isEmpty()) {
     		var res = new ResourceInformation(t, directions);
     		result.add(res);
     	}

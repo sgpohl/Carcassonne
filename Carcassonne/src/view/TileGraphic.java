@@ -4,6 +4,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -81,107 +82,37 @@ public class TileGraphic {
 	public TileGraphic(model.Tile tile) {
 		highlightedShapes = new LinkedList<TileShape>();
 		
-		var reformattedInformation = TileLogic.getResourceDirections(tile);
-		
-		/*var resourceInformation = TileLogic.getResources(tile);
-		for(var res : resourceInformation) {
-			System.out.print(""+res.getFirst()+" ");
-			for(var dir : res.getSecond())
-				System.out.print(""+dir+" ");
-			System.out.println();
-		}
-		System.out.println();*/
-		
 		collisionShapes = new LinkedList<TileShape>();
+		var resourceInformation = new LinkedList<>(TileLogic.getResources(tile));
+		resourceInformation.sort(Comparator.comparing(res -> -resourceZOrder(res.getFirst())));
 		
-		drawGrass(reformattedInformation.get(Type.GRASS));
-		drawForests(reformattedInformation.get(Type.FOREST));
-		drawRivers(reformattedInformation.get(Type.RIVER));
+		for(var resource : resourceInformation) {
+			collisionShapes.add(createResource(resource));
+		}
 
 		backgroundImage = new BufferedImage(size, size,  BufferedImage.TYPE_INT_ARGB);
 		foregroundImage = new BufferedImage(foregroundSize, foregroundSize,  BufferedImage.TYPE_INT_ARGB);
 		
 		bakeImage();
 	}
-
 	
-	private void drawGrass(List<Direction> directions) {
-		var grass = new Grass(directions, this);
-		collisionShapes.addFirst(grass);
+	private static int resourceZOrder(Type t) {
+		switch(t) {
+		case GRASS:		return 0;
+		case FOREST:	return 1;
+		case RIVER:		return 2;
+		}
+		throw new UnsupportedOperationException("Z-Ordering requested for unknown resource");
 	}
-	private void drawLake() { 
-		collisionShapes.addFirst(new Lake());
-	}
-	private void drawRivers(List<Direction> directions) {
-		if(directions.isEmpty())
-			return;
-		
-		var river = new River();
-		collisionShapes.addFirst(river);
-		
-		//two directions -> bezier ...
-		if(directions.size() == 2) {
-			Point from = directionToCoordinate(directions.get(0));
-			Point to = directionToCoordinate(directions.get(1));
-			
-			var riverSegment = new RiverSegment(from, to);
-			riverSegment.addDirectionInfo(directions.get(0));
-			riverSegment.addDirectionInfo(directions.get(1));
-			river.add(riverSegment);
-		}
-		//otherwise straight lines connecting in the middle
-		else {
-			//Point to = new Point(size/2+border, size/2+border);
-			Point to = new Point(size/2, size/2);
-			for(Direction dir : directions) {
-				Point from = directionToCoordinate(dir);
-				
-				var riverSegment = new RiverSegment(from, to);
-				riverSegment.addDirectionInfo(dir);
-				river.add(riverSegment);
-			}
-			
-			drawLake();
-		}
-
-	}
-	private void drawForests(List<Direction> directions) {
-		
-		if(directions.size() == 1) {
-			collisionShapes.addFirst(new Forest(directions.get(0)));
-			return;
-		}
-		if(directions.size() == 2) {
-			if(directions.get(0).equals(directions.get(1).getOpposite())) {
-				collisionShapes.addFirst(new Forest(directions.get(0)));
-				collisionShapes.addFirst(new Forest(directions.get(1)));
-				return;
-			}
-			else {
-				Direction firstDir = directions.get(0);
-				Direction secondDir = directions.get(1);
-				if(firstDir.rotateClockwise() != directions.get(1)) {
-					firstDir = directions.get(1);
-					secondDir = directions.get(0);
-				}
-				
-				collisionShapes.addFirst(new Forest(firstDir, secondDir));
-				return;
-			}
-		}
-		if(directions.size() == 3) {
-			Direction firstDir = Direction.NORTH;
-			while(directions.contains(firstDir))
-				firstDir = firstDir.rotateClockwise();
-			firstDir = firstDir.rotateClockwise();
-			Direction thirdDir = firstDir.getOpposite();
-			
-			collisionShapes.addFirst(new Forest(firstDir, thirdDir));
-			return;
-		}
-		if(directions.size() == 4) {
-			collisionShapes.addFirst(new Forest());
-			return;
+	
+	private TileShape createResource(ResourceInformation resource) {
+		if(resource.getSecond().isEmpty())
+			throw new RuntimeException("created empty ResourceInformation: "+resource.getFirst());
+		switch(resource.getFirst()) {
+		case GRASS:		return new Grass(resource.getSecond(), this);
+		case FOREST:	return new Forest(resource.getSecond());
+		case RIVER:		return new River(resource.getSecond());
+		default:		throw new UnsupportedOperationException("Tried resource creation for unhandled resource type (TileGraphic::new)");
 		}
 	}
 	
