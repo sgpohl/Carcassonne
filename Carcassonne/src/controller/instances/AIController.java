@@ -28,5 +28,8 @@ public abstract class AIController implements Player, Controller {
 
     public abstract Tuple<Position, Tile> choosePlacement(Collection<Tuple<Position, Tile>> placementOptions);
 
+    public String toString(){
+        return "AI";
+    }
 
 }

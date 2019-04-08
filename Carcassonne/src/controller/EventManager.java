@@ -6,8 +6,13 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class EventManager {
+
+
     private static EventManager instance = new EventManager();
 
     public static EventManager getInstance() {
@@ -16,34 +21,32 @@ public class EventManager {
 
     private EventManager() {
 
-        Runnable run = () -> {
+        new Thread(() -> {
             while (true) {
                 try {
-                    handleNextEvent();
-                    this.wait(1000);
-                } catch (InterruptedException e) {
+                    GameEvent event = events.takeFirst();
+                    handle(event);
+                } catch (Exception e) {
+                    System.out.println("interrupted at takeFirst: " + e.getMessage());
                 }
             }
-        };
-        eventThread = new Thread(run);
-        eventThread.start();
+        }).start();
     }
 
 
-    private List<Controller> controllerList = new ArrayList<>();
-    private Deque<GameEvent> events = new LinkedList<>();
-    private Thread eventThread;
+    private final List<Controller> controllerList = new ArrayList<>();
+    private final BlockingDeque<GameEvent> events = new LinkedBlockingDeque<>();
 
     public synchronized void fire(GameEvent event) {
-        events.push(event);
-        eventThread.notify();
+        try {
+            events.putLast(event);
+        } catch (InterruptedException ex) {
+            System.out.println("interrupted at fire: " + ex.getMessage());
+        }
     }
 
-    public synchronized void handleNextEvent() {
-        if (!events.isEmpty()) {
-            var event = events.pop();
-            controllerList.forEach(event::handleEventOnController);
-        }
+    public synchronized void handle(GameEvent event) {
+        controllerList.forEach(event::handleEventOnController);
     }
 
     public synchronized void registerController(Controller controller) {

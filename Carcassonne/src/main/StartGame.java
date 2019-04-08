@@ -18,16 +18,20 @@ public class StartGame {
 
     public static void main(String[] args) {
 
-        UI ui = new UI(null);
+        UI ui = new UI();
 
-        Player player = new PlayerController();
+      //  Player player = new PlayerController();
         Player ai = new NearestToPositionAI(new Position(0, 0));
 
         GameField field = new GameFieldImpl();
+        ui.drawAll(field);
 
-        Collection<Player> players = Arrays.asList(player, ai);
+        Collection<Player> players = Arrays.asList(ai);
         GameController game = new GameController(field, players);
-        UIController uiController = new UIController(null);
+        UIController uiController = new UIController(ui);
+
+        game.startGame();
+
 
     }
 
