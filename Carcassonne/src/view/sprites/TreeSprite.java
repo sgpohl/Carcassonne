@@ -1,5 +1,6 @@
 package view.sprites;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -23,9 +24,17 @@ public class TreeSprite extends Sprite {
 	
 	@Override
 	public void bakeInto(Graphics2D g) {
+
+		g.setStroke(new BasicStroke(2));
+		g.setColor(new Color(30,80,30));
+		g.draw(crown);
+		g.setColor(new Color(50,30,5));
+		g.draw(stump);
+		
 		g.setColor(new Color(80,50,12));
 		g.fill(stump);
 		g.setColor(new Color(40,120,40));
 		g.fill(crown);
+		
 	}
 }

@@ -3,8 +3,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import logic.Direction;
-import view.sprites.SpriteRenderer;
-import view.sprites.TreeSprite;
+import view.sprites.*;
 
 public class Forest extends BackgroundSpline {
 	private static final long serialVersionUID = 2806951371081096281L;
@@ -43,6 +42,7 @@ public class Forest extends BackgroundSpline {
 	private void placeTrees(int number) {
 		for(int i = 0; i<number; ++i)
 			sprites.placeSpriteOnRandomPosition(TreeSprite::new, this::contains);
+			//sprites.placeSpriteOnRandomPosition(GrassSprite::new, this::contains);
 	}
 	
 
