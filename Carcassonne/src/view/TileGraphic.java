@@ -187,6 +187,20 @@ public class TileGraphic {
 	}
 	
 	private void bakeImage() {
+		bakeImageForeground();
+		bakeImageBackground();
+	}
+	private void bakeImageForeground() {
+		Graphics2D g = (Graphics2D)foregroundImage.getGraphics();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setBackground(new Color(0,0,0,0));
+		g.clearRect(0, 0, foregroundImage.getWidth(null), foregroundImage.getHeight(null));
+			
+		var it = collisionShapes.descendingIterator();
+		while(it.hasNext())
+			it.next().bakeIntoForeground(g);
+	}
+	private void bakeImageBackground() {
 		Graphics2D g = (Graphics2D)backgroundImage.getGraphics();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setBackground(new Color(0,0,0,0));
@@ -195,18 +209,7 @@ public class TileGraphic {
 		var it = collisionShapes.descendingIterator();
 		while(it.hasNext())
 			it.next().bakeInto(g);
-		
-
-		g = (Graphics2D)foregroundImage.getGraphics();
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setBackground(new Color(0,0,0,0));
-		g.clearRect(0, 0, foregroundImage.getWidth(null), foregroundImage.getHeight(null));
-			
-		it = collisionShapes.descendingIterator();
-		while(it.hasNext())
-			it.next().bakeIntoForeground(g);
 	}
-	
 	
 	public ResourceInformation getResourceAt(Point pos) {
 		//pos.translate(border, border);
@@ -230,7 +233,7 @@ public class TileGraphic {
 			highlightedShapes.add(match);
 		}
 		
-		bakeImage();
+		bakeImageBackground();
 	}
 	
 	public void clearResourceHighlights() {
@@ -238,7 +241,7 @@ public class TileGraphic {
 			shape.highlight(false);
 		highlightedShapes.clear();
 		
-		bakeImage();
+		bakeImageBackground();
 	}
 	
 	
