@@ -14,4 +14,6 @@ public interface TileShape {
 	public ResourceInformation getInformation();
 	
 	public void highlight(boolean active);
+	
+	//public Point getCenterPoint();
 }

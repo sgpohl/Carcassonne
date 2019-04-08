@@ -14,6 +14,7 @@ import logic.ResourceInformation;
 import logic.Type;
 import view.TileGraphic;
 import view.UI;
+import view.sprites.*;
 
 public class Grass extends Path2D.Float implements TileShape {
 	private static final long serialVersionUID = -9019873546477228036L;
@@ -25,8 +26,10 @@ public class Grass extends Path2D.Float implements TileShape {
 	private Collection<Line2D> highlightStripes;
 	private static final int highlightDensity = 4;
 	
-	public Grass(Collection<Direction> directions) {
-
+	private TileGraphic parent;
+	private SpriteRenderer sprites;
+	
+	public Grass(Collection<Direction> directions, TileGraphic parent) {
 		info = new ResourceInformation(Type.GRASS);
 		for(var d : directions)
 			info.addDirection(d);
@@ -45,6 +48,10 @@ public class Grass extends Path2D.Float implements TileShape {
 		float y = dy/2;
 		for(int i = 0; i < highlightDensity; ++i, y+=dy)
 			highlightStripes.add(new Line2D.Float(0, y, TileGraphic.size, y-dy));
+		
+		this.parent = parent;
+		this.sprites = new SpriteRenderer();
+		
 	}
 	
 	@Override
@@ -69,9 +76,24 @@ public class Grass extends Path2D.Float implements TileShape {
 	public ResourceInformation getInformation() {
 		return info;
 	}
-
+	
+	private boolean pointCollides(Point pos) {
+		for(int dx=-10; dx<=10; dx+=10) {
+			for(int dy=-10; dy<=10; dy+=10) {
+				if(!this.getInformation().equals(this.parent.getResourceAt(new Point(pos.x+dx, pos.y+dy)))) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 	@Override
 	public void bakeIntoForeground(Graphics2D g) {
+		if(sprites.isEmpty())
+			for(int i = 0; i<1; ++i)
+				this.sprites.placeSpriteOnRandomPosition(GrassSprite::new, this::pointCollides);
+		sprites.bakeInto(g);
 	}
 	
 

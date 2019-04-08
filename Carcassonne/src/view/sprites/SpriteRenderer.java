@@ -45,4 +45,8 @@ public class SpriteRenderer {
 		
 		zOrderSprites();
 	}
+	
+	public boolean isEmpty() {
+		return sprites.isEmpty();
+	}
 }

@@ -106,7 +106,7 @@ public class TileGraphic {
 
 	
 	private void drawGrass(List<Direction> directions) {
-		var grass = new Grass(directions);
+		var grass = new Grass(directions, this);
 		collisionShapes.addFirst(grass);
 	}
 	private void drawLake() { 

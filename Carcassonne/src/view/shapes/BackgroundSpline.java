@@ -25,6 +25,7 @@ public abstract class BackgroundSpline extends Path2D.Float implements TileShape
 	
 	protected ResourceInformation info;
 	private Color backgroundColor;
+	private Point centerPoint;
 	
 	boolean renderHighlighted;
 	
@@ -32,7 +33,7 @@ public abstract class BackgroundSpline extends Path2D.Float implements TileShape
 		info = new ResourceInformation(Type.FOREST);
 		backgroundColor = c;
 	}
-
+	
 	/***
 	 * generates an all-border resource
 	 */
@@ -50,6 +51,8 @@ public abstract class BackgroundSpline extends Path2D.Float implements TileShape
 		this.lineTo(border2.getFirst().getX(), border2.getFirst().getY());
 		this.lineTo(border2.getSecond().getX(), border2.getSecond().getY());
 		this.closePath();
+		
+		centerPoint = new Point(TileGraphic.size/2, TileGraphic.size/2);
 	}
 
 	
@@ -72,6 +75,8 @@ public abstract class BackgroundSpline extends Path2D.Float implements TileShape
 		int middle = TileGraphic.size/2;// + TileGraphic.border;
 		this.curveTo((x1+middle)/2, (y1+middle)/2, (x2+middle)/2, (y2+middle)/2, x2, y2);
 		this.closePath();
+		
+		centerPoint = new Point((x1+x2+middle/2)/3, (y1+y2+middle/2)/3);
 	}
 
 	/***
@@ -109,7 +114,14 @@ public abstract class BackgroundSpline extends Path2D.Float implements TileShape
 		this.lineTo(p21, p22);
 		this.lineTo(p11, p12);
 		this.closePath();
+
+		centerPoint = new Point((x1+x2+p11+p21)/4, (y1+y2+p12+p22)/4);
 	}
+	/*
+	@Override
+	public Point getCenterPoint() {
+		return centerPoint;
+	}*/
 
 	@Override
 	public void bakeInto(Graphics2D g) {
