@@ -1,265 +1,274 @@
 package view;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
-import java.nio.charset.CoderMalfunctionError;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
-import model.Tile;
 import util.*;
-
+import view.shapes.*;
 import logic.*;
 
 public class TileGraphic {
 	public final static int size = 100;
-	private final static int border = 0;
+	public final static int foregroundBorder = 50;
+	public final static int foregroundSize = size+2*foregroundBorder;
+	public final static int resourceHighlightWidth = 10;
 	
-	private final static int streetWidth = 10;
-	private final static int villageSize = 20;
+	private Image backgroundImage;
+	private Image foregroundImage;
 	
-	private Image displayImage;
+	private Deque<TileShape> collisionShapes;
+	private Collection<TileShape> highlightedShapes;
 	
 	public static Point PosToCoord(Position pos, double scale) {
 		int xCoord = (int)(pos.getX()*size*scale	-size/2);
 		int yCoord = (int)(-pos.getY()*size*scale	-size/2);
-		return new Point(xCoord, yCoord);
-	}
-	
-	private static Point directionToCoordinate(Direction dir) {
+		var p = new Point(xCoord, yCoord);
+		return p;
+	}	
+	public static Point directionToCoordinate(Direction dir) {
+		Point result = new Point(0,0);//(border, border);
 		switch(dir) {
 		case NORTH:
-			return new Point(size/2, border);
+			result.translate(size/2, 0);
+			break;
 		case EAST:
-			return new Point(size-border, size/2);
+			result.translate(size, size/2);
+			break;
 		case SOUTH:
-			return new Point(size/2, size-border);
+			result.translate(size/2, size);
+			break;
 		case WEST:
-			return new Point(border, size/2);
+			result.translate(0, size/2);
+			break;
 		default:
-			return new Point(size/2, size/2);
+			result.translate(size/2, size/2);
+			break;
 		}
+		return result;
 	}
-	
-	private static Tuple<Point, Point> directionToBorder(Direction dir) {
-		Point first;
-		Point second;
+	public static Tuple<Point, Point> directionToBorder(Direction dir) {
+		Point first = new Point(0,0);//(border, border);
+		Point second = new Point(0,0);//(border, border);
 		switch(dir) {
 		case NORTH:
-			first = new Point(0,0);
-			second = new Point(size,0);
+			first.translate(0,0);
+			second.translate(size,0);
 			return new Tuple<Point, Point>(first, second);
 		case EAST:
-			first = new Point(size,0);
-			second = new Point(size,size);
+			first.translate(size,0);
+			second.translate(size,size);
 			return new Tuple<Point, Point>(first, second);
 		case SOUTH:
-			first = new Point(size,size);
-			second = new Point(0,size);
+			first.translate(size,size);
+			second.translate(0,size);
 			return new Tuple<Point, Point>(first, second);
 		case WEST:
-			first = new Point(0,size);
-			second = new Point(0,0);
+			first.translate(0,size);
+			second.translate(0,0);
 			return new Tuple<Point, Point>(first, second);
 		}
 		return null;
 	}
 	
-	private void insertVillage() {
-		Graphics2D g = (Graphics2D)displayImage.getGraphics();
-		g.setColor(Color.CYAN);
-		g.fillRect((size-villageSize)/2, (size-villageSize)/2, villageSize, villageSize);
-	}
-	
-	private void drawStreet(Point from, Point to) {
-		Graphics2D g = (Graphics2D)displayImage.getGraphics();
-		g.setColor(Color.BLUE);
-		g.setStroke(new BasicStroke(streetWidth));
+
+	public TileGraphic(model.Tile tile) {
+		highlightedShapes = new LinkedList<TileShape>();
 		
-		Path2D street = new Path2D.Float();
-		street.moveTo(from.x, from.y);
-		int mid = size/2;
-		street.curveTo((mid+from.x)/2, (mid+from.y)/2, (mid+to.x)/2, (mid+to.y)/2, to.x, to.y);
-		g.draw(street);
-	}
-	
-	private void drawAllStreets(List<Direction> directions) {
-		Graphics2D g = (Graphics2D)displayImage.getGraphics();
+		var information = TileLogic.getExtendableOptions(tile);
+		var reformattedInformation = new HashMap<Type, List<Direction>>();
 		
+		for(Type t : Type.values())
+			reformattedInformation.put(t, new ArrayList<Direction>());
+		for(Direction d : information.keySet()) {
+			var types = information.get(d);
+			if(types != null)
+				for(Type t : types)
+					reformattedInformation.get(t).add(d);
+		}
+		
+		collisionShapes = new LinkedList<TileShape>();
+		
+		drawGrass(reformattedInformation.get(Type.GRASS));
+		drawForests(reformattedInformation.get(Type.FOREST));
+		drawRivers(reformattedInformation.get(Type.RIVER));
+
+		backgroundImage = new BufferedImage(size, size,  BufferedImage.TYPE_INT_ARGB);
+		foregroundImage = new BufferedImage(foregroundSize, foregroundSize,  BufferedImage.TYPE_INT_ARGB);
+		
+		bakeImage();
+	}
+
+	
+	private void drawGrass(List<Direction> directions) {
+		var grass = new Grass(directions);
+		collisionShapes.addFirst(grass);
+	}
+	private void drawLake() { 
+		collisionShapes.addFirst(new Lake());
+	}
+	private void drawRivers(List<Direction> directions) {
 		if(directions.isEmpty())
 			return;
+		
+		var river = new River();
+		collisionShapes.addFirst(river);
 		
 		//two directions -> bezier ...
 		if(directions.size() == 2) {
 			Point from = directionToCoordinate(directions.get(0));
 			Point to = directionToCoordinate(directions.get(1));
-			drawStreet(from, to);
+			
+			var riverSegment = new RiverSegment(from, to);
+			riverSegment.addDirectionInfo(directions.get(0));
+			riverSegment.addDirectionInfo(directions.get(1));
+			river.add(riverSegment);
 		}
 		//otherwise straight lines connecting in the middle
 		else {
+			//Point to = new Point(size/2+border, size/2+border);
 			Point to = new Point(size/2, size/2);
 			for(Direction dir : directions) {
 				Point from = directionToCoordinate(dir);
-				drawStreet(from, to);
+				
+				var riverSegment = new RiverSegment(from, to);
+				riverSegment.addDirectionInfo(dir);
+				river.add(riverSegment);
 			}
 			
-			insertVillage();
+			drawLake();
 		}
-	}
-	
-	private Direction clockwiseNext(Direction dir) {
-		switch(dir) {
-		case NORTH:
-			return Direction.EAST;
-		case EAST:
-			return Direction.SOUTH;
-		case SOUTH:
-			return Direction.WEST;
-		case WEST:
-			return Direction.NORTH;
-		}
-		return Direction.EAST;
-	}
 
-	private void drawSingleForest(Graphics2D g, Direction dir) {
-		
-		Tuple<Point, Point> borders;
-		borders = directionToBorder(dir);
-		int x1 = borders.getFirst().x;
-		int y1 = borders.getFirst().y;
-		
-		int x2 = borders.getSecond().x;
-		int y2 = borders.getSecond().y;
-		
-		Path2D forest = new Path2D.Float();
-		forest.moveTo(x1, y1);
-		int middle = size/2;
-		forest.curveTo((x1+middle)/2, (y1+middle)/2, (x2+middle)/2, (y2+middle)/2, x2, y2);
-		forest.closePath();
-		g.fill(forest);
 	}
-	
-	private void drawMultiForest(Graphics2D g, Direction clockwiseStart, Direction clockwiseEnd) {
-
-		Tuple<Point, Point> startBorders;
-		startBorders = directionToBorder(clockwiseStart);
-		Tuple<Point, Point> endBorders;
-		endBorders = directionToBorder(clockwiseEnd);
-
-		int x1 = startBorders.getFirst().x;
-		int y1 = startBorders.getFirst().y;
-		
-		int p11 = startBorders.getSecond().x;
-		int p12 = startBorders.getSecond().y;		
-		
-		int p21 = endBorders.getFirst().x;
-		int p22 = endBorders.getFirst().y;
-		
-		int x2 = endBorders.getSecond().x;
-		int y2 = endBorders.getSecond().y;
-		
-		Path2D forest = new Path2D.Float();
-		forest.moveTo(x1, y1);
-		int middle = size/2;
-		
-		forest.curveTo((p11+middle)/2, (p12+middle)/2, (p21+middle)/2, (p22+middle)/2, x2, y2);
-		forest.lineTo(p21, p22);
-		forest.lineTo(p11, p12);
-		forest.closePath();
-		g.fill(forest);
-		
-	}
-	
 	private void drawForests(List<Direction> directions) {
-		Graphics2D g = (Graphics2D)displayImage.getGraphics();
-		g.setColor(new Color(120,80,20));
-
-	
-/*		for(Direction dir : directions) {
-			drawSingleForest(g, dir);
-		}*/
-	
+		
 		if(directions.size() == 1) {
-			drawSingleForest(g, directions.get(0));
+			collisionShapes.addFirst(new Forest(directions.get(0)));
 			return;
 		}
 		if(directions.size() == 2) {
 			if(directions.get(0).equals(directions.get(1).getOpposite())) {
-				drawSingleForest(g, directions.get(0));
-				drawSingleForest(g, directions.get(1));
+				collisionShapes.addFirst(new Forest(directions.get(0)));
+				collisionShapes.addFirst(new Forest(directions.get(1)));
 				return;
 			}
 			else {
 				Direction firstDir = directions.get(0);
 				Direction secondDir = directions.get(1);
-				if(clockwiseNext(firstDir) != directions.get(1)) {
+				if(firstDir.rotateClockwise() != directions.get(1)) {
 					firstDir = directions.get(1);
 					secondDir = directions.get(0);
 				}
-				drawMultiForest(g, firstDir, secondDir);
+				
+				collisionShapes.addFirst(new Forest(firstDir, secondDir));
+				return;
 			}
-			return;
 		}
 		if(directions.size() == 3) {
 			Direction firstDir = Direction.NORTH;
 			while(directions.contains(firstDir))
-				firstDir = clockwiseNext(firstDir);
-			firstDir = clockwiseNext(firstDir);
-			Direction thirdDir = clockwiseNext(clockwiseNext(firstDir));
-			drawMultiForest(g, firstDir, thirdDir);
+				firstDir = firstDir.rotateClockwise();
+			firstDir = firstDir.rotateClockwise();
+			Direction thirdDir = firstDir.getOpposite();
 			
+			collisionShapes.addFirst(new Forest(firstDir, thirdDir));
 			return;
 		}
 		if(directions.size() == 4) {
-			g.fillRect(border, border, size -2*border, size -2*border);
+			collisionShapes.addFirst(new Forest());
 			return;
 		}
 	}
 	
-	public TileGraphic(model.Tile tile) {
-		displayImage = new BufferedImage(size, size,  BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = (Graphics2D)displayImage.getGraphics();
-		g.setColor(Color.GREEN);
-		g.fillRect(border, border, size -2*border, size -2*border);
+	private void bakeImage() {
+		Graphics2D g = (Graphics2D)backgroundImage.getGraphics();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setBackground(new Color(0,0,0,0));
+		g.clearRect(0, 0, backgroundImage.getWidth(null), backgroundImage.getHeight(null));
+			
+		var it = collisionShapes.descendingIterator();
+		while(it.hasNext())
+			it.next().bakeInto(g);
 		
-		
-		
-		
-		Map<Direction, List<Type>> information = TileLogic.getExtendableOptions(tile);
-		
-		List<Direction> streetDirections = new ArrayList<Direction>();
-		List<Direction> forestDirections = new ArrayList<Direction>();
-		for(Direction d : information.keySet()) {
-			if(information.get(d).contains(Type.RIVER))
-				streetDirections.add(d);
-			if(information.get(d).contains(Type.FOREST))
-				forestDirections.add(d);
-				
-		}
-		drawForests(forestDirections);
-		drawAllStreets(streetDirections);
-		
-		/*
-		List<Direction> testDirection = new ArrayList<Direction>();
-		testDirection.add(Direction.NORTH);
-		testDirection.add(Direction.WEST);
-		testDirection.add(Direction.EAST);
-		testDirection.add(Direction.SOUTH);
-		drawForests(testDirection);
-		*/
-	}
 
-	public void paint(Graphics2D g, Position pos, int offsetX, int offsetY, double scale) {
-		Point coord = TileGraphic.PosToCoord(pos, scale);
+		g = (Graphics2D)foregroundImage.getGraphics();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setBackground(new Color(0,0,0,0));
+		g.clearRect(0, 0, foregroundImage.getWidth(null), foregroundImage.getHeight(null));
+			
+		it = collisionShapes.descendingIterator();
+		while(it.hasNext())
+			it.next().bakeIntoForeground(g);
+	}
+	
+	
+	public ResourceInformation getResourceAt(Point pos) {
+		//pos.translate(border, border);
+		for(var resource : collisionShapes) {
+			if(resource.contains(pos)) {
+				return resource.getInformation();
+			}
+		}
+		return null;
+	}
+	
+	public void setResourceHighlight(ResourceInformation info) {
+		if(info == null)
+			return;
+		List<TileShape> matches = 
+							collisionShapes.stream()
+							.filter(shape ->  ResourceInformation.matches(shape.getInformation(), info)
+									).collect(Collectors.toList());
+		for(var match : matches) {
+			match.highlight(true);
+			highlightedShapes.add(match);
+		}
 		
-		int x = coord.x+offsetX;
-		int y = coord.y+offsetY;
+		bakeImage();
+	}
+	
+	public void clearResourceHighlights() {
+		for(var shape : highlightedShapes)
+			shape.highlight(false);
+		highlightedShapes.clear();
 		
+		bakeImage();
+	}
+	
+	
+	public void paintBackground(Graphics2D g, Point coord, double scale) {
 		AffineTransform transform = new AffineTransform();
-		transform.translate(x, y);
+		transform.translate(coord.x, coord.y);
+		//transform.translate(-border, -border);
 		transform.scale(scale, scale);
-		g.drawImage(displayImage, transform, null);
+		g.drawImage(backgroundImage, transform, null);
+		
+		transform.translate(-foregroundBorder, -foregroundBorder);
+	}
+	public void paintBackground(Graphics2D g, Position pos, Point offset, double scale) {
+		Point coord = TileGraphic.PosToCoord(pos, scale); 
+		coord.translate(offset.x, offset.y);
+		paintBackground(g, coord, scale);
+	}
+	
+
+	public void paintForeground(Graphics2D g, Point coord, double scale) {
+		AffineTransform transform = new AffineTransform();
+		transform.translate(coord.x, coord.y);
+		transform.scale(scale, scale);
+		transform.translate(-foregroundBorder, -foregroundBorder);
+		g.drawImage(foregroundImage, transform, null);
+		
+	}
+	public void paintForeground(Graphics2D g, Position pos, Point offset, double scale) {
+		Point coord = TileGraphic.PosToCoord(pos, scale); 
+		coord.translate(offset.x, offset.y);
+		paintForeground(g, coord, scale);
 	}
 }

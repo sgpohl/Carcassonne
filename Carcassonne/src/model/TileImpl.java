@@ -24,6 +24,8 @@ public class TileImpl implements Tile {
     @Override
     public boolean isExtendable(Direction direction, Type type) {
         Set<Type> alignableTypes = this.DirectionType.get(direction);
+        if(alignableTypes == null)
+        	return false;
         return alignableTypes.contains(type);
     }
     
@@ -47,11 +49,8 @@ public class TileImpl implements Tile {
 			return false;
 		TileImpl other = (TileImpl) obj;
 		if (DirectionType == null) {
-			if (other.DirectionType != null)
-				return false;
-		} else if (!DirectionType.equals(other.DirectionType))
-			return false;
-		return true;
+			return other.DirectionType == null;
+		} else return DirectionType.equals(other.DirectionType);
 	}
 
 	@Override

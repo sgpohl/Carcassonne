@@ -1,8 +1,12 @@
 package view;
 import logic.*;
+import model.GameField;
 import model.Tile;
 
 import javax.swing.*;
+
+import controller.Controller;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Map;
@@ -11,92 +15,51 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class UI {
-	
-	private class GameBoardCanvas extends DoubleBufferedCanvas {
-		private static final long serialVersionUID = -9035087671066013403L;
-
-		private Map<Position, TileGraphic> gameBoardReference;
-		private Set<Position> highlightReference;
-		
-		private int centerX, centerY;
-		private double scale;
-		
-		private final static int highlightWidth = 10;
-		
-		
-		public GameBoardCanvas(Map<Position, TileGraphic> gameBoard, Set<Position> highlights) {
-			this.gameBoardReference = gameBoard;
-			this.highlightReference = highlights;
-			
-			this.scale = 1;
-		}
-		
-		public void moveCenter(int dx, int dy) {
-			centerX += dx;
-			centerY += dy;
-			
-			this.repaint();
-		}
-		public void changeScale(double dz) {
-			this.scale = Math.max(0.1, Math.min(2., this.scale*(1.+dz)));
-			this.repaint();
-		}
-		
-		@Override
-		public void paint(Graphics g) {
-			super.paint(g);
-			
-			Graphics2D g2 = (Graphics2D) g;
-			
-			Dimension dim = this.getSize();
-			//g.clearRect(0, 0, dim.width, dim.height);
-			
-			int offsetX = dim.width/2	-(int)(centerX*scale);
-			int offsetY = dim.height/2	-(int)(centerY*scale);
-			
-			synchronized(gameBoardReference) {
-				for(Position pos : gameBoardReference.keySet()) {
-					TileGraphic tile = gameBoardReference.get(pos);
-					tile.paint(g2, pos, offsetX, offsetY, scale);
-				}
-			}
-			
-			synchronized(highlightReference) {
-				for(Position pos :  highlightReference) {
-					Point coord = TileGraphic.PosToCoord(pos, scale);
-					int x = coord.x+offsetX;
-					int y = coord.y+offsetY;
-					int size = (int)(TileGraphic.size*scale);
-					
-					g2.setColor(Color.RED);
-					g2.setStroke(new BasicStroke(highlightWidth));
-					int halfsize = highlightWidth/2;
-					g2.drawRect(x+halfsize, y+halfsize, size-highlightWidth, size-highlightWidth);
-				}
-			}
-		}
-	}
-	
-	
 	private JFrame frame;
 	private GameBoardCanvas canvas;
-	private Map<Position, TileGraphic> gameBoard;
-	private Set<Position> highlights;
+	private final Map<Position, TileGraphic> gameBoard;
+	private final Set<Position> highlights;
+	private Controller controller;
 	
-	public UI() {
-		gameBoard = new HashMap<Position, TileGraphic>();
-		highlights = new HashSet<Position>();
+	public UI(Controller controller) {
+		this.controller = controller;
+		
+		gameBoard = new HashMap<>();
+		highlights = new HashSet<>();
 		
 		frame = new JFrame();
 		frame.setSize(1000, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		//MouseMotionListener mouseMotion = 
-		
-		
 		GridLayout layout = new GridLayout(1,1); 
 		frame.setLayout(layout);
 		canvas = new GameBoardCanvas(gameBoard, highlights);
+		canvas.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getButton() == MouseEvent.BUTTON1) {
+					var pos = canvas.getPositionAtMouse();
+					if(pos != null) {
+						controller.UI_clickedOnTile(pos.getFirst());
+					}
+				}
+				if(e.getButton() == MouseEvent.BUTTON3) {
+					controller.UI_rotateCurrentTile();
+				}
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+		});
 		canvas.addMouseMotionListener(new MouseMotionAdapter() {
 			private int lastX;
 			private int lastY;
@@ -105,22 +68,21 @@ public class UI {
 				int dx = e.getX()-lastX;
 				int dy = e.getY()-lastY;
 				
-				canvas.moveCenter(-dx, -dy);
+				canvas.moveCenter((int)(-dx/canvas.getScale()), (int)(-dy/canvas.getScale()));
 				
 				mouseMoved(e);
 	        }
 			@Override
 			public void mouseMoved(MouseEvent e) {
+				if(canvas.hasMouseTile())
+					canvas.repaint();
 				lastX = e.getX();
 				lastY = e.getY();
 	        }
 		});
-		canvas.addMouseWheelListener(new MouseWheelListener() {
-			@Override
-			public void mouseWheelMoved(MouseWheelEvent e) {
-				double zoomSpeed = 0.15;
-				canvas.changeScale(zoomSpeed*e.getPreciseWheelRotation());
-			}
+		canvas.addMouseWheelListener(e -> {
+			double zoomSpeed = 0.15;
+			canvas.changeScale(zoomSpeed*e.getPreciseWheelRotation());
 		});
 		
 		frame.add(canvas);
@@ -135,14 +97,15 @@ public class UI {
 	public void draw(Position pos, model.Tile tile) {
 		synchronized(gameBoard) {
 			gameBoard.put(pos, new TileGraphic(tile));
+			canvas.recalculateZOrder();
 		}
 		canvas.repaint();
 	}
 	
 	/**
-	 * does absolutely not nothing
-	 * @param pos
-	 * @param isActive
+	 * Sets highlighting border at the given position
+	 * @param pos position of the highlighting border
+	 * @param isActive enables/disables highlighting
 	 */
 	public void highlight(Position pos, boolean isActive) {
 		synchronized(highlights) {
@@ -157,17 +120,72 @@ public class UI {
 		}
 	}
 	
+	public void highlight(Position pos, ResourceInformation resource) {
+		synchronized(gameBoard) {
+			var tile = gameBoard.get(pos);
+			if(tile != null) {
+				tile.clearResourceHighlights();
+				tile.setResourceHighlight(resource);
+			}
+		}
+	}
+	
+	/***
+	 * Displays a card at the mouse cursor
+	 * @param tile Tile to be drawn at the mouse cursor. Pass null to remove.
+	 */
+	public void setDrawnCard(Tile tile) {
+		canvas.setMouseTile(new TileGraphic(tile));
+	}
+	
+	/***
+	 * Returns resource under the cursor
+	 * @return ResourceInformation corresponding to the resource under the cursor. Null, if none found.
+	 */
+	public ResourceInformation getResourceSelection() {
+		var pos = canvas.getPositionAtMouse();
+		if(pos != null) {
+			TileGraphic currentTile = gameBoard.get(pos.getFirst());
+			if(currentTile != null) {
+				return currentTile.getResourceAt(pos.getSecond());
+			}
+		}
+		return null;
+	}
+	
 	public static void main(String[] args) {
-		UI ui = new UI();
+		Controller controller = new Controller();
+		UI ui = controller.getUI();
 		ui.draw(new Position(0, 0), TileFactory.getStartTile());
-		for(int x = -1; x < 2; ++x) 
-			for(int y = 1; y < 4; ++y) {
+		for(int x = -4; x < 4; ++x) 
+			for(int y = 1; y < 6; ++y) {
 				Tile randTile = TileFactory.getRandomTile();
 				ui.draw(new Position(x,y), randTile);
 			}
 
-		ui.highlight(new Position(4,4), true);
-		ui.highlight(new Position(4,5), true);
-		ui.highlight(new Position(4,4), false);
+		ui.highlight(new Position(2,2), true);
+		ui.highlight(new Position(2,3), true);
+		ui.highlight(new Position(2,2), false);
+		
+		//ui.setDrawnCard(TileFactory.getRandomTile());
 	}
+
+
+	public void drawAll( GameField field) {
+		for (var pos : field.getAllTiles().keySet())
+			draw(pos, field.getAllTiles().get(pos));
+	}
+
+	public void clearField(){
+		//TODO: remove all tiles from the map
+		System.out.println("UI::clearField not yet implemented!");
+	}
+	public void clearHighlights(){
+		//TODO: clear all highlighted ares
+		System.out.println("UI::clearHighlights not yet implemented!");
+	}
+
+
+
+
 }

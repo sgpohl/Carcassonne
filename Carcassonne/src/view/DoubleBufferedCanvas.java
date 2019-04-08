@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 public class DoubleBufferedCanvas extends Canvas {
+	private static final long serialVersionUID = 5950549071438180567L;
 	
 	private Image buffer;
 	private Dimension bufferDim;

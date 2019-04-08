@@ -1,5 +1,6 @@
 package logic;
 
+import model.GameField;
 import model.Tile;
 import model.TileImpl;
 import util.IterationUtility;
@@ -24,20 +25,35 @@ public class TileFactory {
         return res;
     }
 
-    public static Tile rotateCounterclockwise(Tile tile) {
-        Tile res = getEmptyTile();
+    public static Tile nearestFittingTile(GameField field, Position pos) {
+        var extensionPositions = GameFieldLogic.getValidPlacementPositions(field);
+        var placeHere = pos.calcClosest(extensionPositions);
 
-        IterationUtility.forEachTypeDirection(
-                (type, dir) -> {
-                    if (res.isExtendable(dir, type))
-                        res.setDirection(dir, type);
+        var tile = getEmptyTile();
+        for (var dir : Direction.values()) {
+            var borderTile = field.getTile(placeHere.inDirection(dir));
+            if (borderTile != null) {
+                var extensionsToThis = TileLogic.getExtendableOptions(borderTile).get(dir.getOpposite());
+                for (var type : extensionsToThis) {
+                    tile.setDirection(dir, type);
                 }
-        );
-
-        return res;
-
+            } else {
+                changeDirectionRandomly(tile, new Random(), dir);
+            }
+        }
+        return tile;
     }
 
+    public static Tile rotateClockwise(Tile tile, int nrClockwise) {
+        while (nrClockwise < 0)
+            nrClockwise += 4;
+        nrClockwise %= 4;
+
+        Tile res = tile;
+        for (int i = 0; i < nrClockwise; i++)
+            res = rotateClockwise(res);
+        return res;
+    }
 
     /**
      * Returns the starting tile of the game
@@ -76,11 +92,15 @@ public class TileFactory {
         Tile tile = getEmptyTile();
 
         for (var dir : Direction.values()) {
-            tile.setDirection(dir, ran.nextDouble() < 0.2 ? Type.FOREST : Type.GRASS);
-            if (ran.nextDouble() < 0.1)
-                tile.setDirection(dir, Type.RIVER);
+            changeDirectionRandomly(tile, ran, dir);
         }
         return tile;
+    }
+
+    private static void changeDirectionRandomly(Tile tile, Random ran, Direction dir) {
+        tile.setDirection(dir, ran.nextDouble() < 0.2 ? Type.FOREST : Type.GRASS);
+        if (ran.nextDouble() < 0.2)
+            tile.setDirection(dir, Type.RIVER);
     }
 
 }
