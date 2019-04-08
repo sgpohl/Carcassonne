@@ -155,7 +155,10 @@ public class UI {
 	 * @param tile Tile to be drawn at the mouse cursor. Pass null to remove.
 	 */
 	public void setDrawnCard(Tile tile) {
-		canvas.setMouseTile(new TileGraphic(tile));
+		if(tile == null)
+			canvas.setMouseTile(null);
+		else
+			canvas.setMouseTile(new TileGraphic(tile));
 	}
 	
 	/***
