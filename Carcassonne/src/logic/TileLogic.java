@@ -39,7 +39,48 @@ public class TileLogic {
     
     public static Collection<ResourceInformation> getResources(Tile tile) {
     	var info = getResourceDirections(tile);
-    	return null;
+    	var rivers = getConnectedForegroundResources(Type.RIVER, info);
+    	var forests = getConnectedBackgroundResources(Type.FOREST, info);
+    	var grassland = getConnectedBackgroundResources(Type.GRASS, info);
+    	
+    	var result = new ArrayList<ResourceInformation>();
+    	result.addAll(rivers);
+    	result.addAll(forests);
+    	result.addAll(grassland);
+    	return result;
+    }
+    
+    private static Collection<ResourceInformation> getConnectedBackgroundResources(Type t, Map<Type, List<Direction>> info) {
+    	Collection<Direction> directions = info.get(t);
+    	
+    	var result = new ArrayList<ResourceInformation>();
+    	if(directions == null)
+    		return result;
+    	
+    	var unmatchedDirections = new ArrayList<Direction>();
+    	unmatchedDirections.addAll(directions);
+    	while(!unmatchedDirections.isEmpty()) {
+    		var resource = new ResourceInformation(t);
+    		
+    		Direction currentDir = unmatchedDirections.get(0);
+    		while(unmatchedDirections.contains(currentDir)) {
+    			resource.addDirection(currentDir);
+    			unmatchedDirections.remove(0);
+    			currentDir = currentDir.rotateClockwise();
+    		}
+    		result.add(resource);
+    	}
+    	
+    	return result;
     }
 
+    private static Collection<ResourceInformation> getConnectedForegroundResources(Type t, Map<Type, List<Direction>> info) {
+    	var result = new ArrayList<ResourceInformation>();
+    	Collection<Direction> directions = info.get(t);
+    	if(directions != null) {
+    		var res = new ResourceInformation(t, directions);
+    		result.add(res);
+    	}
+    	return result;
+    }
 }
