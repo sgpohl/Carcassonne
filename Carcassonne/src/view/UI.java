@@ -200,7 +200,7 @@ public class UI {
 	
 	public static void main(String[] args) {
 		UI ui = new UI();
-		ui.addController(new Controller());
+		//ui.addController(new Controller());
 		
 		ui.draw(new Position(0, 0), TileFactory.getStartTile());
 		for(int x = -4; x < 4; ++x) 
