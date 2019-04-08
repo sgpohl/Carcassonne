@@ -17,6 +17,10 @@ public class River implements TileShape {
 	private ResourceInformation info;
 	private Lake lake;
 	
+	private int rnd() { 
+		return (int)((Math.random()-.5)*20);
+	}
+	
 	public River(Collection<Direction> directions) {
 		info = new ResourceInformation(Type.RIVER);
 		segments = new HashSet<RiverSegment>();
@@ -35,7 +39,18 @@ public class River implements TileShape {
 		//otherwise straight lines connecting in the middle
 		else {
 			//Point to = new Point(size/2+border, size/2+border);
-			Point to = new Point(TileGraphic.size/2, TileGraphic.size/2);
+			Point to = new Point(rnd(), rnd());
+			if(directions.size() == 3) {
+				for(Direction dir : directions) {
+					var d = TileGraphic.directionToCoordinate(dir);
+					to.translate(d.x, d.y);
+				}
+				to.x /= directions.size();
+				to.y /= directions.size();
+			}
+			else
+				to.translate(TileGraphic.size/2, TileGraphic.size/2); 
+			
 			for(Direction dir : directions) {
 				Point from = TileGraphic.directionToCoordinate(dir);
 				
@@ -44,7 +59,8 @@ public class River implements TileShape {
 				this.add(riverSegment);
 			}
 			
-			lake = new Lake();
+			if(Math.random() < 0.2)
+				lake = new Lake();
 		}
 
 	}

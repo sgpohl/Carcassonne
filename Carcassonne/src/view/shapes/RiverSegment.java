@@ -17,9 +17,14 @@ public class RiverSegment extends Path2D.Float implements TileShape {
 	private final Color waterColor = new Color(50,50,200);
 
 	public final static int riverWidth = 10;
+	public final static int randomWiggle = 30;
 	ResourceInformation info;
 	
 	boolean renderHighlighted;
+	
+	private int rnd() {
+		return (int)((Math.random()-.5)*randomWiggle);
+	}
 	
 	public RiverSegment(Point from, Point to) {
 		super();
@@ -28,7 +33,7 @@ public class RiverSegment extends Path2D.Float implements TileShape {
 		
 		this.moveTo(from.x, from.y);
 		int mid = TileGraphic.size/2;//+TileGraphic.border;
-		this.curveTo((mid+from.x)/2, (mid+from.y)/2, (mid+to.x)/2, (mid+to.y)/2, to.x, to.y);
+		this.curveTo((mid+from.x)/2 +rnd(), (mid+from.y)/2+rnd(), (mid+to.x)/2+rnd(), (mid+to.y)/2+rnd(), to.x, to.y);
 	}
 	
 	public void addDirectionInfo(Direction dir) {

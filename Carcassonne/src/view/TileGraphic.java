@@ -78,7 +78,6 @@ public class TileGraphic {
 		return null;
 	}
 	
-
 	public TileGraphic(model.Tile tile) {
 		highlightedShapes = new LinkedList<TileShape>();
 		
@@ -102,7 +101,7 @@ public class TileGraphic {
 		case FOREST:	return 1;
 		case RIVER:		return 2;
 		}
-		throw new UnsupportedOperationException("Z-Ordering requested for unknown resource");
+		throw new UnsupportedOperationException("Z-Ordering requested for unknown resource: "+t);
 	}
 	
 	private TileShape createResource(ResourceInformation resource) {
@@ -112,7 +111,7 @@ public class TileGraphic {
 		case GRASS:		return new Grass(resource.getSecond(), this);
 		case FOREST:	return new Forest(resource.getSecond());
 		case RIVER:		return new River(resource.getSecond());
-		default:		throw new UnsupportedOperationException("Tried resource creation for unhandled resource type (TileGraphic::new)");
+		default:		throw new UnsupportedOperationException("Tried resource creation for unhandled resource type (TileGraphic::new) "+resource.getFirst());
 		}
 	}
 	
@@ -190,7 +189,6 @@ public class TileGraphic {
 		paintBackground(g, coord, scale);
 	}
 	
-
 	public void paintForeground(Graphics2D g, Point coord, double scale) {
 		AffineTransform transform = new AffineTransform();
 		transform.translate(coord.x, coord.y);
