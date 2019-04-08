@@ -10,6 +10,7 @@ import view.TileGraphic;
 
 public class Lake extends Ellipse2D.Float implements TileShape {
 	private static final long serialVersionUID = 9192036957975715607L;
+	private static final Color lakeColor = new Color(100,100,200);
 	
 	private final static int size = 20;
 
@@ -25,7 +26,7 @@ public class Lake extends Ellipse2D.Float implements TileShape {
 
 	@Override
 	public void bakeInto(Graphics2D g) {
-		g.setColor(Color.CYAN);
+		g.setColor(lakeColor);
 		g.fill(this);
 	}
 

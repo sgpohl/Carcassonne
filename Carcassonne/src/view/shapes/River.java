@@ -8,7 +8,7 @@ import java.util.HashSet;
 import logic.Type;
 import view.ResourceInformation;
 
-public class River implements TileShape {
+public class River implements TileShape {	
 	private Collection<RiverSegment> segments;
 	private ResourceInformation info;
 	
