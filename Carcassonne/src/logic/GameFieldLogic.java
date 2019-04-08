@@ -137,6 +137,9 @@ class GameFieldExtensionSearch {
 			if (i.getFirst() != ty) {
 				continue;
 			}
+			if(!i.getSecond().contains(toCheck.getOpposite())) {
+				continue;
+			}
 			for (Direction dir : i.getSecond()) {
 				Position nextPos = pos.inDirection(dir);
 				return this.checkClosed(set, field, nextPos, ty, dir);
