@@ -116,24 +116,24 @@ class GameFieldExtensionSearch {
     
     // GEÄNDERT: checkClosed static (Rekursion)
     // Übergib HashSet, damit in Rekursion nicht jedes mal neues, aber bei komplett neuer Suche nicht selbes HashSet
-	public Tuple<Boolean, HashSet<Position>> checkClosed(HashSet<Position> set, GameField field, Position pos,
-			Type ty, Direction toCheck) {
+	public Tuple<Boolean, HashSet<Position>> checkClosed(HashSet<Position> set, GameField field, Position pos, Type ty,
+			Direction toCheck) {
+		Tile thisTile = field.getTile(pos);
+		if(thisTile == null) {
+			return new Tuple(false, set);
+		}
 		if (set.contains(pos)) {
 			return new Tuple(true, set);
-		} else {
-			set.add(pos);
 		}
-		for (Direction dir : Direction.values()) {
-			if (isSingleTileClosed(field.getTile(pos), ty, toCheck)) {
-				return new Tuple(true, set);
-			}
-
+		
+		set.add(pos);
+		
+		if (isSingleTileClosed(thisTile, ty, toCheck)) {
+			return new Tuple(true, set);
+		}
+		for (ResourceInformation(ty)) {
 			Position nextPos = pos.inDirection(dir);
-			Tile nextToCheck = field.getTile(nextPos);
-			if (nextToCheck == null) {
-				return new Tuple(false, set);
-			}
-			return this.checkClosed(set, field, nextPos, ty, dir.getOpposite());
+			return this.checkClosed(set, field, nextPos, ty, dir);
 
 		}
 
