@@ -5,18 +5,14 @@ import model.Tile;
 
 import javax.swing.*;
 
-import controller.Controller;
 import controller.EventManager;
 import controller.event.ClickedOnPositionEvent;
 import controller.event.RotateCurrentTileEvent;
-import controller.event.StartNewTurnEvent;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Map;
 import java.util.Set;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -196,7 +192,6 @@ public class UI {
 	
 	public static void main(String[] args) {
 		UI ui = new UI();
-		//ui.addController(new Controller());
 		
 		ui.draw(new Position(0, 0), TileFactory.getStartTile());
 		for(int x = -4; x < 4; ++x) 

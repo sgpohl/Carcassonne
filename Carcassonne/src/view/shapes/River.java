@@ -32,9 +32,8 @@ public class River implements TileShape {
 			Point to = TileGraphic.directionToCoordinate(directionList.get(1));
 			
 			boolean split = (Math.random()<0.25);
-			//split = true;
-			
 			var riverSegment = new RiverSegment(from, to, new Point(TileGraphic.size/2, TileGraphic.size/2), split);
+			
 			riverSegment.addDirectionInfo(directionList.get(0));
 			riverSegment.addDirectionInfo(directionList.get(1));
 			this.add(riverSegment);

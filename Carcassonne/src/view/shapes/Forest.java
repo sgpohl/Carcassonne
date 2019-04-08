@@ -49,7 +49,6 @@ public class Forest extends BackgroundSpline {
 	private void placeTrees(int number) {
 		for(int i = 0; i<number; ++i)
 			sprites.placeSpriteOnRandomPosition(TreeSprite::new, this::contains);
-			//sprites.placeSpriteOnRandomPosition(GrassSprite::new, this::contains);
 	}
 	
 	@Override

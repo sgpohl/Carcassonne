@@ -2,11 +2,9 @@ package view;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -141,7 +139,6 @@ public class TileGraphic {
 	}
 	
 	public ResourceInformation getResourceAt(Point pos) {
-		//pos.translate(border, border);
 		for(var resource : collisionShapes) {
 			if(resource.contains(pos)) {
 				return resource.getInformation();
@@ -177,11 +174,8 @@ public class TileGraphic {
 	public void paintBackground(Graphics2D g, Point coord, double scale) {
 		AffineTransform transform = new AffineTransform();
 		transform.translate(coord.x, coord.y);
-		//transform.translate(-border, -border);
 		transform.scale(scale, scale);
 		g.drawImage(backgroundImage, transform, null);
-		
-		transform.translate(-foregroundBorder, -foregroundBorder);
 	}
 	public void paintBackground(Graphics2D g, Position pos, Point offset, double scale) {
 		Point coord = TileGraphic.PosToCoord(pos, scale); 

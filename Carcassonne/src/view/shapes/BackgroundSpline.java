@@ -5,20 +5,12 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Path2D;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Supplier;
-
 import logic.Direction;
 import logic.ResourceInformation;
 import logic.Type;
 import util.Tuple;
 import view.TileGraphic;
 import view.UI;
-import view.sprites.Sprite;
-import view.sprites.TreeSprite;
 
 public abstract class BackgroundSpline extends Path2D.Float implements TileShape {
 	private static final long serialVersionUID = 5068056862855701751L;
@@ -108,7 +100,7 @@ public abstract class BackgroundSpline extends Path2D.Float implements TileShape
 		int y2 = endBorders.getSecond().y;
 		
 		this.moveTo(x1, y1);
-		int middle = TileGraphic.size/2;// + TileGraphic.border;
+		int middle = TileGraphic.size/2;
 		
 		this.curveTo((p11+middle)/2, (p12+middle)/2, (p21+middle)/2, (p22+middle)/2, x2, y2);
 		this.lineTo(p21, p22);
