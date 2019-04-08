@@ -1,6 +1,6 @@
 package main;
 
-import controller.Controller;
+import controller.ControllerSampleImpl;
 import logic.GameFieldLogic;
 import logic.Position;
 import logic.TileFactory;
@@ -15,7 +15,7 @@ public class TestUIWithController {
 
 
     public static void main(String[] args) throws Exception {
-        Controller c = new Controller();
+        ControllerSampleImpl c = new ControllerSampleImpl();
         UI ui = c.getUI();
 
         GameField field = new GameFieldImpl();
