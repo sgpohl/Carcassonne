@@ -209,7 +209,7 @@ public class UI {
 		ui.highlight(new Position(2,3), true);
 		ui.highlight(new Position(2,2), false);
 		
-		//ui.setDrawnCard(TileFactory.getRandomTile());
+		ui.setDrawnCard(TileFactory.getRandomTile());
 		
 		//ui.clearField();
 	}
