@@ -3,6 +3,7 @@ package logic;
 import model.Tile;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class TileLogic {
     public static Map<Direction, List<Type>> getExtendableOptions(Tile tile) {
@@ -39,15 +40,21 @@ public class TileLogic {
     
     public static Collection<ResourceInformation> getResources(Tile tile) {
     	var info = getResourceDirections(tile);
-    	var rivers = getConnectedForegroundResources(Type.RIVER, info);
-    	var forests = getConnectedBackgroundResources(Type.FOREST, info);
-    	var grassland = getConnectedBackgroundResources(Type.GRASS, info);
     	
     	var result = new ArrayList<ResourceInformation>();
-    	result.addAll(rivers);
-    	result.addAll(forests);
-    	result.addAll(grassland);
+    	for(Type t : Type.values())
+    		result.addAll(applyResourceSelector(t, info));
+    		
     	return result;
+    }
+
+    private static Collection<ResourceInformation> applyResourceSelector(Type t, Map<Type, List<Direction>> info) {
+    	switch(t) {
+    	case GRASS:   		return getConnectedBackgroundResources(t, info);
+    	case FOREST:   		return getConnectedBackgroundResources(t, info);
+    	case RIVER:    		return getConnectedForegroundResources(t, info);
+    	default: 			throw new UnsupportedOperationException("Tried to connect unknown Resource Type (TileLogic.getResources)");
+    	}
     }
     
     private static Collection<ResourceInformation> getConnectedBackgroundResources(Type t, Map<Type, List<Direction>> info) {
