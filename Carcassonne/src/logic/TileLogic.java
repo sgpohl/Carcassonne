@@ -70,8 +70,10 @@ public class TileLogic {
     		var resource = new ResourceInformation(t);
     		
     		Direction currentDir = unmatchedDirections.get(0);
-    		while(unmatchedDirections.contains(currentDir)) {
+    		int max = 4;
+    		while(unmatchedDirections.contains(currentDir) && max > 0) {
     			currentDir = currentDir.rotateCounterclockwise();
+    			max--;
     		}
     		currentDir = currentDir.rotateClockwise();
     		
