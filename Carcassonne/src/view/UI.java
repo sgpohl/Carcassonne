@@ -120,6 +120,16 @@ public class UI {
 		}
 	}
 	
+	/***
+	 * Removes all highlighting borders
+	 */
+	public void clearHighlights(){
+		synchronized (highlights) {
+			highlights.clear();
+			canvas.repaint();
+		}
+	}
+	
 	public void highlight(Position pos, ResourceInformation resource) {
 		synchronized(gameBoard) {
 			var tile = gameBoard.get(pos);
@@ -152,6 +162,24 @@ public class UI {
 		}
 		return null;
 	}
+
+	public void drawAll( GameField field) {
+		for (var pos : field.getAllTiles().keySet())
+			draw(pos, field.getAllTiles().get(pos));
+	}
+
+	/***
+	 * removes all tiles from the UI
+	 */
+	public void clearField(){
+		synchronized (gameBoard) {
+			gameBoard.clear();
+			canvas.recalculateZOrder();
+			canvas.repaint();
+		}
+	}
+	
+
 	
 	public static void main(String[] args) {
 		Controller controller = new Controller();
@@ -168,24 +196,8 @@ public class UI {
 		ui.highlight(new Position(2,2), false);
 		
 		//ui.setDrawnCard(TileFactory.getRandomTile());
+		
+		//ui.clearField();
 	}
-
-
-	public void drawAll( GameField field) {
-		for (var pos : field.getAllTiles().keySet())
-			draw(pos, field.getAllTiles().get(pos));
-	}
-
-	public void clearField(){
-		//TODO: remove all tiles from the map
-		System.out.println("UI::clearField not yet implemented!");
-	}
-	public void clearHighlights(){
-		//TODO: clear all highlighted ares
-		System.out.println("UI::clearHighlights not yet implemented!");
-	}
-
-
-
 
 }
