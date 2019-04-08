@@ -7,6 +7,7 @@ import view.sprites.*;
 
 public class Forest extends BackgroundSpline {
 	private static final long serialVersionUID = 2806951371081096281L;
+	private static final Color forestColor = new Color(120,100,50);
 	private SpriteRenderer sprites;
 	
 	private void init() {
@@ -14,14 +15,14 @@ public class Forest extends BackgroundSpline {
 	}
 	
 	public Forest() {
-		super(new Color(120,80,20));
+		super(forestColor);
 		super.generateAllDirection();
 		init();
 
 		placeTrees(40);
 	}
 	public Forest(Direction dir) {
-		super(new Color(120,80,20));
+		super(forestColor);
 		super.generateSingleDirection(dir);
 		init();
 		
@@ -29,7 +30,7 @@ public class Forest extends BackgroundSpline {
 	}
 	
 	public Forest(Direction clockwiseStart, Direction clockwiseEnd) {
-		super(new Color(120,80,20));
+		super(forestColor);
 		super.generateMultiDirection(clockwiseStart, clockwiseEnd);
 		init();
 		

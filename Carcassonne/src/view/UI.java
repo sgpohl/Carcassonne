@@ -26,6 +26,8 @@ public class UI {
 	private final Map<Position, TileGraphic> gameBoard;
 	private final Set<Position> highlights;
 	
+	public static final Color highlightColor = new Color(255,0,0);
+	
 	public UI() {
 		gameBoard = new HashMap<>();
 		highlights = new HashSet<>();

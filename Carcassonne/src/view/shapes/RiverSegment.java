@@ -10,9 +10,11 @@ import logic.Direction;
 import logic.Type;
 import view.ResourceInformation;
 import view.TileGraphic;
+import view.UI;
 
 public class RiverSegment extends Path2D.Float implements TileShape {
-	private static final long serialVersionUID = -8284368756045162616L;
+	private static final long serialVersionUID = -8284368756045162616L;	
+	private final Color waterColor = new Color(50,50,200);
 
 	public final static int riverWidth = 10;
 	ResourceInformation info;
@@ -36,12 +38,12 @@ public class RiverSegment extends Path2D.Float implements TileShape {
 	@Override
 	public void bakeInto(Graphics2D g) {
 		if(renderHighlighted) {
-			g.setColor(Color.RED);
+			g.setColor(UI.highlightColor);
 			g.setStroke(new BasicStroke(riverWidth+TileGraphic.resourceHighlightWidth));
 			g.draw(this);	
 		}
 		
-		g.setColor(Color.BLUE);
+		g.setColor(waterColor);
 		g.setStroke(new BasicStroke(riverWidth));
 		g.draw(this);
 	}

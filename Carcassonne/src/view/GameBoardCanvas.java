@@ -123,10 +123,10 @@ public class GameBoardCanvas extends DoubleBufferedCanvas {
 				coord.translate(offset.x, offset.y);
 				int size = (int)(TileGraphic.size*scale);
 				
-				g2.setColor(Color.RED);
+				g2.setColor(UI.highlightColor);
 				g2.setStroke(new BasicStroke(highlightWidth));
 				int halfsize = highlightWidth/2;
-				g2.drawRect(coord.x+halfsize, coord.y+halfsize, size-highlightWidth, size-highlightWidth);
+				g2.drawRoundRect(coord.x+halfsize, coord.y+halfsize, size-highlightWidth, size-highlightWidth, 20,20);
 			}
 		}
 		

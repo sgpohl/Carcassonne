@@ -13,9 +13,11 @@ import logic.Direction;
 import logic.Type;
 import view.ResourceInformation;
 import view.TileGraphic;
+import view.UI;
 
 public class Grass extends Path2D.Float implements TileShape {
 	private static final long serialVersionUID = -9019873546477228036L;
+	private static final Color grassColor = new Color(80,180,50); 
 	
 	private ResourceInformation info;
 	
@@ -47,11 +49,11 @@ public class Grass extends Path2D.Float implements TileShape {
 	
 	@Override
 	public void bakeInto(Graphics2D g) {
-		g.setColor(Color.GREEN);
+		g.setColor(grassColor);
 		g.fill(this);
 		
 		if(renderHighlighted) {
-			g.setColor(Color.RED);
+			g.setColor(UI.highlightColor);
 			g.setStroke(new BasicStroke(TileGraphic.resourceHighlightWidth/2));
 			for(var stripe : highlightStripes)
 				g.draw(stripe);

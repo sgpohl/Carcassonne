@@ -16,6 +16,7 @@ import logic.Type;
 import util.Tuple;
 import view.ResourceInformation;
 import view.TileGraphic;
+import view.UI;
 import view.sprites.Sprite;
 import view.sprites.TreeSprite;
 
@@ -113,7 +114,7 @@ public abstract class BackgroundSpline extends Path2D.Float implements TileShape
 	@Override
 	public void bakeInto(Graphics2D g) {
 		if(renderHighlighted) {
-			g.setColor(Color.RED);
+			g.setColor(UI.highlightColor);
 			g.setStroke(new BasicStroke(TileGraphic.resourceHighlightWidth));
 			g.draw(this);
 		}
