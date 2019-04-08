@@ -81,17 +81,7 @@ public class TileGraphic {
 	public TileGraphic(model.Tile tile) {
 		highlightedShapes = new LinkedList<TileShape>();
 		
-		var information = TileLogic.getExtendableOptions(tile);
-		var reformattedInformation = new HashMap<Type, List<Direction>>();
-		
-		for(Type t : Type.values())
-			reformattedInformation.put(t, new ArrayList<Direction>());
-		for(Direction d : information.keySet()) {
-			var types = information.get(d);
-			if(types != null)
-				for(Type t : types)
-					reformattedInformation.get(t).add(d);
-		}
+		var reformattedInformation = TileLogic.getResourceDirections(tile);
 		
 		collisionShapes = new LinkedList<TileShape>();
 		

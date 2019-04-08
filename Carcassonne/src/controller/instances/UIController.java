@@ -25,6 +25,7 @@ public class UIController implements Controller {
     }
 
     public void player_placedTile(Player player, Position pos, Tile tile) {
+        ui.draw(pos, tile);
         ui.clearHighlights();
     }
 }

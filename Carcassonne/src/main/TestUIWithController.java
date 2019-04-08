@@ -1,6 +1,5 @@
 package main;
 
-import controller.ControllerSampleImpl;
 import logic.GameFieldLogic;
 import logic.Position;
 import logic.TileFactory;
@@ -15,9 +14,7 @@ public class TestUIWithController {
 
 
     public static void main(String[] args) throws Exception {
-        ControllerSampleImpl c = new ControllerSampleImpl();
-        UI ui = c.getUI();
-
+/*
         GameField field = new GameFieldImpl();
 
         ui.drawAll(field);
@@ -55,7 +52,7 @@ public class TestUIWithController {
             Thread.sleep(timeDelay);
         }
 
-
+*/
     }
 
 }

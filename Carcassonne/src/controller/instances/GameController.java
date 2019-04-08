@@ -28,6 +28,11 @@ public class GameController implements Controller {
 
 
     public void player_placedTile(Player player, Position pos, Tile tile) {
+        field.set(pos, tile);
+        startNextTurn();
+    }
+
+    public void startGame(){
         startNextTurn();
     }
 
