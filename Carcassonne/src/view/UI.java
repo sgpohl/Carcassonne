@@ -6,6 +6,10 @@ import model.Tile;
 import javax.swing.*;
 
 import controller.Controller;
+import controller.EventManager;
+import controller.event.ClickedOnPositionEvent;
+import controller.event.RotateCurrentTileEvent;
+import controller.event.StartNewTurnEvent;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -21,11 +25,8 @@ public class UI {
 	private GameBoardCanvas canvas;
 	private final Map<Position, TileGraphic> gameBoard;
 	private final Set<Position> highlights;
-	private Collection<Controller> controller;
 	
 	public UI() {
-		controller = new ArrayList<Controller>();
-		
 		gameBoard = new HashMap<>();
 		highlights = new HashSet<>();
 		
@@ -42,13 +43,11 @@ public class UI {
 				if(e.getButton() == MouseEvent.BUTTON1) {
 					var pos = canvas.getPositionAtMouse();
 					if(pos != null) {
-						for(var c : controller)
-							c.UI_clickedOnTile(pos.getFirst());
+				        EventManager.getInstance().fire(new ClickedOnPositionEvent(pos.getFirst()));
 					}
 				}
 				if(e.getButton() == MouseEvent.BUTTON3) {
-					for(var c : controller)
-						c.UI_rotateCurrentTile();
+			        EventManager.getInstance().fire(new RotateCurrentTileEvent());
 				}
 			}
 			@Override
@@ -91,14 +90,6 @@ public class UI {
 		
 		frame.add(canvas);
 		frame.setVisible(true);
-	}
-	
-	public void addController(Controller c) {
-		controller.add(c);
-	}
-	
-	public boolean removeController(Controller c) {
-		return controller.remove(c);
 	}
 	
 	/***
