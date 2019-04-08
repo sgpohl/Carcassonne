@@ -10,6 +10,7 @@ import util.Tuple;
 import view.UI;
 import logic.TileLogic;
 import logic.TileFactory;
+import logic.GameFieldFactory;
 
 //import java.util.Collection;
 //import java.util.HashSet;
@@ -187,9 +188,9 @@ class GameFieldExtensionSearch {
     // TESTEN VON TOCHECK
     public static void main(String[] args) {
     	
-    	GameFieldImpl TEST = new GameFieldImpl();
+    	//GameFieldImpl TEST = new GameFieldImpl();
     	Random run = new Random(3);
-    	Tile test1 = TileFactory.getRandomTile(run);
+    	/*Tile test1 = TileFactory.getRandomTile(run);
     	Tile test2 = TileFactory.getRandomTile(run);
     	Tile test3 = TileFactory.getRandomTile(run);
     	Tile test4 = TileFactory.getRandomTile(run);
@@ -204,7 +205,8 @@ class GameFieldExtensionSearch {
     	TEST.set(new Position(1, 0), test5);
     	TEST.set(new Position(0, -1), test6);
     	TEST.set(new Position(2, 1), test7);
-    	TEST.set(new Position(1, 2), test8);
+    	TEST.set(new Position(1, 2), test8);*/
+    	GameField TEST = GameFieldFactory.getSampleField(run, 20);
     	System.out.println(TEST.toString());
     	System.out.println(GameFieldLogic.getClosedAreas(TEST, new Position(0,0)));
     	
