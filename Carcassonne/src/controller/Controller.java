@@ -1,29 +1,26 @@
 package controller;
 
 import logic.Position;
+import model.Tile;
+import util.Tuple;
 
-public class Controller {
-    view.UI ui;
+import java.util.Collection;
 
-    public Controller() {
-        ui = new view.UI(this);
+public interface Controller {
+
+
+    default void player_placedTile(Player player, Position pos, Tile tile){
     }
 
-    public view.UI getUI() {
-        return ui;
+    default void UI_rotateCurrentTile(){
     }
 
-    public void UI_clickedOnTile(Position pos) {
-        System.out.print("clicked at " + pos.toString());
-        var resourceInfo = ui.getResourceSelection();
-        if (resourceInfo != null)
-            System.out.print(", found Resource: " + resourceInfo.getFirst());
-        System.out.println();
-
-        ui.highlight(pos, resourceInfo);
+    default void UI_clickedOnTile(Position pos) {
     }
 
-    public void UI_rotateCurrentTile() {
-        System.out.println("do teh [p]otato thing[y]");
+    default void game_startNewTurn(Player activePlayer, Collection<Tuple<Position, Tile>> placementOptions){
     }
+
+
+
 }

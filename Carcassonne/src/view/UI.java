@@ -6,11 +6,17 @@ import model.Tile;
 import javax.swing.*;
 
 import controller.Controller;
+import controller.EventManager;
+import controller.event.ClickedOnPositionEvent;
+import controller.event.RotateCurrentTileEvent;
+import controller.event.StartNewTurnEvent;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Map;
 import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -19,11 +25,8 @@ public class UI {
 	private GameBoardCanvas canvas;
 	private final Map<Position, TileGraphic> gameBoard;
 	private final Set<Position> highlights;
-	private Controller controller;
 	
-	public UI(Controller controller) {
-		this.controller = controller;
-		
+	public UI() {
 		gameBoard = new HashMap<>();
 		highlights = new HashSet<>();
 		
@@ -40,11 +43,11 @@ public class UI {
 				if(e.getButton() == MouseEvent.BUTTON1) {
 					var pos = canvas.getPositionAtMouse();
 					if(pos != null) {
-						controller.UI_clickedOnTile(pos.getFirst());
+				        EventManager.getInstance().fire(new ClickedOnPositionEvent(pos.getFirst()));
 					}
 				}
 				if(e.getButton() == MouseEvent.BUTTON3) {
-					controller.UI_rotateCurrentTile();
+			        EventManager.getInstance().fire(new RotateCurrentTileEvent());
 				}
 			}
 			@Override
@@ -120,7 +123,22 @@ public class UI {
 		}
 	}
 	
-	public void highlight(Position pos, ResourceInformation resource) {
+	/***
+	 * Removes all highlighting borders
+	 */
+	public void clearHighlights(){
+		synchronized (highlights) {
+			highlights.clear();
+			canvas.repaint();
+		}
+	}
+	
+	/***
+	 * Highlights the specified resource at position. Removes all other highlights on resources.
+	 * @param pos position of the target tile
+	 * @param resource resource information relative to the target tile
+	 */
+	public void highlightResource(Position pos, ResourceInformation resource) {
 		synchronized(gameBoard) {
 			var tile = gameBoard.get(pos);
 			if(tile != null) {
@@ -152,10 +170,29 @@ public class UI {
 		}
 		return null;
 	}
+
+	public void drawAll( GameField field) {
+		for (var pos : field.getAllTiles().keySet())
+			draw(pos, field.getAllTiles().get(pos));
+	}
+
+	/***
+	 * removes all tiles from the UI
+	 */
+	public void clearField(){
+		synchronized (gameBoard) {
+			gameBoard.clear();
+			canvas.recalculateZOrder();
+			canvas.repaint();
+		}
+	}
+	
+
 	
 	public static void main(String[] args) {
-		Controller controller = new Controller();
-		UI ui = controller.getUI();
+		UI ui = new UI();
+		//ui.addController(new Controller());
+		
 		ui.draw(new Position(0, 0), TileFactory.getStartTile());
 		for(int x = -4; x < 4; ++x) 
 			for(int y = 1; y < 6; ++y) {
@@ -168,24 +205,8 @@ public class UI {
 		ui.highlight(new Position(2,2), false);
 		
 		//ui.setDrawnCard(TileFactory.getRandomTile());
+		
+		//ui.clearField();
 	}
-
-
-	public void drawAll( GameField field) {
-		for (var pos : field.getAllTiles().keySet())
-			draw(pos, field.getAllTiles().get(pos));
-	}
-
-	public void clearField(){
-		//TODO: remove all tiles from the map
-		System.out.println("UI::clearField not yet implemented!");
-	}
-	public void clearHighlights(){
-		//TODO: clear all highlighted ares
-		System.out.println("UI::clearHighlights not yet implemented!");
-	}
-
-
-
 
 }

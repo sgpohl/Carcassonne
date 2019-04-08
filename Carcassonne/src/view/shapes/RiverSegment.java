@@ -12,7 +12,8 @@ import view.ResourceInformation;
 import view.TileGraphic;
 
 public class RiverSegment extends Path2D.Float implements TileShape {
-	private static final long serialVersionUID = -8284368756045162616L;
+	private static final long serialVersionUID = -8284368756045162616L;	
+	private final Color waterColor = new Color(50,50,200);
 
 	public final static int riverWidth = 10;
 	ResourceInformation info;
@@ -41,7 +42,7 @@ public class RiverSegment extends Path2D.Float implements TileShape {
 			g.draw(this);	
 		}
 		
-		g.setColor(Color.BLUE);
+		g.setColor(waterColor);
 		g.setStroke(new BasicStroke(riverWidth));
 		g.draw(this);
 	}

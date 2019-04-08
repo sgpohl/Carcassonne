@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Supplier;
 
 import logic.Direction;
 import logic.Type;
@@ -16,20 +17,19 @@ import util.Tuple;
 import view.ResourceInformation;
 import view.TileGraphic;
 import view.sprites.Sprite;
+import view.sprites.TreeSprite;
 
 public abstract class BackgroundSpline extends Path2D.Float implements TileShape {
 	private static final long serialVersionUID = 5068056862855701751L;
 	
 	protected ResourceInformation info;
 	private Color backgroundColor;
-	protected List<Sprite> sprites;
 	
 	boolean renderHighlighted;
 	
 	public BackgroundSpline(Color c) {
 		info = new ResourceInformation(Type.FOREST);
 		backgroundColor = c;
-		sprites = new ArrayList<Sprite>();
 	}
 
 	/***
@@ -124,8 +124,6 @@ public abstract class BackgroundSpline extends Path2D.Float implements TileShape
 	
 	@Override
 	public void bakeIntoForeground(Graphics2D g) {
-		for(var sprite : sprites)
-			sprite.bakeInto(g);
 	}
 
 
@@ -137,10 +135,6 @@ public abstract class BackgroundSpline extends Path2D.Float implements TileShape
 	@Override
 	public ResourceInformation getInformation() {
 		return info;
-	}
-	
-	public void orderSprites() {
-		Collections.sort(sprites, Comparator.comparing(sprite -> sprite.getPosition().y));
 	}
 
 	@Override
