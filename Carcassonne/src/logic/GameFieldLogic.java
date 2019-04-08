@@ -6,6 +6,7 @@ import java.util.*;
 
 import model.Tile;
 import util.Tuple;
+import logic.TileLogic;
 
 //import java.util.Collection;
 //import java.util.HashSet;
@@ -119,21 +120,27 @@ class GameFieldExtensionSearch {
 	public Tuple<Boolean, HashSet<Position>> checkClosed(HashSet<Position> set, GameField field, Position pos, Type ty,
 			Direction toCheck) {
 		Tile thisTile = field.getTile(pos);
-		if(thisTile == null) {
+		if (thisTile == null) {
 			return new Tuple(false, set);
 		}
 		if (set.contains(pos)) {
 			return new Tuple(true, set);
 		}
-		
+
 		set.add(pos);
-		
+
 		if (isSingleTileClosed(thisTile, ty, toCheck)) {
 			return new Tuple(true, set);
-		}
-		for (ResourceInformation(ty)) {
-			Position nextPos = pos.inDirection(dir);
-			return this.checkClosed(set, field, nextPos, ty, dir);
+		}  
+		Collection<ResourceInformation> info = TileLogic.getResources(thisTile);
+		for (ResourceInformation i : info) {
+			if (i.getFirst() != ty) {
+				continue;
+			}
+			for (Direction dir : i.getSecond()) {
+				Position nextPos = pos.inDirection(dir);
+				return this.checkClosed(set, field, nextPos, ty, dir);
+			}
 
 		}
 

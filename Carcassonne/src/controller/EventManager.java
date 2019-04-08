@@ -28,6 +28,7 @@ public class EventManager {
                     handle(event);
                 } catch (Exception e) {
                     System.out.println("interrupted at takeFirst: " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }).start();
