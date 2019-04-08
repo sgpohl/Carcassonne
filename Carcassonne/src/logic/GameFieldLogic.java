@@ -1,6 +1,8 @@
 package logic;
 
 import model.GameField;
+import model.GameFieldImpl;
+
 import java.util.*;
 import model.Tile;
 import logic.Direction;
@@ -11,15 +13,25 @@ import logic.Direction;
 import java.util.stream.Collectors;
 
 public class GameFieldLogic {
+	
+
+	
 
 	// startAtPos: Position des neu angelegten Tiles
 	//Dummy
-	// Directions.SOUTH == dummy
     public static Map<Type, Collection<Tile>> getClosedAreas(GameField field, Position startAtPos) {
     	Map<Type, Collection<Tile>> returnMap = new HashMap<>();
     	GameFieldExtensionSearch toSearch = new GameFieldExtensionSearch();
     	for(Type t: Type.values()) {
-    		toSearch.isConnected(field, startAtPos, t, Direction.SOUTH);
+    		//for(Direction d: Direction.values()) // DIRECTIONS HIER? ODER IN REGRESSION?
+    		// BRAUCHEN BEI GLEICHEM TYP GLEICHE HASHMAP!!!
+    		// startDirection is dummy
+    		// For all directions in a certain order
+    		if(isSingleTileClosed(field.getTile(startAtPos), t, Direction.SOUTH)){
+    			toSearch.isConnected(field, startAtPos, t, Direction.SOUTH);
+    		}
+    		// Falls Type für alle Directions false:
+    		returnMap.put(t, null);
     	}
     	
         return null;
@@ -52,28 +64,32 @@ class GameFieldExtensionSearch {
 		}
 		return false;
 	}
+	
+	// BRAUCHT NOCH EINE EBENE GRÖßERE HILFSMETHODE DIE EIGENES SET VERWALTET UND ABGESCHLOSSENE BEREICHE ZURÜCKGIBT
+    
+	
+    public void findPositionsOfConnected(GameFieldImpl field, Position pos, Type type, Direction enteredFromDirection){
+    	Collection<Position> tempConnected = new HashSet<>(); 
+    	if(tempConnected.contains(pos)) {
+    		return;
+    	}
+    	closed.add(pos);
+    	if(isSingleTileClosed(field.getTile(pos), type, enteredFromDirection)) {
+    		
+    	}
+    	// dummy
+    	return;
+    }
+    
+    public Collection<Position> getPositions() {
+    	return this.closed;
+    }
+   
 
     // TODO: untested!
     public boolean isConnected(GameField gameField, Position pos, Type type, Direction enteredFromDirection) {
-        if (closed.contains(pos))
-            return true;
 
-        closed.add(pos);
-
-        var tile = gameField.getTile(pos);
-        var extensionMap = TileLogic.getExtendableOptions(tile);
-
-        var possibleDirs = extensionMap.keySet().stream()
-                .filter(dir -> dir != enteredFromDirection.getOpposite())
-                .filter(dir -> extensionMap.get(dir).contains(type))
-                .collect(Collectors.toSet());
-
-
-        for (Direction dir : possibleDirs)
-            if (!isConnected(gameField, pos.inDirection(dir), type, dir))
-                return false;
-
-        return true;
+       return false;
 
     }
 
