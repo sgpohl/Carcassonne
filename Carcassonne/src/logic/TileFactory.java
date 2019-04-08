@@ -19,7 +19,7 @@ public class TileFactory {
 
         for (var dir : Direction.values())
             for (var type : Type.values())
-                if (res.isExtendable(dir, type))
+                if (tile.isExtendable(dir, type))
                     res.setDirection(dir.rotateClockwise(), type);
 
         return res;

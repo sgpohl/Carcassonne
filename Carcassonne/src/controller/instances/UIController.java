@@ -21,7 +21,7 @@ public class UIController implements Controller {
     }
 
     public void game_startNewTurn(Player activePlayer, Collection<Tuple<Position, Tile>> placementOptions) {
-        placementOptions.stream().map(Tuple::getFirst).forEach(pos -> ui.highlight(pos, true));
+      //  placementOptions.stream().map(Tuple::getFirst).forEach(pos -> ui.highlight(pos, true));
     }
 
     public void player_placedTile(Player player, Position pos, Tile tile) {
