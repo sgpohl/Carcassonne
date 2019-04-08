@@ -5,8 +5,8 @@ import java.awt.Point;
 import java.util.Collection;
 import java.util.HashSet;
 
+import logic.ResourceInformation;
 import logic.Type;
-import view.ResourceInformation;
 
 public class River implements TileShape {	
 	private Collection<RiverSegment> segments;

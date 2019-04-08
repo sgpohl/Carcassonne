@@ -7,8 +7,8 @@ import java.awt.Point;
 import java.awt.geom.Path2D;
 
 import logic.Direction;
+import logic.ResourceInformation;
 import logic.Type;
-import view.ResourceInformation;
 import view.TileGraphic;
 import view.UI;
 

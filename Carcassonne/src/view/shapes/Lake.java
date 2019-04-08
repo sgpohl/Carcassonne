@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Ellipse2D;
 
-import view.ResourceInformation;
+import logic.ResourceInformation;
 import view.TileGraphic;
 
 public class Lake extends Ellipse2D.Float implements TileShape {

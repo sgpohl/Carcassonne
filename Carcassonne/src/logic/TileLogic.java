@@ -1,15 +1,10 @@
 package logic;
 
-import model.GameField;
 import model.Tile;
-import util.IterationUtility;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TileLogic {
-
-
     public static Map<Direction, List<Type>> getExtendableOptions(Tile tile) {
         Map<Direction, List<Type>> result = new HashMap<>();
         for (Direction dir : Direction.values()) {
@@ -25,6 +20,26 @@ public class TileLogic {
 
         return result;
     }
-
+    
+    public static Map<Type, List<Direction>> getResourceDirections(Tile tile) {
+		var information = TileLogic.getExtendableOptions(tile);
+		var reformattedInformation = new HashMap<Type, List<Direction>>();
+		
+		for(Type t : Type.values())
+			reformattedInformation.put(t, new ArrayList<Direction>());
+		for(Direction d : information.keySet()) {
+			var types = information.get(d);
+			if(types != null)
+				for(Type t : types)
+					reformattedInformation.get(t).add(d);
+		}
+		
+		return reformattedInformation;
+    }
+    
+    public static Collection<ResourceInformation> getResources(Tile tile) {
+    	var info = getResourceDirections(tile);
+    	return null;
+    }
 
 }

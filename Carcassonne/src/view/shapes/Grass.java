@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import logic.Direction;
+import logic.ResourceInformation;
 import logic.Type;
-import view.ResourceInformation;
 import view.TileGraphic;
 import view.UI;
 

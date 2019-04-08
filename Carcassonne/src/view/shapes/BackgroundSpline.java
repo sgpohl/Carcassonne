@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import logic.Direction;
+import logic.ResourceInformation;
 import logic.Type;
 import util.Tuple;
-import view.ResourceInformation;
 import view.TileGraphic;
 import view.UI;
 import view.sprites.Sprite;
