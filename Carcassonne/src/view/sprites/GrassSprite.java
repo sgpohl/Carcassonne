@@ -12,7 +12,8 @@ import java.util.List;
 public class GrassSprite extends Sprite {
 	private static final int strawCount = 10;
 	private static final float strawDensity = 0.4f;
-	private static final Color grassColor = new Color(180,180,80);
+	//private static final Color grassColor = new Color(180,180,80);
+	private static final Color grassColor = new Color(80,180,80);
 	
 	private class StrawSprite extends Sprite {
 		private float angle;
