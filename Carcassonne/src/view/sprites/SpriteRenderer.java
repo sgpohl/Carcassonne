@@ -29,7 +29,8 @@ public class SpriteRenderer {
 	
 
 	public void placeSpriteOnRandomPosition(Function<Point, Sprite> constructor, Function<Point, Boolean> collision) {
-		while(true) {
+		int maxiter = 50;
+		while(maxiter > 0) {
 			var pos = new Point(0,0);
 			pos.translate((int)(Math.random()*TileGraphic.size), (int)(Math.random()*TileGraphic.size));
 			
@@ -41,6 +42,7 @@ public class SpriteRenderer {
 				sprites.add(tree);
 				break;
 			}
+			maxiter--;
 		}
 		
 		zOrderSprites();
