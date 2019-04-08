@@ -31,7 +31,10 @@ public class River implements TileShape {
 			Point from = TileGraphic.directionToCoordinate(directionList.get(0));
 			Point to = TileGraphic.directionToCoordinate(directionList.get(1));
 			
-			var riverSegment = new RiverSegment(from, to);
+			boolean split = (Math.random()<0.25);
+			//split = true;
+			
+			var riverSegment = new RiverSegment(from, to, new Point(TileGraphic.size/2, TileGraphic.size/2), split);
 			riverSegment.addDirectionInfo(directionList.get(0));
 			riverSegment.addDirectionInfo(directionList.get(1));
 			this.add(riverSegment);
@@ -39,17 +42,22 @@ public class River implements TileShape {
 		//otherwise straight lines connecting in the middle
 		else {
 			//Point to = new Point(size/2+border, size/2+border);
-			Point to = new Point(rnd(), rnd());
+			Point to = new Point(0,0);
+			double weighting = 0;
 			if(directions.size() == 3) {
 				for(Direction dir : directions) {
 					var d = TileGraphic.directionToCoordinate(dir);
-					to.translate(d.x, d.y);
+					double w = 1;//Math.random()+0.1;
+					to.translate((int)(d.x*w), (int)(d.y*w));
+					weighting += w;
 				}
-				to.x /= directions.size();
-				to.y /= directions.size();
+				to.x /= weighting;
+				to.y /= weighting;
 			}
 			else
 				to.translate(TileGraphic.size/2, TileGraphic.size/2); 
+			to.translate(rnd(), rnd()); 
+			
 			
 			for(Direction dir : directions) {
 				Point from = TileGraphic.directionToCoordinate(dir);
@@ -59,8 +67,8 @@ public class River implements TileShape {
 				this.add(riverSegment);
 			}
 			
-			if(Math.random() < 0.2)
-				lake = new Lake();
+			//if(Math.random() < 0.2)
+				lake = new Lake(to);
 		}
 
 	}
@@ -84,10 +92,10 @@ public class River implements TileShape {
 
 	@Override
 	public void bakeInto(Graphics2D g) {
-		for(var s : segments)
-			s.bakeInto(g);
 		if(lake != null)
 			lake.bakeInto(g);
+		for(var s : segments)
+			s.bakeInto(g);
 	}
 
 	@Override

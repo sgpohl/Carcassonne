@@ -14,9 +14,9 @@ public class Lake extends Ellipse2D.Float implements TileShape {
 	
 	private final static int size = 20;
 
-	public Lake() {
+	public Lake(Point pos) {
 		//super((TileGraphic.size-size)/2+TileGraphic.border, (TileGraphic.size-size)/2+TileGraphic.border, size, size);
-		super((TileGraphic.size-size)/2, (TileGraphic.size-size)/2, size, size);
+		super(pos.x-size/2, pos.y-size/2, size, size);
 	}
 	
 	@Override
