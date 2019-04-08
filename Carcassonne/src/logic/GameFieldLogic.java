@@ -17,13 +17,16 @@ public class GameFieldLogic {
     // startAtPos: Position des neu angelegten Tiles
     //Dummy
     // Directions.SOUTH == dummy
-    public static Map<Type, Collection<Tile>> getClosedAreas(GameField field, Position startAtPos) {
-        Map<Type, Collection<Tile>> returnMap = new HashMap<>();
-        GameFieldExtensionSearch toSearch = new GameFieldExtensionSearch();
+    public static Map<Type, Collection<Position>> getClosedAreas(GameField field, Position startAtPos) {
+        Map<Type, Collection<Position>> returnMap = new HashMap<>();
         for (Type t : Type.values()) {
-            toSearch.isConnected(field, startAtPos, t, Direction.SOUTH);
+        	GameFieldExtensionSearch toSearch = new GameFieldExtensionSearch();
+        	Tuple<Boolean, HashSet<Position>> result = toSearch.checkClosed(new HashSet<Position>(), field, startAtPos, t, Direction.NORTH);
+            if(result.getFirst()) {
+            	returnMap.get(t).addAll(result.getSecond());
+            }
         }
-        return null;
+        return returnMap;
     }
 
     public static Collection<Position> calcPositionsWithEmptyNeighbours(GameField field) {
@@ -81,6 +84,7 @@ public class GameFieldLogic {
 
 class GameFieldExtensionSearch {
     private Collection<Position> closed = new HashSet<>();
+    
 
     public GameFieldExtensionSearch() {
     }
@@ -101,8 +105,44 @@ class GameFieldExtensionSearch {
         }
         return false;
     }
+    
+    public static boolean hasNeighbourInDir(GameField field, Position pos, Direction dir) {
+    	Tile toCheck = field.getTile(pos.inDirection(dir));
+    			if(toCheck == null) {
+    				return false;
+    			}
+    	return true;
+    }
+    
+    // GEÄNDERT: checkClosed static (Rekursion)
+    // Übergib HashSet, damit in Rekursion nicht jedes mal neues, aber bei komplett neuer Suche nicht selbes HashSet
+	public Tuple<Boolean, HashSet<Position>> checkClosed(HashSet<Position> set, GameField field, Position pos,
+			Type ty, Direction toCheck) {
+		if (set.contains(pos)) {
+			return new Tuple(true, set);
+		} else {
+			set.add(pos);
+		}
+		for (Direction dir : Direction.values()) {
+			if (isSingleTileClosed(field.getTile(pos), ty, toCheck)) {
+				return new Tuple(true, set);
+			}
 
-    // TODO: untested!
+			Position nextPos = pos.inDirection(dir);
+			Tile nextToCheck = field.getTile(nextPos);
+			if (nextToCheck == null) {
+				return new Tuple(false, set);
+			}
+			return this.checkClosed(set, field, nextPos, ty, dir.getOpposite());
+
+		}
+
+		return null;
+	}
+
+    
+    
+    //TODO: untested!
     public boolean isConnected(GameField gameField, Position pos, Type type, Direction enteredFromDirection) {
         if (closed.contains(pos))
             return true;
@@ -123,7 +163,7 @@ class GameFieldExtensionSearch {
                 return false;
 
         return true;
+        }
 
-    }
 
 }
