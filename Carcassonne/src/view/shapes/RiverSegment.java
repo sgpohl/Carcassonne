@@ -14,7 +14,7 @@ import view.UI;
 
 public class RiverSegment extends Path2D.Float implements TileShape {
 	private static final long serialVersionUID = -8284368756045162616L;	
-	private final Color waterColor = new Color(50,50,200);
+	public static final Color waterColor = new Color(40,40,150);
 
 	public final static int riverWidth = 10;
 	public final static double randomWiggle = 0.3;

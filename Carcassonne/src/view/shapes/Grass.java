@@ -97,7 +97,7 @@ public class Grass extends Path2D.Float implements TileShape {
 			for(int i = 0; i<targetSprites; ++i)
 				this.sprites.placeSpriteOnRandomPosition(GrassSprite::new, this::pointCollides);
 
-			sprites.placeSpriteOnRandomPosition(MeepMeeple::new, this::pointCollides);
+			//sprites.placeSpriteOnRandomPosition(MeepMeeple::new, this::pointCollides);
 		}
 		sprites.bakeInto(g);
 	}
