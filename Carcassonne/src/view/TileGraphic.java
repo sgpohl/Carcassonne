@@ -25,6 +25,8 @@ public class TileGraphic {
 	private Deque<TileShape> collisionShapes;
 	private Collection<TileShape> highlightedShapes;
 	
+	private boolean isPreview;
+	
 	public static Point PosToCoord(Position pos, double scale) {
 		int xCoord = (int)(pos.getX()*size*scale	-size/2);
 		int yCoord = (int)(-pos.getY()*size*scale	-size/2);
@@ -76,7 +78,8 @@ public class TileGraphic {
 		return null;
 	}
 	
-	public TileGraphic(model.Tile tile) {
+	public TileGraphic(model.Tile tile, boolean isPreview) {
+		this.isPreview = isPreview;
 		highlightedShapes = new LinkedList<TileShape>();
 		
 		collisionShapes = new LinkedList<TileShape>();
@@ -92,6 +95,9 @@ public class TileGraphic {
 		
 		bakeImage();
 	}
+/*	public TileGraphic(model.Tile tile) {
+		this(tile, false);
+	}*/
 	
 	private static int resourceZOrder(Type t) {
 		switch(t) {
@@ -108,7 +114,7 @@ public class TileGraphic {
 		switch(resource.getFirst()) {
 		case GRASS:		return new Grass(resource.getSecond(), this);
 		case FOREST:	return new Forest(resource.getSecond());
-		case RIVER:		return new River(resource.getSecond());
+		case RIVER:		return new River(resource.getSecond(), this.isPreview);
 		default:		throw new UnsupportedOperationException("Tried resource creation for unhandled resource type (TileGraphic::new) "+resource.getFirst());
 		}
 	}

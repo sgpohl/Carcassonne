@@ -97,7 +97,7 @@ public class UI {
 	 */
 	public void draw(Position pos, model.Tile tile) {
 		synchronized(gameBoard) {
-			gameBoard.put(pos, new TileGraphic(tile));
+			gameBoard.put(pos, new TileGraphic(tile, false));
 			canvas.recalculateZOrder();
 		}
 		canvas.repaint();
@@ -154,7 +154,7 @@ public class UI {
 		if(tile == null)
 			canvas.setMouseTile(null);
 		else
-			canvas.setMouseTile(new TileGraphic(tile));
+			canvas.setMouseTile(new TileGraphic(tile, true));
 	}
 	
 	/***

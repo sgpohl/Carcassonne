@@ -25,7 +25,7 @@ public class River implements TileShape {
 		return (int)((Math.random()-.5)*30);
 	}
 	
-	public River(Collection<Direction> directions) {
+	public River(Collection<Direction> directions, boolean preview) {
 		info = new ResourceInformation(Type.RIVER);
 		segments = new HashSet<RiverSegment>();
 		
@@ -35,7 +35,7 @@ public class River implements TileShape {
 			Point from = TileGraphic.directionToCoordinate(directionList.get(0));
 			Point to = TileGraphic.directionToCoordinate(directionList.get(1));
 			
-			boolean split = (Math.random()<0.25);
+			boolean split = (Math.random()<0.15) && !preview;
 			var riverSegment = new RiverSegment(from, to, new Point(TileGraphic.size/2, TileGraphic.size/2), split);
 			
 			riverSegment.addDirectionInfo(directionList.get(0));
@@ -71,7 +71,7 @@ public class River implements TileShape {
 				
 				
 
-				if(directions.size() == 1 && Math.random() < 1.2) {
+				if(directions.size() == 1 && !preview) {
 					if(Math.random() < 0.4) {
 						delta = new ArrayList<Tuple<Integer, Path2D>>();
 						for(int i = 0; i<4; ++i) {
